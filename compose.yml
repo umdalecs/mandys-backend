@@ -1,0 +1,18 @@
+
+services:
+  database:
+    image: postgres:18
+    # container_name: mandys-database
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mandys
+    volumes:
+      - database-data:/var/lib/postgresql
+  # backend:
+  # frontend:
+
+volumes:
+  database-data:
