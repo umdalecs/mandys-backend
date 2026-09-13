@@ -75,10 +75,10 @@ public class AuthHandler : ICarterModule
             new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
+                // Secure = true,
                 SameSite = SameSiteMode.Lax,
                 Path = "/",
-                MaxAge = TimeSpan.FromMinutes(15)
+                MaxAge = TimeSpan.FromMinutes(10)
             });
 
         context.Response.Cookies.Append(
@@ -87,10 +87,10 @@ public class AuthHandler : ICarterModule
             new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
+                // Secure = true,
                 SameSite = SameSiteMode.Lax,
                 Path = "/auth",
-                MaxAge = TimeSpan.FromDays(30)
+                MaxAge = TimeSpan.FromMinutes(60)
             });
 
         return Results.Ok();
