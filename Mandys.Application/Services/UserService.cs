@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Mandys.Services;
 
-public class UserService(ApplicationDbContext db) : IUserService
+public class UserService(IApplicationDbContext db) : IUserService
 {
     public async Task<UserResponse> GetCurrentUserAsync(Guid? currentUserId)
     {

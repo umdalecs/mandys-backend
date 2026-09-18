@@ -17,6 +17,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
         .UseSnakeCaseNamingConvention());
 
+builder.Services.AddScoped<IApplicationDbContext>(sp =>
+    sp.GetRequiredService<ApplicationDbContext>());
+
 builder.ConfigureJwt();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();

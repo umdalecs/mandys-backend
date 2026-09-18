@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Mandys;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : DbContext(options)
+    : DbContext(options), IApplicationDbContext
 {
     public DbSet<UserEntity> Users { get; set; }
 

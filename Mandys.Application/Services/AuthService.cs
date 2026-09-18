@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 namespace Mandys.Services;
 
 public class AuthService(
-    ApplicationDbContext db,
+    IApplicationDbContext db,
     ITokenService tokenService,
     IOptions<JwtOptions> jwtOptions) : IAuthService
 {
