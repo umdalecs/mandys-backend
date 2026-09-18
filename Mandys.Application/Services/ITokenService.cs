@@ -1,9 +1,9 @@
-using Mandys.Entities;
+using Mandys.Domain;
 
 namespace Mandys.Services;
 
 public interface ITokenService
 {
-    string GenerateToken(UserEntity user);
+    string GenerateToken(User user);
     string GenerateRefreshToken();
 }

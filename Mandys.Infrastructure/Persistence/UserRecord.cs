@@ -1,9 +1,14 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Mandys.Domain;
 
-namespace Mandys.Entities;
+namespace Mandys.Infrastructure.Persistence;
 
-public class UserEntity : Entity
+/// <summary>
+/// Persistence record for the users table. Mapped to/from
+/// <see cref="User"/> by <see cref="UserRepository"/>.
+/// </summary>
+public class UserRecord : Record
 {
     [Key]
     public Guid Id { get; set; } = Guid.NewGuid();
@@ -14,9 +19,8 @@ public class UserEntity : Entity
     [Required]
     public string Email { get; set; } = string.Empty;
     [Required]
-    public string Password { get; set; } = string.Empty;
+    [Column("password")]
+    public string PasswordHash { get; set; } = string.Empty;
     [Required]
     public string Role { get; set; } = Roles.User;
-    public string? RefreshToken { get; set; }
-    public DateTime? RefreshTokenExpiryTime { get; set; }
 }

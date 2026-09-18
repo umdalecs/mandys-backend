@@ -1,4 +1,4 @@
-using Mandys.Entities;
+using Mandys.Domain;
 
 namespace Mandys.DTOs;
 
@@ -38,7 +38,7 @@ public record PagedUsersResponse(
 
 public static class UserMapper
 {
-    public static UserResponse ToResponse(this UserEntity user) =>
+    public static UserResponse ToResponse(this User user) =>
         new(
             user.Id,
             user.FirstName,

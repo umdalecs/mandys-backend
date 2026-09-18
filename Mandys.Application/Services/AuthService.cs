@@ -1,14 +1,14 @@
-using Isopoh.Cryptography.Argon2;
 using Mandys.Configuration;
 using Mandys.DTOs;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Mandys.Services;
 
 public class AuthService(
-    IApplicationDbContext db,
+    IUserRepository users,
+    IRefreshTokenRepository refreshTokens,
     ITokenService tokenService,
+    IPasswordHasher passwordHasher,
     IOptions<JwtOptions> jwtOptions) : IAuthService
 {
     private readonly JwtOptions _jwt = jwtOptions.Value;
@@ -23,10 +23,9 @@ public class AuthService(
             throw ServiceException.BadRequest(validation.Errors.First().ErrorMessage);
         }
 
-        var user = await db.Users
-            .FirstOrDefaultAsync(u => u.Email.ToLower() == email!.ToLower());
+        var user = await users.FindByEmailAsync(email!);
 
-        if (user is null || !Argon2.Verify(user.Password, password))
+        if (user is null || !passwordHasher.Verify(user.PasswordHash, password))
         {
             throw ServiceException.Unauthorized();
         }
@@ -34,10 +33,8 @@ public class AuthService(
         var accessToken = tokenService.GenerateToken(user);
         var refreshToken = tokenService.GenerateRefreshToken();
 
-        user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(_jwt.RefreshTokenExpireMinutes);
-
-        await db.SaveChangesAsync();
+        await refreshTokens.IssueAsync(
+            user.Id, refreshToken, DateTime.UtcNow.AddMinutes(_jwt.RefreshTokenExpireMinutes));
 
         return new AuthTokenSet(accessToken, refreshToken, _jwt.ExpireMinutes * 60);
     }
@@ -49,10 +46,27 @@ public class AuthService(
             throw ServiceException.BadRequest("Refresh token is required.");
         }
 
-        var user = await db.Users
-            .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+        var stored = await refreshTokens.FindByTokenAsync(refreshToken);
 
-        if (user is null || user.RefreshTokenExpiryTime == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+        if (stored is null)
+        {
+            throw ServiceException.Unauthorized();
+        }
+
+        if (stored.RevokedAt.HasValue)
+        {
+            // A revoked token presented again suggests theft: revoke all grants.
+            await refreshTokens.RevokeAllAsync(stored.UserId);
+            throw ServiceException.Unauthorized();
+        }
+
+        if (stored.ExpiresAt <= DateTime.UtcNow)
+        {
+            throw ServiceException.Unauthorized();
+        }
+
+        var user = await users.GetByIdAsync(stored.UserId);
+        if (user is null)
         {
             throw ServiceException.Unauthorized();
         }
@@ -60,12 +74,11 @@ public class AuthService(
         var newAccessToken = tokenService.GenerateToken(user);
         var newRefreshToken = tokenService.GenerateRefreshToken();
 
-        user.RefreshToken = newRefreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(_jwt.RefreshTokenExpireMinutes);
+        await refreshTokens.RevokeAsync(stored.Id);
+        await refreshTokens.IssueAsync(
+            user.Id, newRefreshToken, DateTime.UtcNow.AddMinutes(_jwt.RefreshTokenExpireMinutes));
 
-        await db.SaveChangesAsync();
-
-        return new AuthTokenSet(newAccessToken, refreshToken, _jwt.ExpireMinutes * 60);
+        return new AuthTokenSet(newAccessToken, newRefreshToken, _jwt.ExpireMinutes * 60);
     }
 
     public async Task LogoutAsync(string? refreshToken)
@@ -75,17 +88,13 @@ public class AuthService(
             throw ServiceException.BadRequest("Refresh token is required.");
         }
 
-        var user = await db.Users
-            .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+        var stored = await refreshTokens.FindByTokenAsync(refreshToken);
 
-        if (user is null || user.RefreshTokenExpiryTime == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+        if (stored is null || stored.RevokedAt.HasValue || stored.ExpiresAt <= DateTime.UtcNow)
         {
             throw ServiceException.Unauthorized();
         }
 
-        user.RefreshToken = null;
-        user.RefreshTokenExpiryTime = null;
-
-        await db.SaveChangesAsync();
+        await refreshTokens.RevokeAsync(stored.Id);
     }
 }

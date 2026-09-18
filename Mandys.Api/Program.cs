@@ -4,6 +4,8 @@ using Scalar.AspNetCore;
 
 using Mandys.Configuration;
 using Mandys.Domain;
+using Mandys.Infrastructure.Persistence;
+using Mandys.Infrastructure.Security;
 using Mandys.Services;
 using Mandys;
 
@@ -17,8 +19,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
         .UseSnakeCaseNamingConvention());
 
-builder.Services.AddScoped<IApplicationDbContext>(sp =>
-    sp.GetRequiredService<ApplicationDbContext>());
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IPasswordHasher, Argon2PasswordHasher>();
 
 builder.ConfigureJwt();
 builder.Services.AddScoped<IAuthService, AuthService>();

@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Mandys.Configuration;
-using Mandys.Entities;
+using Mandys.Domain;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -13,7 +13,7 @@ public class TokenService(IOptions<JwtOptions> jwtOptions) : ITokenService
 {
     private readonly JwtOptions _options = jwtOptions.Value;
 
-    public string GenerateToken(UserEntity user)
+    public string GenerateToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(_options.Key);

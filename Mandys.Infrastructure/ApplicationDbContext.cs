@@ -1,13 +1,14 @@
 using Mandys.Domain;
-using Mandys.Entities;
+using Mandys.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mandys;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : DbContext(options), IApplicationDbContext
+    : DbContext(options)
 {
-    public DbSet<UserEntity> Users { get; set; }
+    public DbSet<UserRecord> Users { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -21,7 +22,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<UserEntity>(entity =>
+        modelBuilder.Entity<UserRecord>(entity =>
         {
             entity.Property(u => u.Role).HasDefaultValue(Roles.User);
 
@@ -31,7 +32,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 {
                     Id = Guid.Parse("d1a7b9c3-4e56-4f89-a123-b456c789d012"),
                     Email = "admin@mandys.com",
-                    Password = "$argon2id$v=19$m=16,t=2,p=1$YWRtaW5pc3RyYXRvcnNhbHQ$n/2qmo8rW3KVIHy7g2Y0XA",
+                    PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$YWRtaW5pc3RyYXRvcnNhbHQ$n/2qmo8rW3KVIHy7g2Y0XA",
                     FirstName = "Administrator",
                     LastName = "Administrator",
                     Role = Roles.Admin,
@@ -42,12 +43,22 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             );
         });
 
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasOne<UserRecord>()
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(r => r.TokenHash).IsUnique();
+        });
+
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            if (typeof(Entity).IsAssignableFrom(entityType.ClrType))
+            if (typeof(Record).IsAssignableFrom(entityType.ClrType))
             {
                 var parameter = System.Linq.Expressions.Expression.Parameter(entityType.ClrType, "e");
-                var property = System.Linq.Expressions.Expression.Property(parameter, nameof(Entity.IsDeleted));
+                var property = System.Linq.Expressions.Expression.Property(parameter, nameof(Record.IsDeleted));
                 var filter = System.Linq.Expressions.Expression.Lambda(System.Linq.Expressions.Expression.Not(property), parameter);
                 entityType.SetQueryFilter(filter);
             }
@@ -56,7 +67,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        foreach (var entry in ChangeTracker.Entries<Entity>())
+        foreach (var entry in ChangeTracker.Entries<Record>())
         {
             if (entry.State == EntityState.Added)
             {

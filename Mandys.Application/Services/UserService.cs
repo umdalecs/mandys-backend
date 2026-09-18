@@ -1,12 +1,12 @@
-using Isopoh.Cryptography.Argon2;
 using Mandys.Domain;
 using Mandys.DTOs;
-using Mandys.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace Mandys.Services;
 
-public class UserService(IApplicationDbContext db) : IUserService
+public class UserService(
+    IUserRepository users,
+    IRefreshTokenRepository refreshTokens,
+    IPasswordHasher passwordHasher) : IUserService
 {
     public async Task<UserResponse> GetCurrentUserAsync(Guid? currentUserId)
     {
@@ -15,7 +15,7 @@ public class UserService(IApplicationDbContext db) : IUserService
             throw ServiceException.Unauthorized();
         }
 
-        var user = await db.Users.FindAsync(currentUserId.Value);
+        var user = await users.GetByIdAsync(currentUserId.Value);
         if (user is null)
         {
             throw ServiceException.NotFound("User not found.");
@@ -30,39 +30,16 @@ public class UserService(IApplicationDbContext db) : IUserService
         if (pageSize < 1) pageSize = 20;
         if (pageSize > 100) pageSize = 100;
 
-        var query = db.Users.AsNoTracking();
-
-        if (!string.IsNullOrWhiteSpace(search))
-        {
-            var term = search.Trim().ToLower();
-            query = query.Where(u =>
-                u.Email.ToLower().Contains(term) ||
-                u.FirstName.ToLower().Contains(term) ||
-                u.LastName.ToLower().Contains(term));
-        }
-
-        if (!string.IsNullOrWhiteSpace(role))
-        {
-            var roleFilter = role.Trim().ToLower();
-            query = query.Where(u => u.Role.ToLower() == roleFilter);
-        }
-
-        var totalCount = await query.CountAsync();
+        var (totalCount, items) = await users.SearchAsync(search, role, page, pageSize);
         var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
-        var items = await query
-            .OrderBy(u => u.CreatedAt)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .Select(u => u.ToResponse())
-            .ToListAsync();
-
-        return new PagedUsersResponse(totalCount, page, pageSize, totalPages, items);
+        return new PagedUsersResponse(totalCount, page, pageSize, totalPages,
+            items.Select(u => u.ToResponse()).ToList());
     }
 
     public async Task<UserResponse> GetUserByIdAsync(Guid id)
     {
-        var user = await db.Users.FindAsync(id);
+        var user = await users.GetByIdAsync(id);
         if (user is null)
         {
             throw ServiceException.NotFound($"User with ID '{id}' not found.");
@@ -95,31 +72,27 @@ public class UserService(IApplicationDbContext db) : IUserService
 
         var normalizedEmail = request.Email.Trim().ToLowerInvariant();
 
-        var emailExists = await db.Users.AnyAsync(u => u.Email.ToLower() == normalizedEmail);
-        if (emailExists)
+        if (await users.ExistsByEmailAsync(normalizedEmail))
         {
             throw ServiceException.Conflict($"Email '{normalizedEmail}' is already registered.");
         }
 
-        var user = new UserEntity
-        {
-            Id = Guid.NewGuid(),
-            FirstName = request.FirstName.Trim(),
-            LastName = request.LastName.Trim(),
-            Email = normalizedEmail,
-            Password = Argon2.Hash(request.Password),
-            Role = role
-        };
+        var user = new User(
+            Guid.NewGuid(),
+            request.FirstName.Trim(),
+            request.LastName.Trim(),
+            normalizedEmail,
+            passwordHasher.Hash(request.Password),
+            role);
 
-        db.Users.Add(user);
-        await db.SaveChangesAsync();
+        await users.AddAsync(user);
 
         return user.ToResponse();
     }
 
     public async Task<UserResponse> UpdateUserAsync(Guid id, UpdateUserRequest request)
     {
-        var user = await db.Users.FindAsync(id);
+        var user = await users.GetByIdAsync(id);
         if (user is null)
         {
             throw ServiceException.NotFound($"User with ID '{id}' not found.");
@@ -128,23 +101,19 @@ public class UserService(IApplicationDbContext db) : IUserService
         if (!string.IsNullOrWhiteSpace(request.Email) && request.Email.Trim().ToLowerInvariant() != user.Email.ToLowerInvariant())
         {
             var trimmedEmail = request.Email.Trim().ToLowerInvariant();
-            var emailExists = await db.Users.AnyAsync(u => u.Id != id && u.Email.ToLower() == trimmedEmail);
-            if (emailExists)
+            if (await users.ExistsByEmailAsync(trimmedEmail, id))
             {
                 throw ServiceException.Conflict($"Email '{trimmedEmail}' is already registered.");
             }
-            user.Email = trimmedEmail;
+            user.ChangeEmail(trimmedEmail);
         }
 
         // TODO: Use fluent validation here
-        if (!string.IsNullOrWhiteSpace(request.FirstName))
+        if (!string.IsNullOrWhiteSpace(request.FirstName) || !string.IsNullOrWhiteSpace(request.LastName))
         {
-            user.FirstName = request.FirstName.Trim();
-        }
-
-        if (!string.IsNullOrWhiteSpace(request.LastName))
-        {
-            user.LastName = request.LastName.Trim();
+            user.UpdateProfile(
+                string.IsNullOrWhiteSpace(request.FirstName) ? user.FirstName : request.FirstName.Trim(),
+                string.IsNullOrWhiteSpace(request.LastName) ? user.LastName : request.LastName.Trim());
         }
 
         if (!string.IsNullOrWhiteSpace(request.Role))
@@ -155,16 +124,15 @@ public class UserService(IApplicationDbContext db) : IUserService
                 throw ServiceException.BadRequest(
                     $"Invalid role '{request.Role}'. Allowed roles: {string.Join(", ", Roles.All)}.");
             }
-            user.Role = normalizedRole;
+            user.SetRole(normalizedRole);
         }
 
         if (!string.IsNullOrWhiteSpace(request.Password))
         {
-            user.Password = Argon2.Hash(request.Password);
+            user.SetPasswordHash(passwordHasher.Hash(request.Password));
         }
 
-        user.UpdatedAt = DateTime.UtcNow;
-        await db.SaveChangesAsync();
+        await users.UpdateAsync(user);
 
         return user.ToResponse();
     }
@@ -176,13 +144,13 @@ public class UserService(IApplicationDbContext db) : IUserService
             throw ServiceException.BadRequest("Administrators cannot delete their own account.");
         }
 
-        var user = await db.Users.FindAsync(id);
+        var user = await users.GetByIdAsync(id);
         if (user is null)
         {
             throw ServiceException.NotFound($"User with ID '{id}' not found.");
         }
 
-        db.Users.Remove(user);
-        await db.SaveChangesAsync();
+        await users.RemoveAsync(id);
+        await refreshTokens.RevokeAllAsync(id);
     }
 }
