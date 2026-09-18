@@ -15,3 +15,9 @@ services:
       - .:/src
       - /src/Mandys.Api/bin
       - /src/Mandys.Api/obj
+      - /src/Mandys.Application/bin
+      - /src/Mandys.Application/obj
+      - /src/Mandys.Domain/bin
+      - /src/Mandys.Domain/obj
+      - /src/Mandys.Infrastructure/bin
+      - /src/Mandys.Infrastructure/obj
