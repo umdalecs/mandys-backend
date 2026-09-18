@@ -44,6 +44,7 @@ else
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapCarter();
+app.MapGroup("api/")
+    .MapCarter();
 
 app.Run();
