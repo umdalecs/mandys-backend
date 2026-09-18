@@ -112,13 +112,13 @@ holds database credentials (`POSTGRES_USER`, `POSTGRES_PASSWORD`,
 2. Apply migrations (creates tables + seeds the admin user):
 
    ```bash
-   docker compose exec api dotnet-ef database update --project Mandys/Mandys.csproj
+   docker compose exec api dotnet-ef database update --project Mandys.Infrastructure/Mandys.Infrastructure.csproj
    ```
 
    Or from the host if you have the .NET SDK + `dotnet-ef` installed:
 
    ```bash
-   dotnet ef database update --project Mandys
+   dotnet ef database update --project Mandys.Infrastructure --startup-project Mandys.Api
    ```
 
 3. Run the api (development mode, hot reload):

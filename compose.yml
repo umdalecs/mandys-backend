@@ -13,5 +13,5 @@ services:
       ConnectionStrings__DefaultConnection: "User ID=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres};Host=${DB_HOST:-database};Port=${DB_PORT:-5432};Database=${POSTGRES_DB:-mandys};"
     volumes:
       - .:/src
-      - /src/Mandys/bin
-      - /src/Mandys/obj
+      - /src/Mandys.Api/bin
+      - /src/Mandys.Api/obj
