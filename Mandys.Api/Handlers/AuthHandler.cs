@@ -1,7 +1,9 @@
 using Carter;
+using Mandys.Configuration;
 using Mandys.DTOs;
 using Mandys.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Mandys.Handlers;
 
@@ -20,6 +22,7 @@ public class AuthHandler : ICarterModule
     private static async Task<IResult> Login(
         [FromBody] LoginRequest request,
         IAuthService authService,
+        IOptions<JwtOptions> jwtOptions,
         HttpContext context,
         bool useCookies = true)
     {
@@ -46,7 +49,7 @@ public class AuthHandler : ICarterModule
                     Secure = true,
                     SameSite = SameSiteMode.Lax,
                     Path = "/",
-                    MaxAge = TimeSpan.FromMinutes(10)
+                    MaxAge = TimeSpan.FromMinutes(jwtOptions.Value.ExpireMinutes)
                 });
 
             context.Response.Cookies.Append(
@@ -57,8 +60,8 @@ public class AuthHandler : ICarterModule
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.Lax,
-                    Path = "/auth",
-                    MaxAge = TimeSpan.FromMinutes(60)
+                    Path = "/",
+                    MaxAge = TimeSpan.FromMinutes(jwtOptions.Value.RefreshTokenExpireMinutes)
                 });
 
             return Results.Ok();
@@ -72,14 +75,15 @@ public class AuthHandler : ICarterModule
     private static async Task<IResult> Refresh(
         [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] RefreshRequest? request,
         IAuthService authService,
+        IOptions<JwtOptions> jwtOptions,
         HttpContext context,
         bool useCookies = true)
     {
         try
         {
             var refreshToken = useCookies
-                ? request?.RefreshToken
-                : context.Request.Cookies["refresh_token"];
+                ? context.Request.Cookies["refresh_token"]
+                : request?.RefreshToken;
 
             var tokens = await authService.RefreshAsync(refreshToken);
 
@@ -102,7 +106,7 @@ public class AuthHandler : ICarterModule
                     Secure = true,
                     SameSite = SameSiteMode.Lax,
                     Path = "/",
-                    MaxAge = TimeSpan.FromMinutes(10)
+                    MaxAge = TimeSpan.FromMinutes(jwtOptions.Value.ExpireMinutes)
                 });
 
             context.Response.Cookies.Append(
@@ -114,7 +118,7 @@ public class AuthHandler : ICarterModule
                     Secure = true,
                     SameSite = SameSiteMode.Lax,
                     Path = "/",
-                    MaxAge = TimeSpan.FromMinutes(60)
+                    MaxAge = TimeSpan.FromMinutes(jwtOptions.Value.RefreshTokenExpireMinutes)
                 });
 
             return Results.Ok();
@@ -134,8 +138,8 @@ public class AuthHandler : ICarterModule
         try
         {
             var refreshToken = useCookies
-                ? request?.RefreshToken
-                : context.Request.Cookies["refresh_token"];
+                ? context.Request.Cookies["refresh_token"]
+                : request?.RefreshToken;
 
             await authService.LogoutAsync(refreshToken);
 

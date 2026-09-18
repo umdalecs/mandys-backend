@@ -37,8 +37,13 @@ public static class JwtConfiguration
                 {
                     OnMessageReceived = context =>
                     {
-                        context.Token =
-                            context.Request.Cookies["access_token"];
+                        // Prefer the cookie, but leave header-based Bearer
+                        // tokens alone when no cookie is present.
+                        if (context.Request.Cookies.TryGetValue("access_token", out var token)
+                            && !string.IsNullOrEmpty(token))
+                        {
+                            context.Token = token;
+                        }
 
                         return Task.CompletedTask;
                     }
