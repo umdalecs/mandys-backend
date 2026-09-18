@@ -1,0 +1,42 @@
+# Api + database mode: brings up a PostgreSQL service alongside the api and
+# points the api at it. The database persists in the `database-data` volume,
+# so it doubles as the shared development database: you can also start it
+# once on its own (`docker compose -f compose.database.yml up -d database`)
+# and then iterate on the api alone (`docker compose up --build api`).
+#
+# Usage:
+#   docker compose -f compose.yml -f compose.database.yml up --build
+
+services:
+  database:
+    image: postgres:18
+    ports:
+      - ${DB_PORT:-5432}:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-mandys}
+    volumes:
+      - database-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-mandys}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  api:
+    # Build is repeated from compose.yml so this file is also valid on its
+    # own (e.g. `docker compose -f compose.database.yml up -d database`).
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    environment:
+      ConnectionStrings__DefaultConnection: "User ID=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres};Host=database;Port=5432;Database=${POSTGRES_DB:-mandys};"
+    depends_on:
+      database:
+        condition: service_healthy
+
+volumes:
+  database-data:
