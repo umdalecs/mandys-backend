@@ -1,12 +1,95 @@
 # MandysBackend
 
-Backend API for Mandys — run it with Docker + Compose (no local .NET SDK needed).
+Backend API for Mandys — ASP.NET Core 10 minimal API with JWT auth and PostgreSQL.
 
-## Prerequisites
+## Run without cloning (from GHCR)
+
+You only need Docker. Copy the exact image path from the package page
+(`ghcr.io/<owner>/<repo>:<tag>`); the examples below use
+`ghcr.io/<owner>/<repo>:latest`.
+
+The api listens on port `8080` and needs two settings:
+
+| Variable | Purpose | Example |
+| -------- | ------- | ------- |
+| `ConnectionStrings__DefaultConnection` | Postgres connection string | `User ID=postgres;Password=postgres;Host=<db-host>;Port=5432;Database=mandys;` |
+| `Jwt__Key` | Token signing key, 32+ bytes (**required**, no usable default) | `change-me-to-a-32-plus-byte-secret` |
+
+> The database must already be migrated (tables + seeded admin user).
+> Migrating requires the repo once — see [Run with the database](#run-with-the-database).
+
+### With the docker CLI
+
+```bash
+docker network create mandys
+
+docker run -d --name mandys-db --network mandys \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=mandys \
+  -v mandys-data:/var/lib/postgresql \
+  postgres:18
+
+docker run -d --name mandys-api --network mandys -p 8080:8080 \
+  -e "ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Host=mandys-db;Port=5432;Database=mandys;" \
+  -e "Jwt__Key=change-me-to-a-32-plus-byte-secret" \
+  ghcr.io/<owner>/<repo>:latest
+```
+
+### With compose
+
+Save this as `compose.yml` anywhere and run `docker compose up -d`:
+
+```yaml
+services:
+  database:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mandys
+    volumes:
+      - mandys-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mandys"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    image: ghcr.io/<owner>/<repo>:latest
+    ports:
+      - 8080:8080
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "User ID=postgres;Password=postgres;Host=database;Port=5432;Database=mandys;"
+      Jwt__Key: change-me-to-a-32-plus-byte-secret
+    depends_on:
+      database:
+        condition: service_healthy
+
+volumes:
+  mandys-data:
+```
+
+### Verify it works
+
+```bash
+curl -i -X POST http://localhost:8080/api/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"admin@mandys.com","password":"<seeded-password>"}'
+```
+
+(The Scalar/OpenAPI docs UI is only enabled in Development, so it is not
+available on this image.)
+
+## Development
+
+### Prerequisites
 
 - Docker + Docker Compose plugin
 
-## Setup
+### Setup
 
 ```bash
 cp .env.example .env
@@ -17,7 +100,7 @@ holds database credentials (`POSTGRES_USER`, `POSTGRES_PASSWORD`,
 `POSTGRES_DB`, `DB_PORT`) and api settings (`API_PORT`,
 `ASPNETCORE_ENVIRONMENT`, `DB_HOST`).
 
-## Run with the database
+### Run with the database
 
 1. Start the shared development database (data persists in the
    `database-data` volume):
@@ -49,7 +132,7 @@ port). API docs (Development only): Scalar UI
 `http://localhost:8080/scalar/v1`, OpenAPI JSON
 `http://localhost:8080/openapi/v1.json`.
 
-## Run modes (one shared database)
+### Run modes (one shared database)
 
 | Mode | Command | When to use |
 | ---- | ------- | ----------- |
@@ -65,7 +148,7 @@ docker compose -f compose.yml -f compose.database.yml down
 
 (add `-v` only to wipe the database).
 
-## Verify it works
+### Verify it works
 
 ```bash
 curl -i -X POST http://localhost:8080/api/login \
