@@ -35,7 +35,7 @@ public class AuthService(
         var refreshToken = tokenService.GenerateRefreshToken();
 
         user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_jwt.RefreshTokenExpireMinutes);
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(_jwt.RefreshTokenExpireMinutes);
 
         await db.SaveChangesAsync();
 
