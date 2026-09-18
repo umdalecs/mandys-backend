@@ -4,6 +4,7 @@ using Scalar.AspNetCore;
 
 using Mandys.Configuration;
 using Mandys.Domain;
+using Mandys.Services;
 using Mandys;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         .UseSnakeCaseNamingConvention());
 
 builder.ConfigureJwt();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddAuthorization(options =>
 {

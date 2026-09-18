@@ -1,11 +1,7 @@
 using Carter;
-using Isopoh.Cryptography.Argon2;
-using Mandys.Configuration;
 using Mandys.DTOs;
 using Mandys.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace Mandys.Handlers;
 
@@ -13,162 +9,152 @@ public class AuthHandler : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("/login", Login)
-            .WithName("AuthLogin")
-            .WithSummary("Login with credentials and receive access and refresh tokens");
+        app.MapPost("/login", Login);
 
-        app.MapPost("/refresh", Refresh)
-            .WithName("AuthRefresh")
-            .WithSummary("Refresh access token using a valid refresh token");
+        app.MapPost("/refresh", Refresh);
+
+        app.MapPost("/logout", Logout)
+            .RequireAuthorization();
     }
 
     private static async Task<IResult> Login(
         [FromBody] LoginRequest request,
-        ApplicationDbContext db,
-        ITokenService tokenService,
-        IOptions<JwtOptions> jwtOptions,
+        IAuthService authService,
         HttpContext context,
         bool useCookies = true)
     {
-        var validator = new LoginRequestValidator();
-
-        var result = validator.Validate(request);
-
-        if (!result.IsValid)
+        try
         {
-            return Results.BadRequest(
-                new { message = result.Errors.First().ErrorMessage }
-                );
-        }
+            var tokens = await authService.LoginAsync(request.Email, request.Password);
 
-        var user = await db.Users
-            .FirstOrDefaultAsync(u => u.Email.ToLower() == request.Email!.ToLower());
-
-        if (user is null || !Argon2.Verify(user.Password, request.Password))
-        {
-            return Results.Unauthorized();
-        }
-
-        var accessToken = tokenService.GenerateToken(user);
-        var refreshToken = tokenService.GenerateRefreshToken();
-
-        user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(jwtOptions.Value.RefreshTokenExpireMinutes);
-
-        await db.SaveChangesAsync();
-
-        var expiresInSeconds = jwtOptions.Value.ExpireMinutes * 60;
-
-        if (!useCookies)
-        {
-            return Results.Ok(new TokenAuthResponse(
-                accessToken,
-                refreshToken,
-                "Bearer",
-                expiresInSeconds
-            ));
-        }
-
-        context.Response.Cookies.Append(
-            "access_token",
-            accessToken,
-            new CookieOptions
+            if (!useCookies)
             {
-                HttpOnly = true,
-                // Secure = true,
-                SameSite = SameSiteMode.Lax,
-                Path = "/",
-                MaxAge = TimeSpan.FromMinutes(10)
-            });
+                return Results.Ok(new TokenAuthResponse(
+                    tokens.AccessToken,
+                    tokens.RefreshToken,
+                    "Bearer",
+                    tokens.ExpiresInSeconds
+                ));
+            }
 
-        context.Response.Cookies.Append(
-            "refresh_token",
-            refreshToken,
-            new CookieOptions
-            {
-                HttpOnly = true,
-                // Secure = true,
-                SameSite = SameSiteMode.Lax,
-                Path = "/auth",
-                MaxAge = TimeSpan.FromMinutes(60)
-            });
+            context.Response.Cookies.Append(
+                "access_token",
+                tokens.AccessToken,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax,
+                    Path = "/",
+                    MaxAge = TimeSpan.FromMinutes(10)
+                });
 
-        return Results.Ok();
+            context.Response.Cookies.Append(
+                "refresh_token",
+                tokens.RefreshToken,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax,
+                    Path = "/auth",
+                    MaxAge = TimeSpan.FromMinutes(60)
+                });
+
+            return Results.Ok();
+        }
+        catch (ServiceException ex)
+        {
+            return MapAuthError(ex);
+        }
     }
 
     private static async Task<IResult> Refresh(
         [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] RefreshRequest? request,
-        HttpContext httpContext,
-        ApplicationDbContext db,
-        ITokenService tokenService,
+        IAuthService authService,
         HttpContext context,
-        IOptions<JwtOptions> jwtOptions,
         bool useCookies = true)
     {
-        var refreshToken = request?.RefreshToken;
-
-        if (useCookies)
+        try
         {
-            refreshToken = context.Request.Cookies["access_token"];
-        }
+            var refreshToken = useCookies
+                ? request?.RefreshToken
+                : context.Request.Cookies["refresh_token"];
 
-        if (string.IsNullOrWhiteSpace(refreshToken))
-        {
-            return Results.BadRequest(new { message = "Refresh token is required." });
-        }
+            var tokens = await authService.RefreshAsync(refreshToken);
 
-        var user = await db.Users
-            .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
-
-        if (user is null || user.RefreshTokenExpiryTime == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
-        {
-            return Results.Unauthorized();
-        }
-
-        var newAccessToken = tokenService.GenerateToken(user);
-        var newRefreshToken = tokenService.GenerateRefreshToken();
-
-        user.RefreshToken = newRefreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(jwtOptions.Value.RefreshTokenExpireMinutes);
-
-        await db.SaveChangesAsync();
-
-        var expiresInSeconds = jwtOptions.Value.ExpireMinutes * 60;
-
-        if (!useCookies)
-        {
-            return Results.Ok(new TokenAuthResponse(
-                newAccessToken,
-                refreshToken,
-                "Bearer",
-                expiresInSeconds
-            ));
-        }
-
-        context.Response.Cookies.Append(
-            "access_token",
-            newAccessToken,
-            new CookieOptions
+            if (!useCookies)
             {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Lax,
-                Path = "/",
-                MaxAge = TimeSpan.FromMinutes(10)
-            });
+                return Results.Ok(new TokenAuthResponse(
+                    tokens.AccessToken,
+                    tokens.RefreshToken,
+                    "Bearer",
+                    tokens.ExpiresInSeconds
+                ));
+            }
 
-        context.Response.Cookies.Append(
-            "refresh_token",
-            refreshToken,
-            new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Lax,
-                Path = "/auth",
-                MaxAge = TimeSpan.FromMinutes(60)
-            });
+            context.Response.Cookies.Append(
+                "access_token",
+                tokens.AccessToken,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax,
+                    Path = "/",
+                    MaxAge = TimeSpan.FromMinutes(10)
+                });
 
-        return Results.Ok();
+            context.Response.Cookies.Append(
+                "refresh_token",
+                tokens.RefreshToken,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax,
+                    Path = "/",
+                    MaxAge = TimeSpan.FromMinutes(60)
+                });
+
+            return Results.Ok();
+        }
+        catch (ServiceException ex)
+        {
+            return MapAuthError(ex);
+        }
     }
+
+    private static async Task<IResult> Logout(
+        [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] RefreshRequest? request,
+        IAuthService authService,
+        HttpContext context,
+        bool useCookies = true)
+    {
+        try
+        {
+            var refreshToken = useCookies
+                ? request?.RefreshToken
+                : context.Request.Cookies["refresh_token"];
+
+            await authService.LogoutAsync(refreshToken);
+
+            if (useCookies)
+            {
+                context.Response.Cookies.Delete("access_token");
+                context.Response.Cookies.Delete("refresh_token");
+            }
+
+            return Results.NoContent();
+        }
+        catch (ServiceException ex)
+        {
+            return MapAuthError(ex);
+        }
+    }
+
+    private static IResult MapAuthError(ServiceException ex) =>
+        ex.StatusCode == StatusCodes.Status400BadRequest
+            ? Results.BadRequest(new { message = ex.Message })
+            : Results.Unauthorized();
 }
