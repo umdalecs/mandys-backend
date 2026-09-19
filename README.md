@@ -5,8 +5,8 @@ Backend API for Mandys — ASP.NET Core 10 minimal API with JWT auth and Postgre
 ## Run without cloning (from GHCR)
 
 You only need Docker. Copy the exact image path from the package page
-(`ghcr.io/<owner>/<repo>:<tag>`); the examples below use
-`ghcr.io/<owner>/<repo>:latest`.
+(`ghcr.io/umdalecs/mandys-backend:<tag>`); the examples below use
+`ghcr.io/umdalecs/mandys-backend:latest`.
 
 The api listens on port `8080` and needs two settings:
 
@@ -16,7 +16,8 @@ The api listens on port `8080` and needs two settings:
 | `Jwt__Key` | Token signing key, 32+ bytes (**required**, no usable default) | `change-me-to-a-32-plus-byte-secret` |
 
 > The database must already be migrated (tables + seeded admin user).
-> Migrating requires the repo once — see [Run with the database](#run-with-the-database).
+> Migrating requires the repo once — see [Run with the database](#run-with-the-database). All compose
+> commands below run from the repo root; the compose files live in `docker/`.
 
 ### With the docker CLI
 
@@ -33,7 +34,7 @@ docker run -d --name mandys-db --network mandys \
 docker run -d --name mandys-api --network mandys -p 8080:8080 \
   -e "ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Host=mandys-db;Port=5432;Database=mandys;" \
   -e "Jwt__Key=change-me-to-a-32-plus-byte-secret" \
-  ghcr.io/<owner>/<repo>:latest
+  ghcr.io/umdalecs/mandys-backend:latest
 ```
 
 ### With compose
@@ -57,7 +58,7 @@ services:
       retries: 10
 
   api:
-    image: ghcr.io/<owner>/<repo>:latest
+    image: ghcr.io/umdalecs/mandys-backend:latest
     ports:
       - 8080:8080
     environment:
@@ -92,13 +93,12 @@ available on this image.)
 ### Setup
 
 ```bash
-cp .env.example .env
+cp docker/.env.example docker/.env
 ```
 
-`.env` is optional (every variable has a working default) and gitignored. It
+`docker/.env` is optional (every variable has a working default) and gitignored. It
 holds database credentials (`POSTGRES_USER`, `POSTGRES_PASSWORD`,
-`POSTGRES_DB`, `DB_PORT`) and api settings (`API_PORT`,
-`ASPNETCORE_ENVIRONMENT`, `DB_HOST`).
+`POSTGRES_DB`, `DB_PORT`) and api settings (`API_PORT`, `DB_HOST`).
 
 ### Run with the database
 
@@ -106,26 +106,26 @@ holds database credentials (`POSTGRES_USER`, `POSTGRES_PASSWORD`,
    `database-data` volume):
 
    ```bash
-   docker compose -f compose.database.yml up -d database
+   docker compose -f docker/compose.database.yml up -d database
    ```
 
-2. Apply migrations (creates tables + seeds the admin user):
+2. Run the api (prebuilt image, `Development` mode for Scalar docs):
 
    ```bash
-   docker compose exec api dotnet-ef database update --project Mandys.Infrastructure/Mandys.Infrastructure.csproj
+   docker compose -f docker/compose.yml up --build api
    ```
 
-   Or from the host if you have the .NET SDK + `dotnet-ef` installed:
+   The api applies pending migrations itself on startup in Development
+   (creates tables + seeds the admin user), so no SDK or `dotnet-ef` is
+   needed. Backend developers with the .NET SDK can still run migrations
+   from the host instead:
 
    ```bash
    dotnet ef database update --project Mandys.Infrastructure --startup-project Mandys.Api
    ```
 
-3. Run the api (development mode, hot reload):
-
-   ```bash
-   docker compose up --build api
-   ```
+   There is no hot reload: after pulling backend changes, re-run with
+   `--build`.
 
 The api is at `http://localhost:8080` (`API_PORT` in `.env` changes the host
 port). API docs (Development only): Scalar UI
@@ -136,14 +136,14 @@ port). API docs (Development only): Scalar UI
 
 | Mode | Command | When to use |
 | ---- | ------- | ----------- |
-| Api only (default) | `docker compose -f compose.database.yml up -d database` once, then `docker compose up --build api` | Daily development: restart/rebuild the api without touching the database |
-| Api + database | `docker compose -f compose.yml -f compose.database.yml up --build` | Fresh checkout / CI: everything from zero, api waits for a healthy database |
+| Api only (default) | `docker compose -f docker/compose.database.yml up -d database` once, then `docker compose -f docker/compose.yml up --build api` | Daily development: restart/rebuild the api without touching the database |
+| Api + database | `docker compose -f docker/compose.yml -f docker/compose.database.yml up --build` | Fresh checkout / CI: everything from zero, api waits for a healthy database |
 
 Both modes share the `database-data` volume, so the data is the same either
 way. Stop everything with:
 
 ```bash
-docker compose -f compose.yml -f compose.database.yml down
+docker compose -f docker/compose.yml -f docker/compose.database.yml down
 ```
 
 (add `-v` only to wipe the database).

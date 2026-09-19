@@ -36,8 +36,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                     FirstName = "Administrator",
                     LastName = "Administrator",
                     Role = Roles.Admin,
-                    CreatedAt = new DateTime(2026, 9, 9).ToUniversalTime(),
-                    UpdatedAt = new DateTime(2026, 9, 9).ToUniversalTime(),
+                    CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc),
                     IsDeleted = false,
                 }
             );

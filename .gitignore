@@ -192,9 +192,10 @@ _pkginfo.txt
 # but keep track of directories ending in .cache
 !*.[Cc]ache/
 
-# Local environment (see .env.example)
+# Local environment (see docker/.env.example)
 .env
-!.env.example
+**/.env
+!docker/.env.example
 
 # Others
 ClientBin/

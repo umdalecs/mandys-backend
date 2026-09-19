@@ -8,3 +8,8 @@ publish/
 .git/
 *.user
 *.suo
+# Docker dev files live in docker/ but the build context is the repo root,
+# so exclude them from the build context to keep layer caching clean.
+docker/compose*.yml
+docker/.env*
+.env

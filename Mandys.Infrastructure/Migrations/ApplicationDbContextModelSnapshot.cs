@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Mandys.Migrations
+namespace Mandys.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -118,14 +118,14 @@ namespace Mandys.Migrations
                         new
                         {
                             Id = new Guid("d1a7b9c3-4e56-4f89-a123-b456c789d012"),
-                            CreatedAt = new DateTime(2026, 9, 9, 7, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "admin@mandys.com",
                             FirstName = "Administrator",
                             IsDeleted = false,
                             LastName = "Administrator",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$YWRtaW5pc3RyYXRvcnNhbHQ$n/2qmo8rW3KVIHy7g2Y0XA",
                             Role = "Admin",
-                            UpdatedAt = new DateTime(2026, 9, 9, 7, 0, 0, 0, DateTimeKind.Utc)
+                            UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
 

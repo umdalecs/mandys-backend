@@ -1,25 +1,9 @@
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS base
 WORKDIR /app
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS development
-WORKDIR /src
-
-RUN dotnet tool install -g dotnet-ef
-ENV PATH="$PATH:/root/.dotnet/tools"
-
-ENV ASPNETCORE_ENVIRONMENT=Development
-ENV ASPNETCORE_URLS=http://+:8080
-ENV DOTNET_USE_POLLING_FILE_WATCHER=true
-ENV DOTNET_WATCH_RESTART_ON_RUDE_EDIT=true
-
-EXPOSE 8080
-
-# Compose mounts the repo at /src so `dotnet watch` hot-reloads on edit.
-ENTRYPOINT ["dotnet", "watch", "run", "--project", "Mandys.Api/Mandys.Api.csproj", "--urls", "http://+:8080"]
-
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
 WORKDIR /src
 
 # Restore first for better layer caching
@@ -34,6 +18,10 @@ RUN dotnet restore Mandys.Api/Mandys.Api.csproj
 COPY . .
 RUN dotnet publish Mandys.Api/Mandys.Api.csproj -c Release -o /app/publish /p:UseAppHost=false
 
+# Single runtime image for both flows:
+# - dev (docker/compose*.yml) sets ASPNETCORE_ENVIRONMENT=Development, which
+#   enables Scalar/OpenAPI plus startup auto-migration;
+# - prod (GHCR image) runs with the default Production environment.
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .

@@ -1,10 +1,14 @@
 # Api + database mode: brings up a PostgreSQL service alongside the api and
 # points the api at it. The database persists in the `database-data` volume,
 # so it doubles as the shared development database: you can also start it
-# once on its own (`docker compose -f compose.database.yml up -d database`)
-# and then iterate on the api alone (`docker compose up --build api`).
+# once on its own (`docker compose -f docker/compose.database.yml up -d database`
+# from the repo root, or `docker compose -f compose.database.yml up -d database`
+# from inside `docker/`)
+# and then run the api alone (`docker compose -f docker/compose.yml up --build api`).
 #
-# Usage:
+# Usage (from repo root):
+#   docker compose -f docker/compose.yml -f docker/compose.database.yml up --build
+# Usage (from inside docker/):
 #   docker compose -f compose.yml -f compose.database.yml up --build
 
 services:
@@ -28,10 +32,11 @@ services:
   api:
     # Build is repeated from compose.yml so this file is also valid on its
     # own (e.g. `docker compose -f compose.database.yml up -d database`).
+    image: mandys-backend
     build:
-      context: .
-      dockerfile: Dockerfile
-      target: development
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: final
     environment:
       ConnectionStrings__DefaultConnection: "User ID=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres};Host=database;Port=5432;Database=${POSTGRES_DB:-mandys};"
     depends_on:

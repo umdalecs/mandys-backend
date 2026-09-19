@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Mandys.Migrations
+namespace Mandys.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260918231201_SeparateRefreshTokens")]
-    partial class SeparateRefreshTokens
+    [Migration("20260919224919_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,28 +25,16 @@ namespace Mandys.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Mandys.Infrastructure.Persistence.RefreshTokenRecord", b =>
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("expires_at");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
 
                     b.Property<DateTime?>("RevokedAt")
                         .HasColumnType("timestamp with time zone")
@@ -56,10 +44,6 @@ namespace Mandys.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("token_hash");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
@@ -137,18 +121,18 @@ namespace Mandys.Migrations
                         new
                         {
                             Id = new Guid("d1a7b9c3-4e56-4f89-a123-b456c789d012"),
-                            CreatedAt = new DateTime(2026, 9, 9, 7, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "admin@mandys.com",
                             FirstName = "Administrator",
                             IsDeleted = false,
                             LastName = "Administrator",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$YWRtaW5pc3RyYXRvcnNhbHQ$n/2qmo8rW3KVIHy7g2Y0XA",
                             Role = "Admin",
-                            UpdatedAt = new DateTime(2026, 9, 9, 7, 0, 0, 0, DateTimeKind.Utc)
+                            UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
 
-            modelBuilder.Entity("Mandys.Infrastructure.Persistence.RefreshTokenRecord", b =>
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.RefreshToken", b =>
                 {
                     b.HasOne("Mandys.Infrastructure.Persistence.UserRecord", null)
                         .WithMany()
