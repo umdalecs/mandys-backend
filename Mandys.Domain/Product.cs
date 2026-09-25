@@ -8,7 +8,7 @@ public class Product
 {
     public int Id { get; private set; }
     public string Description { get; private set; }
-    public string IsSupply { get; private set; }
+    public bool IsSupply { get; private set; }
     public string Price { get; private set; }
     public string MeasureUnit { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -17,7 +17,7 @@ public class Product
     public Product(
         int id,
         string description,
-        string isSupply,
+        bool isSupply,
         string price,
         string measureUnit,
         DateTime? createdAt = null,
@@ -25,17 +25,17 @@ public class Product
     {
         Id = id;
         Description = GuardNotEmpty(description, nameof(description));
-        IsSupply = GuardNotEmpty(isSupply, nameof(isSupply));
+        IsSupply = isSupply;
         Price = GuardNotEmpty(price, nameof(price));
         MeasureUnit = GuardNotEmpty(measureUnit, nameof(measureUnit));
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
     }
 
-    public void UpdateDetails(string description, string isSupply, string price, string measureUnit)
+    public void UpdateDetails(string description, bool isSupply, string price, string measureUnit)
     {
         Description = GuardNotEmpty(description, nameof(description));
-        IsSupply = GuardNotEmpty(isSupply, nameof(isSupply));
+        IsSupply = isSupply;
         Price = GuardNotEmpty(price, nameof(price));
         MeasureUnit = GuardNotEmpty(measureUnit, nameof(measureUnit));
     }

@@ -15,8 +15,7 @@ public class ProductRecord : Record
     public int Id { get; set; }
     [Required]
     public string Description { get; set; } = string.Empty;
-    [Required]
-    public string IsSupply { get; set; } = string.Empty;
+    public bool IsSupply { get; set; }
     [Required]
     public string Price { get; set; } = string.Empty;
     [Required]

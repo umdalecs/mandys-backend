@@ -5,21 +5,21 @@ namespace Mandys.DTOs;
 public record ProductResponse(
     int Id,
     string Description,
-    string IsSupply,
+    bool IsSupply,
     string Price,
     string MeasureUnit
 );
 
 public record CreateProductRequest(
     string Description,
-    string IsSupply,
+    bool IsSupply,
     string Price,
     string MeasureUnit
 );
 
 public record UpdateProductRequest(
     string? Description = null,
-    string? IsSupply = null,
+    bool? IsSupply = null,
     string? Price = null,
     string? MeasureUnit = null
 );
