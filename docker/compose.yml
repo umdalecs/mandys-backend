@@ -11,3 +11,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__DefaultConnection: "User ID=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres};Host=${DB_HOST:-database};Port=${DB_PORT:-5432};Database=${POSTGRES_DB:-mandys};"
+      # Optional overrides for a separately hosted frontend (empty = defaults).
+      Frontend__AllowedOrigins: ${FRONTEND_ORIGINS:-}
+      Auth__CookieSameSite: ${COOKIE_SAMESITE:-}
+      Auth__CookieSecure: ${COOKIE_SECURE:-}

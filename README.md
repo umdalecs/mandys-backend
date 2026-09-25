@@ -14,6 +14,9 @@ The api listens on port `8080` and needs two settings:
 | -------- | ------- | ------- |
 | `ConnectionStrings__DefaultConnection` | Postgres connection string | `User ID=postgres;Password=postgres;Host=<db-host>;Port=5432;Database=mandys;` |
 | `Jwt__Key` | Token signing key, 32+ bytes (**required**, no usable default) | `change-me-to-a-32-plus-byte-secret` |
+| `Frontend__AllowedOrigins` | Frontend origin(s), comma-separated (CORS + CSRF origin check; localhost defaults apply when empty) | `https://mandys.pages.dev` |
+| `Auth__CookieSameSite` | Cookie policy: `Lax` (same-site default), `None` (cross-site), `Strict` | `None` |
+| `Auth__CookieSecure` | `Auto` (Secure on HTTPS, default) or `Always` | `Always` |
 
 > The database must already be migrated (tables + seeded admin user).
 > Migrating requires the repo once — see [Run with the database](#run-with-the-database). All compose
@@ -83,6 +86,36 @@ curl -i -X POST http://localhost:8080/api/login \
 
 (The Scalar/OpenAPI docs UI is only enabled in Development, so it is not
 available on this image.)
+
+### Frontend on a separate server (Cloudflare Pages/Workers)
+
+The frontend is a static SPA, so it can live anywhere — point its
+`VITE_API_URL` build variable at the public api URL (e.g.
+`https://api.mandys.com/api`). On the api side, three things change versus
+same-site development:
+
+1. **CORS/CSRF origins**: set `Frontend__AllowedOrigins` to the public
+   frontend origin(s), e.g. `Frontend__AllowedOrigins=https://mandys.pages.dev`.
+   Both the CORS policy and the refresh/logout CSRF origin check enforce it.
+   (Any `localhost` origin stays allowed for development.)
+2. **Cookies**: browsers only send cookies cross-site with
+   `SameSite=None` + `Secure`, so set `Auth__CookieSameSite=None` and
+   `Auth__CookieSecure=Always`. This requires HTTPS in front of the api
+   (the app honors `X-Forwarded-Proto` from the proxy for `IsHttps`).
+3. **CSRF**: the `XSRF-TOKEN` double-submit cookie is not readable by JS
+   across sites, so refresh/logout additionally accept a browser-controlled
+   `Origin`/`Referer` matching the allow-list. No frontend change needed
+   (`withCredentials` is already set).
+
+```bash
+docker run -d --name mandys-api --network mandys -p 8080:8080 \
+  -e "ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Host=mandys-db;Port=5432;Database=mandys;" \
+  -e "Jwt__Key=change-me-to-a-32-plus-byte-secret" \
+  -e "Frontend__AllowedOrigins=https://mandys.pages.dev" \
+  -e "Auth__CookieSameSite=None" \
+  -e "Auth__CookieSecure=Always" \
+  ghcr.io/umdalecs/mandys-backend:latest
+```
 
 ## Development
 

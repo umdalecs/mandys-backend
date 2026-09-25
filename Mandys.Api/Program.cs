@@ -1,4 +1,5 @@
 using Carter;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -27,6 +28,18 @@ builder.ConfigureJwt();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.Configure<FrontendOptions>(builder.Configuration.GetSection(FrontendOptions.SectionName));
+builder.Services.Configure<AuthCookieSettings>(builder.Configuration.GetSection(AuthCookieSettings.SectionName));
+
+// Separate-server deployments sit behind TLS-terminating proxies, so honor
+// X-Forwarded-Proto/For: cookie Secure flags and redirects depend on IsHttps.
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownIPNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole(Roles.Admin));
@@ -37,6 +50,8 @@ const string FrontendCorsPolicy = "Frontend";
 builder.ConfigureCors(FrontendCorsPolicy);
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 app.UseCors(FrontendCorsPolicy);
 

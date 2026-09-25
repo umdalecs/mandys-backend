@@ -4,20 +4,19 @@ public static class CorsConfiguration
 {
     public static void ConfigureCors(this WebApplicationBuilder wab, string policyName)
     {
+        var allowedOrigins = wab.Configuration
+            .GetSection(FrontendOptions.SectionName)
+            .Get<FrontendOptions>()?.GetAllowedOrigins()
+            ?? FrontendOptions.DefaultOrigins;
+
         wab.Services.AddCors(options =>
         {
             options.AddPolicy(policyName, policy =>
             {
                 policy
-                    .WithOrigins(
-                        "http://localhost:5173",
-                        "http://127.0.0.1:5173")
+                    .WithOrigins(allowedOrigins)
                     .SetIsOriginAllowed(origin =>
-                    {
-                        if (string.IsNullOrEmpty(origin)) return false;
-                        var host = new Uri(origin).Host;
-                        return host is "localhost" or "127.0.0.1";
-                    })
+                        FrontendOptions.IsAllowedOrigin(origin, allowedOrigins))
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();

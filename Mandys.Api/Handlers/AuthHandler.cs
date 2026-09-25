@@ -30,6 +30,7 @@ public class AuthHandler : ICarterModule
         [FromBody] LoginRequest request,
         IAuthService authService,
         IOptions<JwtOptions> jwtOptions,
+        IOptions<AuthCookieSettings> cookieSettings,
         HttpContext context,
         bool useCookies = true)
     {
@@ -50,14 +51,14 @@ public class AuthHandler : ICarterModule
             context.Response.Cookies.Append(
                 "access_token",
                 tokens.AccessToken,
-                AuthCookieOptions(context, TimeSpan.FromMinutes(jwtOptions.Value.ExpireMinutes)));
+                AuthCookieOptions(context, cookieSettings.Value, TimeSpan.FromMinutes(jwtOptions.Value.ExpireMinutes)));
 
             context.Response.Cookies.Append(
                 "refresh_token",
                 tokens.RefreshToken,
-                AuthCookieOptions(context, TimeSpan.FromMinutes(jwtOptions.Value.RefreshTokenExpireMinutes)));
+                AuthCookieOptions(context, cookieSettings.Value, TimeSpan.FromMinutes(jwtOptions.Value.RefreshTokenExpireMinutes)));
 
-            AppendXsrfCookie(context, jwtOptions.Value);
+            AppendXsrfCookie(context, jwtOptions.Value, cookieSettings.Value);
 
             return Results.Ok();
         }
@@ -71,6 +72,8 @@ public class AuthHandler : ICarterModule
         [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] RefreshRequest? request,
         IAuthService authService,
         IOptions<JwtOptions> jwtOptions,
+        IOptions<AuthCookieSettings> cookieSettings,
+        IOptions<FrontendOptions> frontendOptions,
         HttpContext context,
         bool useCookies = true)
     {
@@ -80,7 +83,7 @@ public class AuthHandler : ICarterModule
                 ? context.Request.Cookies["refresh_token"]
                 : request?.RefreshToken;
 
-            if (useCookies && !HasValidXsrfToken(context))
+            if (useCookies && !HasValidCsrfToken(context, frontendOptions.Value))
             {
                 return Results.BadRequest(new { message = "Invalid CSRF token." });
             }
@@ -100,14 +103,14 @@ public class AuthHandler : ICarterModule
             context.Response.Cookies.Append(
                 "access_token",
                 tokens.AccessToken,
-                AuthCookieOptions(context, TimeSpan.FromMinutes(jwtOptions.Value.ExpireMinutes)));
+                AuthCookieOptions(context, cookieSettings.Value, TimeSpan.FromMinutes(jwtOptions.Value.ExpireMinutes)));
 
             context.Response.Cookies.Append(
                 "refresh_token",
                 tokens.RefreshToken,
-                AuthCookieOptions(context, TimeSpan.FromMinutes(jwtOptions.Value.RefreshTokenExpireMinutes)));
+                AuthCookieOptions(context, cookieSettings.Value, TimeSpan.FromMinutes(jwtOptions.Value.RefreshTokenExpireMinutes)));
 
-            AppendXsrfCookie(context, jwtOptions.Value);
+            AppendXsrfCookie(context, jwtOptions.Value, cookieSettings.Value);
 
             return Results.Ok();
         }
@@ -120,6 +123,8 @@ public class AuthHandler : ICarterModule
     private static async Task<IResult> Logout(
         [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] RefreshRequest? request,
         IAuthService authService,
+        IOptions<AuthCookieSettings> cookieSettings,
+        IOptions<FrontendOptions> frontendOptions,
         HttpContext context,
         bool useCookies = true)
     {
@@ -129,7 +134,7 @@ public class AuthHandler : ICarterModule
                 ? context.Request.Cookies["refresh_token"]
                 : request?.RefreshToken;
 
-            if (useCookies && !HasValidXsrfToken(context))
+            if (useCookies && !HasValidCsrfToken(context, frontendOptions.Value))
             {
                 return Results.BadRequest(new { message = "Invalid CSRF token." });
             }
@@ -138,9 +143,7 @@ public class AuthHandler : ICarterModule
 
             if (useCookies)
             {
-                context.Response.Cookies.Delete("access_token");
-                context.Response.Cookies.Delete("refresh_token");
-                context.Response.Cookies.Delete(XsrfCookieName);
+                DeleteAuthCookies(context, cookieSettings.Value);
             }
 
             return Results.NoContent();
@@ -156,22 +159,55 @@ public class AuthHandler : ICarterModule
             ? Results.BadRequest(new { message = ex.Message })
             : Results.Unauthorized();
 
-    private static CookieOptions AuthCookieOptions(HttpContext context, TimeSpan maxAge) =>
+    private static CookieOptions AuthCookieOptions(HttpContext context, AuthCookieSettings settings, TimeSpan maxAge) =>
         new()
         {
             HttpOnly = true,
-            // Secure only over HTTPS: browsers treat localhost as a secure
-            // context, but plain-HTTP LAN testing would break otherwise.
-            // SameSite stays Lax: correct for same-site frontends (different
-            // localhost ports still count as same-site); a cross-domain
-            // production SPA needs None + Secure instead.
-            Secure = context.Request.IsHttps,
-            SameSite = SameSiteMode.Lax,
+            Secure = IsSecureCookie(context, settings),
+            SameSite = ParseSameSite(settings.CookieSameSite),
             Path = "/",
             MaxAge = maxAge,
         };
 
-    private static void AppendXsrfCookie(HttpContext context, JwtOptions jwtOptions) =>
+    private static void DeleteAuthCookies(HttpContext context, AuthCookieSettings settings)
+    {
+        // Deletion only takes effect when Path/SameSite/Secure match the
+        // cookies that were set; the defaults would leave cross-site
+        // (None + Secure) cookies behind.
+        var sameSite = ParseSameSite(settings.CookieSameSite);
+        var secure = IsSecureCookie(context, settings);
+        context.Response.Cookies.Delete(
+            "access_token",
+            new CookieOptions { HttpOnly = true, Secure = secure, SameSite = sameSite, Path = "/" });
+        context.Response.Cookies.Delete(
+            "refresh_token",
+            new CookieOptions { HttpOnly = true, Secure = secure, SameSite = sameSite, Path = "/" });
+        context.Response.Cookies.Delete(
+            XsrfCookieName,
+            new CookieOptions { Secure = secure, SameSite = sameSite, Path = "/" });
+    }
+
+    private static SameSiteMode ParseSameSite(string? value) =>
+        value?.Trim().ToLowerInvariant() switch
+        {
+            "none" => SameSiteMode.None,
+            "strict" => SameSiteMode.Strict,
+            _ => SameSiteMode.Lax,
+        };
+
+    private static bool IsSecureCookie(HttpContext context, AuthCookieSettings settings)
+    {
+        // Browsers reject SameSite=None without Secure, so it is forced.
+        // Otherwise Secure follows HTTPS (auto) unless explicitly Always
+        // (e.g. behind a proxy where IsHttps is fixed via ForwardedHeaders).
+        if (ParseSameSite(settings.CookieSameSite) == SameSiteMode.None)
+            return true;
+        if (string.Equals(settings.CookieSecure, "Always", StringComparison.OrdinalIgnoreCase))
+            return true;
+        return context.Request.IsHttps;
+    }
+
+    private static void AppendXsrfCookie(HttpContext context, JwtOptions jwtOptions, AuthCookieSettings settings) =>
         context.Response.Cookies.Append(
             // Base64URL: cookie-safe alphabet, so the value needs no
             // URL-encoding and the JS-echoed header matches byte-for-byte.
@@ -180,11 +216,34 @@ public class AuthHandler : ICarterModule
             new CookieOptions
             {
                 HttpOnly = false, // JS must read it to echo the header
-                Secure = context.Request.IsHttps,
-                SameSite = SameSiteMode.Lax,
+                Secure = IsSecureCookie(context, settings),
+                SameSite = ParseSameSite(settings.CookieSameSite),
                 Path = "/",
                 MaxAge = TimeSpan.FromMinutes(jwtOptions.RefreshTokenExpireMinutes),
             });
+
+    private static bool HasValidCsrfToken(HttpContext context, FrontendOptions frontend)
+    {
+        // Same-site SPAs echo the double-submit cookie (axios does this
+        // automatically). A cross-site SPA cannot read the backend's cookies
+        // from JS, so fall back to the browser-controlled Origin/Referer,
+        // which an attacker's site cannot spoof while carrying our cookies.
+        if (HasValidXsrfToken(context))
+            return true;
+
+        var allowedOrigins = frontend.GetAllowedOrigins();
+        var origin = context.Request.Headers.Origin.ToString();
+        if (!string.IsNullOrEmpty(origin))
+            return FrontendOptions.IsAllowedOrigin(origin, allowedOrigins);
+
+        var referer = context.Request.Headers.Referer.ToString();
+        if (string.IsNullOrEmpty(referer)
+            || !Uri.TryCreate(referer, UriKind.Absolute, out var refererUri))
+            return false;
+
+        return FrontendOptions.IsAllowedOrigin(
+            $"{refererUri.Scheme}://{refererUri.Authority}", allowedOrigins);
+    }
 
     private static bool HasValidXsrfToken(HttpContext context)
     {
