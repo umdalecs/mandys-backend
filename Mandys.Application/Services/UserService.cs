@@ -76,17 +76,27 @@ public class UserService(
             throw ServiceException.Conflict($"Email '{normalizedEmail}' is already registered.");
         }
 
-        var user = new User(
+        if (request.BranchId is <= 0)
+        {
+            throw ServiceException.BadRequest("BranchId must be a positive id.");
+        }
+
+        if (!request.BranchId.HasValue && Roles.RequiresBranch(role))
+        {
+            throw ServiceException.BadRequest(
+                $"Role '{role}' requires a branch. Only administrators and customers may omit it.");
+        }
+
+        var created = await users.AddAsync(new User(
             0,
             request.FirstName.Trim(),
             request.LastName.Trim(),
             normalizedEmail,
             passwordHasher.Hash(request.Password),
-            role);
+            role,
+            request.BranchId));
 
-        await users.AddAsync(user);
-
-        return user.ToResponse();
+        return created.ToResponse();
     }
 
     public async Task<UserResponse> UpdateUserAsync(int id, UpdateUserRequest request)
@@ -115,15 +125,44 @@ public class UserService(
                 string.IsNullOrWhiteSpace(request.LastName) ? user.LastName : request.LastName.Trim());
         }
 
+        string? newRole = null;
         if (!string.IsNullOrWhiteSpace(request.Role))
         {
-            var normalizedRole = Roles.Normalize(request.Role.Trim());
-            if (!Roles.IsValid(normalizedRole))
+            newRole = Roles.Normalize(request.Role.Trim());
+            if (!Roles.IsValid(newRole))
             {
                 throw ServiceException.BadRequest(
                     $"Invalid role '{request.Role}'. Allowed roles: {string.Join(", ", Roles.All)}.");
             }
-            user.SetRole(normalizedRole);
+        }
+
+        if (request.BranchId is <= 0)
+        {
+            throw ServiceException.BadRequest("BranchId must be a positive id.");
+        }
+
+        // Validate branch against the role taking effect, before mutating.
+        var effectiveRole = newRole ?? user.Role;
+        var effectiveBranch = request.ClearBranch ? null : (request.BranchId ?? user.BranchId);
+        if (Roles.RequiresBranch(effectiveRole) && effectiveBranch is null)
+        {
+            throw ServiceException.BadRequest(
+                $"Role '{effectiveRole}' requires a branch. Only administrators and customers may omit it.");
+        }
+
+        // Branch first so a simultaneous role upgrade sees the new branch.
+        if (request.ClearBranch)
+        {
+            user.ClearBranch();
+        }
+        else if (request.BranchId.HasValue)
+        {
+            user.SetBranch(request.BranchId);
+        }
+
+        if (newRole is not null)
+        {
+            user.SetRole(newRole);
         }
 
         if (!string.IsNullOrWhiteSpace(request.Password))

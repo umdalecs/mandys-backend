@@ -12,6 +12,12 @@ public class User
     public string Email { get; private set; }
     public string PasswordHash { get; private set; }
     public string Role { get; private set; }
+    /// <summary>
+    /// Branch the user belongs to (many users to one branch). Optional for
+    /// administrators and customers, who can use any branch; required for
+    /// every other role.
+    /// </summary>
+    public int? BranchId { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
 
@@ -22,6 +28,7 @@ public class User
         string email,
         string passwordHash,
         string role,
+        int? branchId = null,
         DateTime? createdAt = null,
         DateTime? updatedAt = null)
     {
@@ -31,6 +38,7 @@ public class User
         Email = GuardEmail(email);
         PasswordHash = GuardNotEmpty(passwordHash, nameof(passwordHash));
         Role = GuardRole(role);
+        BranchId = GuardBranch(Role, branchId);
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
     }
@@ -48,8 +56,23 @@ public class User
 
     public void SetRole(string role)
     {
-        Role = GuardRole(role);
+        var normalized = GuardRole(role);
+        if (Roles.RequiresBranch(normalized) && BranchId is null)
+        {
+            throw new ArgumentException(
+                $"Role '{normalized}' requires a branch. Assign one before changing the role.",
+                nameof(role));
+        }
+
+        Role = normalized;
     }
+
+    public void SetBranch(int? branchId)
+    {
+        BranchId = GuardBranch(Role, branchId);
+    }
+
+    public void ClearBranch() => SetBranch(null);
 
     public void SetPasswordHash(string passwordHash)
     {
@@ -77,5 +100,22 @@ public class User
         }
 
         return Roles.Normalize(role.Trim());
+    }
+
+    private static int? GuardBranch(string role, int? branchId)
+    {
+        if (branchId.HasValue && branchId.Value <= 0)
+        {
+            throw new ArgumentException("BranchId must be a positive id.", nameof(branchId));
+        }
+
+        if (!branchId.HasValue && Roles.RequiresBranch(role))
+        {
+            throw new ArgumentException(
+                $"Role '{role}' requires a branch.",
+                nameof(branchId));
+        }
+
+        return branchId;
     }
 }

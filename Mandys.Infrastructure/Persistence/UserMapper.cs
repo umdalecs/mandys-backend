@@ -15,6 +15,7 @@ internal static class UserMapper
             record.Email,
             record.PasswordHash,
             record.Role,
+            record.BranchId,
             record.CreatedAt,
             record.UpdatedAt);
 
@@ -26,6 +27,6 @@ internal static class UserMapper
             Email = user.Email,
             PasswordHash = user.PasswordHash,
             Role = user.Role,
-
+            BranchId = user.BranchId,
         };
 }

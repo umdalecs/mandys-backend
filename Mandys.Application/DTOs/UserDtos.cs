@@ -7,7 +7,8 @@ public record UserResponse(
     string FirstName,
     string LastName,
     string Email,
-    string Role
+    string Role,
+    int? BranchId
 );
 
 public record CreateUserRequest(
@@ -16,7 +17,8 @@ public record CreateUserRequest(
     string Email,
     string UserName,
     string Password,
-    string? Role = null
+    string? Role = null,
+    int? BranchId = null
 );
 
 public record UpdateUserRequest(
@@ -25,7 +27,9 @@ public record UpdateUserRequest(
     string? Email = null,
     string? UserName = null,
     string? Password = null,
-    string? Role = null
+    string? Role = null,
+    int? BranchId = null,
+    bool ClearBranch = false
 );
 
 public record PagedUsersResponse(
@@ -44,6 +48,7 @@ public static class UserMapper
             user.FirstName,
             user.LastName,
             user.Email,
-            user.Role
+            user.Role,
+            user.BranchId
         );
 }

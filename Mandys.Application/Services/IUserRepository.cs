@@ -16,7 +16,8 @@ public interface IUserRepository
     Task<(int TotalCount, IReadOnlyList<User> Items)> SearchAsync(
         string? search, string? role, int page, int pageSize);
 
-    Task AddAsync(User user);
+    /// <returns>The saved user, with its database-generated id.</returns>
+    Task<User> AddAsync(User user);
 
     Task UpdateAsync(User user);
 

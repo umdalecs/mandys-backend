@@ -59,15 +59,31 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
         return (totalCount, items.Select(r => r.ToDomain()).ToList());
     }
 
-    public async Task AddAsync(User user)
+    public async Task<User> AddAsync(User user)
     {
-        db.Users.Add(user.ToRecord());
+        var record = user.ToRecord();
+        db.Users.Add(record);
         await db.SaveChangesAsync();
+        return record.ToDomain();
     }
 
     public async Task UpdateAsync(User user)
     {
-        db.Users.Update(user.ToRecord());
+        // Update the tracked record so the identity key and audit columns
+        // are preserved.
+        var record = await db.Users.FirstOrDefaultAsync(u => u.Id == user.ID);
+        if (record is null)
+        {
+            throw ServiceException.NotFound($"User with ID '{user.ID}' not found.");
+        }
+
+        record.FirstName = user.FirstName;
+        record.LastName = user.LastName;
+        record.Email = user.Email;
+        record.PasswordHash = user.PasswordHash;
+        record.Role = user.Role;
+        record.BranchId = user.BranchId;
+
         await db.SaveChangesAsync();
     }
 
