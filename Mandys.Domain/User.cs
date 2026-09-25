@@ -4,8 +4,9 @@ namespace Mandys.Domain;
 /// Domain user. Guards its own invariants; persistence mapping lives in
 /// Infrastructure.
 /// </summary>
-public class User : Entity
+public class User
 {
+    public int ID { get; private set; }
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public string Email { get; private set; }
@@ -15,7 +16,7 @@ public class User : Entity
     public DateTime UpdatedAt { get; private set; }
 
     public User(
-        Guid id,
+        int id,
         string firstName,
         string lastName,
         string email,
@@ -23,8 +24,8 @@ public class User : Entity
         string role,
         DateTime? createdAt = null,
         DateTime? updatedAt = null)
-        : base(id)
     {
+        ID = id;
         FirstName = GuardName(firstName, nameof(firstName));
         LastName = GuardName(lastName, nameof(lastName));
         Email = GuardEmail(email);

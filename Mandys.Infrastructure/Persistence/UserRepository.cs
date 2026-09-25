@@ -6,7 +6,7 @@ namespace Mandys.Infrastructure.Persistence;
 
 public class UserRepository(ApplicationDbContext db) : IUserRepository
 {
-    public async Task<User?> GetByIdAsync(Guid id)
+    public async Task<User?> GetByIdAsync(int id)
     {
         var record = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
         return record?.ToDomain();
@@ -20,11 +20,11 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
         return record?.ToDomain();
     }
 
-    public Task<bool> ExistsByEmailAsync(string email, Guid? excludingId = null)
+    public Task<bool> ExistsByEmailAsync(string email, int? excludingId = null)
     {
         var normalized = email.Trim().ToLowerInvariant();
         return excludingId.HasValue
-            ? db.Users.AnyAsync(u => u.Id != excludingId.Value && u.Email.ToLower() == normalized)
+            ? db.Users.AnyAsync(u => u.Id != excludingId && u.Email.ToLower() == normalized)
             : db.Users.AnyAsync(u => u.Email.ToLower() == normalized);
     }
 
@@ -71,7 +71,7 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
         await db.SaveChangesAsync();
     }
 
-    public async Task<bool> RemoveAsync(Guid id)
+    public async Task<bool> RemoveAsync(int id)
     {
         var record = await db.Users.FindAsync(id);
         if (record is null)

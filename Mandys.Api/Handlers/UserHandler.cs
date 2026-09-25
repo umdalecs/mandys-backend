@@ -21,7 +21,7 @@ public class UserHandler : ICarterModule
 
         // User management endpoints - restricted to Admin users only
         var adminRoutes = userRoutes.MapGroup("")
-            .RequireAuthorization(policy => policy.RequireRole(Roles.Admin));
+            .RequireAuthorization(policy => policy.RequireRole(Roles.Administrator));
 
         adminRoutes.MapGet("", GetUsers);
 
@@ -59,7 +59,7 @@ public class UserHandler : ICarterModule
     }
 
     private static async Task<IResult> GetUserById(
-        Guid id,
+        int id,
         IUserService userService)
     {
         try
@@ -88,7 +88,7 @@ public class UserHandler : ICarterModule
     }
 
     private static async Task<IResult> UpdateUser(
-        Guid id,
+        int id,
         [FromBody] UpdateUserRequest request,
         IUserService userService)
     {
@@ -103,7 +103,7 @@ public class UserHandler : ICarterModule
     }
 
     private static async Task<IResult> DeleteUser(
-        Guid id,
+        int id,
         ClaimsPrincipal claimsPrincipal,
         IUserService userService)
     {

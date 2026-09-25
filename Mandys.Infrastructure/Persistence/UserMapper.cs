@@ -21,13 +21,11 @@ internal static class UserMapper
     internal static UserRecord ToRecord(this User user) =>
         new()
         {
-            Id = user.Id,
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email,
             PasswordHash = user.PasswordHash,
             Role = user.Role,
-            CreatedAt = user.CreatedAt,
-            UpdatedAt = user.UpdatedAt,
+
         };
 }

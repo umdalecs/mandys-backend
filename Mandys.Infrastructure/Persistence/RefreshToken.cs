@@ -15,7 +15,7 @@ public class RefreshToken
     [Key]
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    public Guid UserId { get; set; }
+    public int UserId { get; set; }
 
     [Required]
     public string TokenHash { get; set; } = string.Empty;

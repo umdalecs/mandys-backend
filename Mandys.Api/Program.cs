@@ -42,7 +42,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole(Roles.Admin));
+    options.AddPolicy("Administrator", policy => policy.RequireRole(Roles.Administrator));
 });
 
 const string FrontendCorsPolicy = "Frontend";

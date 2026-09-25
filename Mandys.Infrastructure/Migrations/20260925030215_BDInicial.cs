@@ -1,12 +1,13 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Mandys.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class BDInicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,12 +16,13 @@ namespace Mandys.Infrastructure.Migrations
                 name: "users",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     first_name = table.Column<string>(type: "text", nullable: false),
                     last_name = table.Column<string>(type: "text", nullable: false),
                     email = table.Column<string>(type: "text", nullable: false),
                     password = table.Column<string>(type: "text", nullable: false),
-                    role = table.Column<string>(type: "text", nullable: false, defaultValue: "User"),
+                    role = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -36,7 +38,7 @@ namespace Mandys.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<int>(type: "integer", nullable: false),
                     token_hash = table.Column<string>(type: "text", nullable: false),
                     expires_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     revoked_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -55,7 +57,7 @@ namespace Mandys.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "users",
                 columns: new[] { "id", "created_at", "deleted_at", "email", "first_name", "is_deleted", "last_name", "password", "role", "updated_at" },
-                values: new object[] { new Guid("d1a7b9c3-4e56-4f89-a123-b456c789d012"), new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "admin@mandys.com", "Administrator", false, "Administrator", "$argon2id$v=19$m=16,t=2,p=1$YWRtaW5pc3RyYXRvcnNhbHQ$n/2qmo8rW3KVIHy7g2Y0XA", "Admin", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) });
+                values: new object[] { 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "admin@mandys.com", "Administrator", false, "Administrator", "$argon2id$v=19$m=16,t=2,p=1$YWRtaW5pc3RyYXRvcnNhbHQ$n/2qmo8rW3KVIHy7g2Y0XA", "administrador", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) });
 
             migrationBuilder.CreateIndex(
                 name: "ix_refresh_tokens_token_hash",

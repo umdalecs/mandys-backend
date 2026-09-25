@@ -11,7 +11,8 @@ namespace Mandys.Infrastructure.Persistence;
 public class UserRecord : Record
 {
     [Key]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
     [Required]
     public string FirstName { get; set; } = string.Empty;
     [Required]
@@ -22,5 +23,5 @@ public class UserRecord : Record
     [Column("password")]
     public string PasswordHash { get; set; } = string.Empty;
     [Required]
-    public string Role { get; set; } = Roles.User;
+    public string Role { get; set; } = Roles.Customer;
 }

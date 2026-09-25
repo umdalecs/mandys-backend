@@ -8,9 +8,9 @@ public interface IRefreshTokenRepository
 {
     Task<RefreshTokenInfo?> FindByTokenAsync(string rawToken);
 
-    Task IssueAsync(Guid userId, string rawToken, DateTime expiresAt);
+    Task IssueAsync(int userId, string rawToken, DateTime expiresAt);
 
     Task RevokeAsync(Guid id);
 
-    Task RevokeAllAsync(Guid userId);
+    Task RevokeAllAsync(int userId);
 }

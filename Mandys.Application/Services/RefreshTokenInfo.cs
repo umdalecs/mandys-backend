@@ -6,6 +6,6 @@ namespace Mandys.Services;
 /// </summary>
 public sealed record RefreshTokenInfo(
     Guid Id,
-    Guid UserId,
+    int UserId,
     DateTime ExpiresAt,
     DateTime? RevokedAt);

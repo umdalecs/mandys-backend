@@ -3,7 +3,7 @@ using Mandys.Domain;
 namespace Mandys.DTOs;
 
 public record UserResponse(
-    Guid Id,
+    int Id,
     string FirstName,
     string LastName,
     string Email,
@@ -40,7 +40,7 @@ public static class UserMapper
 {
     public static UserResponse ToResponse(this User user) =>
         new(
-            user.Id,
+            user.ID,
             user.FirstName,
             user.LastName,
             user.Email,

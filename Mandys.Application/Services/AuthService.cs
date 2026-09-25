@@ -34,7 +34,7 @@ public class AuthService(
         var refreshToken = tokenService.GenerateRefreshToken();
 
         await refreshTokens.IssueAsync(
-            user.Id, refreshToken, DateTime.UtcNow.AddMinutes(_jwt.RefreshTokenExpireMinutes));
+            user.ID, refreshToken, DateTime.UtcNow.AddMinutes(_jwt.RefreshTokenExpireMinutes));
 
         return new AuthTokenSet(accessToken, refreshToken, _jwt.ExpireMinutes * 60);
     }
@@ -76,7 +76,7 @@ public class AuthService(
 
         await refreshTokens.RevokeAsync(stored.Id);
         await refreshTokens.IssueAsync(
-            user.Id, newRefreshToken, DateTime.UtcNow.AddMinutes(_jwt.RefreshTokenExpireMinutes));
+            user.ID, newRefreshToken, DateTime.UtcNow.AddMinutes(_jwt.RefreshTokenExpireMinutes));
 
         return new AuthTokenSet(newAccessToken, newRefreshToken, _jwt.ExpireMinutes * 60);
     }

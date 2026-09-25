@@ -4,11 +4,11 @@ namespace Mandys.Common;
 
 public static class ClaimsPrincipalExtensions
 {
-    public static Guid? GetUserId(this ClaimsPrincipal principal)
+    public static int? GetUserId(this ClaimsPrincipal principal)
     {
         var idStr = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value
                     ?? principal.FindFirst("sub")?.Value;
-        return Guid.TryParse(idStr, out var id) ? id : null;
+        return int.TryParse(idStr, out var id) ? id : null;
     }
 
     public static string? GetUserRole(this ClaimsPrincipal principal)

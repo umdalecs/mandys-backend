@@ -42,8 +42,8 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("token_hash");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
@@ -61,10 +61,12 @@ namespace Mandys.Infrastructure.Migrations
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.UserRecord", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -100,9 +102,7 @@ namespace Mandys.Infrastructure.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("text")
-                        .HasDefaultValue("User")
                         .HasColumnName("role");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -117,14 +117,14 @@ namespace Mandys.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d1a7b9c3-4e56-4f89-a123-b456c789d012"),
+                            Id = 1,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "admin@mandys.com",
                             FirstName = "Administrator",
                             IsDeleted = false,
                             LastName = "Administrator",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$YWRtaW5pc3RyYXRvcnNhbHQ$n/2qmo8rW3KVIHy7g2Y0XA",
-                            Role = "Admin",
+                            Role = "administrador",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });

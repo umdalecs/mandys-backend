@@ -15,7 +15,7 @@ public class RefreshTokenRepository(ApplicationDbContext db) : IRefreshTokenRepo
         return record is null ? null : ToInfo(record);
     }
 
-    public async Task IssueAsync(Guid userId, string rawToken, DateTime expiresAt)
+    public async Task IssueAsync(int userId, string rawToken, DateTime expiresAt)
     {
         db.RefreshTokens.Add(new RefreshToken
         {
@@ -39,7 +39,7 @@ public class RefreshTokenRepository(ApplicationDbContext db) : IRefreshTokenRepo
         await db.SaveChangesAsync();
     }
 
-    public async Task RevokeAllAsync(Guid userId)
+    public async Task RevokeAllAsync(int userId)
     {
         var records = await db.RefreshTokens
             .Where(r => r.UserId == userId && r.RevokedAt == null)

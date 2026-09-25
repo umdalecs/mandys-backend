@@ -8,7 +8,7 @@ public class UserService(
     IRefreshTokenRepository refreshTokens,
     IPasswordHasher passwordHasher) : IUserService
 {
-    public async Task<UserResponse> GetCurrentUserAsync(Guid? currentUserId)
+    public async Task<UserResponse> GetCurrentUserAsync(int? currentUserId)
     {
         if (currentUserId is null)
         {
@@ -23,7 +23,6 @@ public class UserService(
 
         return user.ToResponse();
     }
-
     public async Task<PagedUsersResponse> GetUsersAsync(int page, int pageSize, string? search, string? role)
     {
         if (page < 1) page = 1;
@@ -37,7 +36,7 @@ public class UserService(
             items.Select(u => u.ToResponse()).ToList());
     }
 
-    public async Task<UserResponse> GetUserByIdAsync(Guid id)
+    public async Task<UserResponse> GetUserByIdAsync(int id)
     {
         var user = await users.GetByIdAsync(id);
         if (user is null)
@@ -61,7 +60,7 @@ public class UserService(
         }
 
         var role = string.IsNullOrWhiteSpace(request.Role)
-            ? Roles.User
+            ? Roles.Customer
             : Roles.Normalize(request.Role.Trim());
 
         if (!Roles.IsValid(role))
@@ -78,7 +77,7 @@ public class UserService(
         }
 
         var user = new User(
-            Guid.NewGuid(),
+            0,
             request.FirstName.Trim(),
             request.LastName.Trim(),
             normalizedEmail,
@@ -90,7 +89,7 @@ public class UserService(
         return user.ToResponse();
     }
 
-    public async Task<UserResponse> UpdateUserAsync(Guid id, UpdateUserRequest request)
+    public async Task<UserResponse> UpdateUserAsync(int id, UpdateUserRequest request)
     {
         var user = await users.GetByIdAsync(id);
         if (user is null)
@@ -137,7 +136,7 @@ public class UserService(
         return user.ToResponse();
     }
 
-    public async Task DeleteUserAsync(Guid id, Guid? currentUserId)
+    public async Task DeleteUserAsync(int id, int? currentUserId)
     {
         if (currentUserId == id)
         {
