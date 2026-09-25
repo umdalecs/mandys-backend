@@ -197,6 +197,9 @@ _pkginfo.txt
 **/.env
 !docker/.env.example
 
+# Local working docs (untracked by design)
+docs/
+
 # Others
 ClientBin/
 ~$*

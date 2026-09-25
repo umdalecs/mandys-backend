@@ -3,6 +3,7 @@ using System;
 using Mandys;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Mandys.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260925210548_AddBranchUserRelation")]
+    partial class AddBranchUserRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,57 +69,6 @@ namespace Mandys.Infrastructure.Migrations
                         .HasName("pk_branches");
 
                     b.ToTable("branches", (string)null);
-                });
-
-            modelBuilder.Entity("Mandys.Infrastructure.Persistence.ProductRecord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<string>("IsSupply")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("is_supply");
-
-                    b.Property<string>("MeasureUnit")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("measure_unit");
-
-                    b.Property<string>("Price")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("price");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id")
-                        .HasName("pk_products");
-
-                    b.ToTable("products", (string)null);
                 });
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.RefreshToken", b =>

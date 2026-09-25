@@ -24,4 +24,16 @@ public class UserRecord : Record
     public string PasswordHash { get; set; } = string.Empty;
     [Required]
     public string Role { get; set; } = Roles.Customer;
+
+    /// <summary>
+    /// FK to the branch this user belongs to (many users to one branch).
+    /// Nullable so pre-existing / central users without a branch keep working.
+    /// </summary>
+    public int? BranchId { get; set; }
+
+    /// <summary>
+    /// Branch this user belongs to. Inverse of <see cref="BranchRecord.Users"/>.
+    /// </summary>
+    [ForeignKey(nameof(BranchId))]
+    public BranchRecord? Branch { get; set; }
 }

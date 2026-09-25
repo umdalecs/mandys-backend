@@ -8,6 +8,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     : DbContext(options)
 {
     public DbSet<UserRecord> Users { get; set; }
+    public DbSet<BranchRecord> Branches { get; set; }
+    public DbSet<ProductRecord> Products { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -24,6 +26,16 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         modelBuilder.Entity<UserRecord>(entity =>
         {
+            // Many users belong to one branch. Optional so existing/central
+            // users without a branch keep working; deleting a branch keeps
+            // the users and clears their BranchId.
+            entity.HasOne(u => u.Branch)
+                .WithMany(b => b.Users)
+                .HasForeignKey(u => u.BranchId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasIndex(u => u.BranchId);
+
             // Note: Make sure to only use static data here
             entity.HasData(
                 new
