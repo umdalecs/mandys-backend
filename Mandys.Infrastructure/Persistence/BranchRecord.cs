@@ -16,11 +16,14 @@ public class BranchRecord : Record
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     [Required]
+    
+    [MaxLength(50)]
     public string Name { get; set; } = string.Empty;
     [Required]
+    [MaxLength(50)]
     public string Address { get; set; } = string.Empty;
-    [Required]
-    public string WarehouseOnly { get; set; } = string.Empty;
+
+    [Required] public bool WarehouseOnly { get; set; } = false;
 
     /// <summary>
     /// Users assigned to this branch (inverse of <see cref="UserRecord.Branch"/>).

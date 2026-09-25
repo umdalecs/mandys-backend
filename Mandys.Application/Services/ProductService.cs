@@ -33,17 +33,21 @@ public class ProductService(IProductRepository products) : IProductService
     {
         // TODO: Change for fluent validation
         if (string.IsNullOrWhiteSpace(request.Description) ||
-            string.IsNullOrWhiteSpace(request.Price) ||
             string.IsNullOrWhiteSpace(request.MeasureUnit))
         {
             throw ServiceException.BadRequest("Description, price, and measure unit are required.");
+        }
+
+        if (request.Price < 0)
+        {
+            throw ServiceException.BadRequest("Price must be non-negative.");
         }
 
         var created = await products.AddAsync(new Product(
             0,
             request.Description.Trim(),
             request.IsSupply,
-            request.Price.Trim(),
+            request.Price,
             request.MeasureUnit.Trim()));
 
         return created.ToResponse();
@@ -58,10 +62,15 @@ public class ProductService(IProductRepository products) : IProductService
         }
 
         // TODO: Use fluent validation here
+        if (request.Price.HasValue && request.Price.Value < 0)
+        {
+            throw ServiceException.BadRequest("Price must be non-negative.");
+        }
+
         product.UpdateDetails(
             string.IsNullOrWhiteSpace(request.Description) ? product.Description : request.Description.Trim(),
             request.IsSupply ?? product.IsSupply,
-            string.IsNullOrWhiteSpace(request.Price) ? product.Price : request.Price.Trim(),
+            request.Price ?? product.Price,
             string.IsNullOrWhiteSpace(request.MeasureUnit) ? product.MeasureUnit : request.MeasureUnit.Trim());
 
         await products.UpdateAsync(product);

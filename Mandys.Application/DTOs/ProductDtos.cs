@@ -6,21 +6,21 @@ public record ProductResponse(
     int Id,
     string Description,
     bool IsSupply,
-    string Price,
+    decimal Price,
     string MeasureUnit
 );
 
 public record CreateProductRequest(
     string Description,
     bool IsSupply,
-    string Price,
+    decimal Price,
     string MeasureUnit
 );
 
 public record UpdateProductRequest(
     string? Description = null,
     bool? IsSupply = null,
-    string? Price = null,
+    decimal? Price = null,
     string? MeasureUnit = null
 );
 
