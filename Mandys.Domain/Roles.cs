@@ -4,7 +4,7 @@ public static class Roles
 {
     public const string Administrator = "administrador";
     public const string OpChief = "gerenteOperaciones";
-    public const string CentralWarehouseChief = "encargadoAlmCentral";
+    public const string CentralWarehouseChief = "encargadoAlmacenCentral";
     public const string WarehouseChief = "encargadoAlmacen";
     public const string Cashier = "cajero";
     public const string Customer = "cliente";

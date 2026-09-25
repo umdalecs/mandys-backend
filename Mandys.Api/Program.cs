@@ -45,6 +45,13 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Administrator", policy => policy.RequireRole(Roles.Administrator));
+    options.AddPolicy("OpChief", policy => policy.RequireRole(Roles.OpChief));
+    options.AddPolicy("CentralWarehouseChief", policy => policy.RequireRole(Roles.CentralWarehouseChief));
+    options.AddPolicy("WarehouseChief", policy => policy.RequireRole(Roles.WarehouseChief));
+    options.AddPolicy("Cashier", policy => policy.RequireRole(Roles.Cashier));
+    options.AddPolicy("Customer", policy => policy.RequireRole(Roles.Customer));
+    options.AddPolicy("KitchenChief", policy => policy.RequireRole(Roles.KitchenChief));
+    options.AddPolicy("BranchChief", policy => policy.RequireRole(Roles.BranchChief));
 });
 
 const string FrontendCorsPolicy = "Frontend";

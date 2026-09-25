@@ -10,23 +10,39 @@ public class ProductHandler : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
+        // Supplies catalog: headquarters admins and branch warehouse chiefs.
+        // RequireRole with several roles is OR, so any listed role grants access.
+        // Policies stack with AND, so each route declares its full role set.
         var productRoutes = app.MapGroup("/products")
             .WithTags("Products")
             .RequireAuthorization();
 
-        productRoutes.MapGet("", GetProducts);
+        // Operations chiefs may only list the catalog, nothing else.
+        productRoutes.MapGet("", GetProducts)
+            .RequireAuthorization(policy => policy.RequireRole(
+                Roles.Administrator,
+                Roles.WarehouseChief,
+                Roles.OpChief));
 
-        productRoutes.MapGet("/{id:int}", GetProductById);
+        productRoutes.MapGet("/{id:int}", GetProductById)
+            .RequireAuthorization(policy => policy.RequireRole(
+                Roles.Administrator,
+                Roles.WarehouseChief));
 
-        // Product catalog changes - restricted to Admin users only
         productRoutes.MapPost("", CreateProduct)
-            .RequireAuthorization(policy => policy.RequireRole(Roles.Administrator));
+            .RequireAuthorization(policy => policy.RequireRole(
+                Roles.Administrator,
+                Roles.WarehouseChief));
 
         productRoutes.MapPut("/{id:int}", UpdateProduct)
-            .RequireAuthorization(policy => policy.RequireRole(Roles.Administrator));
+            .RequireAuthorization(policy => policy.RequireRole(
+                Roles.Administrator,
+                Roles.WarehouseChief));
 
         productRoutes.MapDelete("/{id:int}", DeleteProduct)
-            .RequireAuthorization(policy => policy.RequireRole(Roles.Administrator));
+            .RequireAuthorization(policy => policy.RequireRole(
+                Roles.Administrator,
+                Roles.WarehouseChief));
     }
 
     private static async Task<IResult> GetProducts(
