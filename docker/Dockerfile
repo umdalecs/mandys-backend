@@ -14,15 +14,9 @@ COPY Mandys.Domain/Mandys.Domain.csproj Mandys.Domain/
 COPY Directory.Build.props ./
 RUN dotnet restore Mandys.Api/Mandys.Api.csproj
 
-# EF tooling for scaffolding the (gitignored) migrations during the build.
-RUN dotnet tool install --global dotnet-ef --version "10.*"
-ENV PATH="$PATH:/root/.dotnet/tools"
-
-# Copy the rest of the source, scaffold migrations when absent, then publish
+# Copy the rest of the source then publish
 COPY . .
-RUN if [ ! -f Mandys.Infrastructure/Migrations/ApplicationDbContextModelSnapshot.cs ]; then \
-      dotnet ef migrations add Initial --project Mandys.Infrastructure --startup-project Mandys.Api; \
-    fi
+
 RUN dotnet publish Mandys.Api/Mandys.Api.csproj -c Release -o /app/publish /p:UseAppHost=false
 
 # Single runtime image for both flows:
