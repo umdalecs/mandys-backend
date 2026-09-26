@@ -198,10 +198,7 @@ _pkginfo.txt
 !docker/.env.example
 
 # Local working docs (untracked by design)
-docs/
-
-# EF Core migrations (scaffolded locally via `dotnet ef`, untracked by design)
-Mandys.Infrastructure/Migrations/
+docs
 
 # Others
 ClientBin/

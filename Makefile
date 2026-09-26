@@ -1,7 +1,3 @@
-# EF Core migrations are gitignored (see .gitignore) and scaffolded locally.
-# Full reset flow: revert the database, delete every migration, scaffold a
-# single fresh Initial, and apply it.
-#
 #   make migrations-fresh   # delete all migrations + create + apply (one flow)
 #   make migrations-clean   # revert database to zero + delete migration files
 #   make migrations-init    # scaffold a single Initial migration + apply it
