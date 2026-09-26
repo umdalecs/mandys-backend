@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Mandys.Infrastructure.Persistence;
+namespace Mandys.Infrastructure.Persistence.Records;
 
 /// <summary>
 /// Refresh token grant row. Deliberately not a <see cref="Record"/>: token

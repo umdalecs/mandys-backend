@@ -2,11 +2,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Mandys.Domain;
 
-namespace Mandys.Infrastructure.Persistence;
+namespace Mandys.Infrastructure.Persistence.Records;
 
 /// <summary>
 /// Persistence record for the product table. Mapped to/from
-/// <see cref="Product"/> by <see cref="ProductMapper"/>.
+/// <see cref="Product"/> by <see cref="Mappers.ProductMapper"/>.
 /// One product is used by many <see cref="DishProductRecord"/> recipe lines.
 /// </summary>
 public class ProductRecord : Record

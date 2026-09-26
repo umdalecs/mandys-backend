@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Mandys.Infrastructure.Persistence;
+namespace Mandys.Infrastructure.Persistence.Records;
 
 /// <summary>
 /// Persistence record for the dish products table. Mapped to/from
-/// <see cref="DishProduct"/> by <see cref="DishProductMapper"/>.
+/// <see cref="DishProduct"/> by <see cref="Mappers.DishProductMapper"/>.
 /// A recipe line: one <see cref="DishRecord"/> uses one
 /// <see cref="ProductRecord"/> in the given <see cref="Quantity"/>.
 /// </summary>

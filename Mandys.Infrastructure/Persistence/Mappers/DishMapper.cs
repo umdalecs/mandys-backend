@@ -1,6 +1,7 @@
 using Mandys.Domain;
+using Mandys.Infrastructure.Persistence.Records;
 
-namespace Mandys.Infrastructure.Persistence;
+namespace Mandys.Infrastructure.Persistence.Mappers;
 
 /// <summary>
 /// Maps between the dishes table record and the domain entity.

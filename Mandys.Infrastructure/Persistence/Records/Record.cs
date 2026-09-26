@@ -1,4 +1,4 @@
-namespace Mandys.Infrastructure.Persistence;
+namespace Mandys.Infrastructure.Persistence.Records;
 
 /// <summary>
 /// Base class for persistence records (table rows). Audit columns and the

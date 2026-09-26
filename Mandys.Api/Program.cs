@@ -7,7 +7,7 @@ using Scalar.AspNetCore;
 using Mandys.Configuration;
 using Mandys.Domain;
 using Mandys.DTOs;
-using Mandys.Infrastructure.Persistence;
+using Mandys.Infrastructure.Persistence.Repositories;
 using Mandys.Infrastructure.Security;
 using Mandys.Services;
 using Mandys.Validators;

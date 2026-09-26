@@ -2,11 +2,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Mandys.Domain;
 
-namespace Mandys.Infrastructure.Persistence;
+namespace Mandys.Infrastructure.Persistence.Records;
 
 /// <summary>
 /// Persistence record for the users table. Mapped to/from
-/// <see cref="User"/> by <see cref="UserRepository"/>.
+/// <see cref="User"/> by <see cref="Repositories.UserRepository"/>.
 /// </summary>
 public class UserRecord : Record
 {

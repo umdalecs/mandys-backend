@@ -1,9 +1,10 @@
 using System.Security.Cryptography;
 using System.Text;
+using Mandys.Infrastructure.Persistence.Records;
 using Mandys.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Mandys.Infrastructure.Persistence;
+namespace Mandys.Infrastructure.Persistence.Repositories;
 
 public class RefreshTokenRepository(ApplicationDbContext db) : IRefreshTokenRepository
 {

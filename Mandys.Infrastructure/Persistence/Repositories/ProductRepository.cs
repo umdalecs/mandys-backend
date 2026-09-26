@@ -1,8 +1,10 @@
 using Mandys.Domain;
+using Mandys.Infrastructure.Persistence.Mappers;
+using Mandys.Infrastructure.Persistence.Records;
 using Mandys.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Mandys.Infrastructure.Persistence;
+namespace Mandys.Infrastructure.Persistence.Repositories;
 
 public class ProductRepository(ApplicationDbContext db) : IProductRepository
 {

@@ -2,11 +2,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Mandys.Domain;
 
-namespace Mandys.Infrastructure.Persistence;
+namespace Mandys.Infrastructure.Persistence.Records;
 
 /// <summary>
 /// Persistence record for the branches table. Mapped to/from
-/// <see cref="Branch"/> by <see cref="BranchMapper"/>.
+/// <see cref="Branch"/> by <see cref="Mappers.BranchMapper"/>.
 /// One branch has many <see cref="UserRecord"/> rows; the FK lives on
 /// the user side (<see cref="UserRecord.BranchId"/>).
 /// </summary>

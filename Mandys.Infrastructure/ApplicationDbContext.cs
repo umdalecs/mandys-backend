@@ -1,5 +1,5 @@
 using Mandys.Domain;
-using Mandys.Infrastructure.Persistence;
+using Mandys.Infrastructure.Persistence.Records;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mandys;
