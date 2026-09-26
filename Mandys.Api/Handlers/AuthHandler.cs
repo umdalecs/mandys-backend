@@ -1,9 +1,11 @@
 using System.Security.Cryptography;
 using System.Text;
 using Carter;
+using FluentValidation;
 using Mandys.Configuration;
 using Mandys.DTOs;
 using Mandys.Services;
+using Mandys.Validators;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
@@ -28,6 +30,7 @@ public class AuthHandler : ICarterModule
 
     private static async Task<IResult> Login(
         [FromBody] LoginRequest request,
+        IValidator<LoginRequest> validator,
         IAuthService authService,
         IOptions<JwtOptions> jwtOptions,
         IOptions<AuthCookieSettings> cookieSettings,
@@ -36,6 +39,8 @@ public class AuthHandler : ICarterModule
     {
         try
         {
+            RequestValidation.ThrowIfInvalid(validator.Validate(request));
+
             var tokens = await authService.LoginAsync(request.Email, request.Password);
 
             if (!useCookies)

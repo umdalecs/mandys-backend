@@ -1,19 +1,32 @@
 using Carter;
+using FluentValidation;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 using Mandys.Configuration;
 using Mandys.Domain;
+using Mandys.DTOs;
 using Mandys.Infrastructure.Persistence;
 using Mandys.Infrastructure.Security;
 using Mandys.Services;
+using Mandys.Validators;
 using Mandys;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddCarter();
+
+// Request validators (Mandys.Api/Validators) injected into handlers;
+// failures surface as ServiceException.BadRequest via RequestValidation.
+builder.Services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
+builder.Services.AddScoped<IValidator<CreateUserRequest>, CreateUserRequestValidator>();
+builder.Services.AddScoped<IValidator<UpdateUserRequest>, UpdateUserRequestValidator>();
+builder.Services.AddScoped<IValidator<CreateProductRequest>, CreateProductRequestValidator>();
+builder.Services.AddScoped<IValidator<UpdateProductRequest>, UpdateProductRequestValidator>();
+builder.Services.AddScoped<IValidator<CreateDishRequest>, CreateDishRequestValidator>();
+builder.Services.AddScoped<IValidator<UpdateDishRequest>, UpdateDishRequestValidator>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options

@@ -1,3 +1,4 @@
+using FluentValidation;
 using Mandys.Configuration;
 using Mandys.DTOs;
 using Microsoft.Extensions.Options;
@@ -9,14 +10,14 @@ public class AuthService(
     IRefreshTokenRepository refreshTokens,
     ITokenService tokenService,
     IPasswordHasher passwordHasher,
+    IValidator<LoginRequest> validator,
     IOptions<JwtOptions> jwtOptions) : IAuthService
 {
     private readonly JwtOptions _jwt = jwtOptions.Value;
-    private readonly LoginRequestValidator _validator = new();
 
     public async Task<AuthTokenSet> LoginAsync(string? email, string password)
     {
-        var validation = _validator.Validate(new LoginRequest(email, password));
+        var validation = validator.Validate(new LoginRequest(email, password));
 
         if (!validation.IsValid)
         {

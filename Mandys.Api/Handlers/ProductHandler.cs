@@ -1,7 +1,9 @@
 using Carter;
+using FluentValidation;
 using Mandys.Domain;
 using Mandys.DTOs;
 using Mandys.Services;
+using Mandys.Validators;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Mandys.Handlers;
@@ -70,10 +72,13 @@ public class ProductHandler : ICarterModule
 
     private static async Task<IResult> CreateProduct(
         [FromBody] CreateProductRequest request,
+        IValidator<CreateProductRequest> validator,
         IProductService productService)
     {
         try
         {
+            RequestValidation.ThrowIfInvalid(validator.Validate(request));
+
             var created = await productService.CreateProductAsync(request);
             return Results.Created($"/products/{created.Id}", created);
         }
@@ -86,10 +91,13 @@ public class ProductHandler : ICarterModule
     private static async Task<IResult> UpdateProduct(
         int id,
         [FromBody] UpdateProductRequest request,
+        IValidator<UpdateProductRequest> validator,
         IProductService productService)
     {
         try
         {
+            RequestValidation.ThrowIfInvalid(validator.Validate(request));
+
             return Results.Ok(await productService.UpdateProductAsync(id, request));
         }
         catch (ServiceException ex)

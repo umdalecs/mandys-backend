@@ -1,9 +1,11 @@
 using System.Security.Claims;
 using Carter;
+using FluentValidation;
 using Mandys.Common;
 using Mandys.Domain;
 using Mandys.DTOs;
 using Mandys.Services;
+using Mandys.Validators;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Mandys.Handlers;
@@ -74,10 +76,13 @@ public class UserHandler : ICarterModule
 
     private static async Task<IResult> CreateUser(
         [FromBody] CreateUserRequest request,
+        IValidator<CreateUserRequest> validator,
         IUserService userService)
     {
         try
         {
+            RequestValidation.ThrowIfInvalid(validator.Validate(request));
+
             var created = await userService.CreateUserAsync(request);
             return Results.Created($"/users/{created.Id}", created);
         }
@@ -90,10 +95,13 @@ public class UserHandler : ICarterModule
     private static async Task<IResult> UpdateUser(
         int id,
         [FromBody] UpdateUserRequest request,
+        IValidator<UpdateUserRequest> validator,
         IUserService userService)
     {
         try
         {
+            RequestValidation.ThrowIfInvalid(validator.Validate(request));
+
             return Results.Ok(await userService.UpdateUserAsync(id, request));
         }
         catch (ServiceException ex)

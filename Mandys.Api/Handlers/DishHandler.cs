@@ -1,7 +1,9 @@
 using Carter;
+using FluentValidation;
 using Mandys.Domain;
 using Mandys.DTOs;
 using Mandys.Services;
+using Mandys.Validators;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Mandys.Handlers;
@@ -80,10 +82,13 @@ public class DishHandler : ICarterModule
 
     private static async Task<IResult> CreateDish(
         [FromBody] CreateDishRequest request,
+        IValidator<CreateDishRequest> validator,
         IDishService dishService)
     {
         try
         {
+            RequestValidation.ThrowIfInvalid(validator.Validate(request));
+
             var created = await dishService.CreateDishAsync(request);
             return Results.Created($"/dishes/{created.Id}", created);
         }
@@ -96,10 +101,13 @@ public class DishHandler : ICarterModule
     private static async Task<IResult> UpdateDish(
         int id,
         [FromBody] UpdateDishRequest request,
+        IValidator<UpdateDishRequest> validator,
         IDishService dishService)
     {
         try
         {
+            RequestValidation.ThrowIfInvalid(validator.Validate(request));
+
             return Results.Ok(await dishService.UpdateDishAsync(id, request));
         }
         catch (ServiceException ex)
