@@ -30,4 +30,10 @@ public class ProductRecord : Record
     /// <see cref="DishProductRecord.Product"/>).
     /// </summary>
     public ICollection<DishProductRecord> DishProducts { get; set; } = new List<DishProductRecord>();
+
+    /// <summary>
+    /// Combos this product belongs to (inverse of
+    /// <see cref="ComboProductRecord.Product"/>).
+    /// </summary>
+    public ICollection<ComboProductRecord> ComboProducts { get; set; } = new List<ComboProductRecord>();
 }

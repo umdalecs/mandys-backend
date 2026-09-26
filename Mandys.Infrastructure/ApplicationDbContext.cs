@@ -12,6 +12,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ProductRecord> Products { get; set; }
     public DbSet<DishRecord> Dishes { get; set; }
     public DbSet<DishProductRecord> DishProducts { get; set; }
+    public DbSet<ComboRecord> Combos { get; set; }
+    public DbSet<ComboDishRecord> ComboDishes { get; set; }
+    public DbSet<ComboProductRecord> ComboProducts { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -84,6 +87,46 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.HasIndex(dp => dp.DishId);
             entity.HasIndex(dp => dp.ProductId);
+        });
+
+        modelBuilder.Entity<ComboDishRecord>(entity =>
+        {
+            // Many combo lines belong to one combo; deleting a combo deletes
+            // its dish lines.
+            entity.HasOne(cd => cd.Combo)
+                .WithMany(c => c.ComboDishes)
+                .HasForeignKey(cd => cd.ComboId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Many combo lines reference one dish; deleting a dish deletes
+            // its combo lines.
+            entity.HasOne(cd => cd.Dish)
+                .WithMany(d => d.ComboDishes)
+                .HasForeignKey(cd => cd.DishId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(cd => cd.ComboId);
+            entity.HasIndex(cd => cd.DishId);
+        });
+
+        modelBuilder.Entity<ComboProductRecord>(entity =>
+        {
+            // Many combo lines belong to one combo; deleting a combo deletes
+            // its product lines.
+            entity.HasOne(cp => cp.Combo)
+                .WithMany(c => c.ComboProducts)
+                .HasForeignKey(cp => cp.ComboId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Many combo lines reference one product; deleting a product
+            // deletes its combo lines.
+            entity.HasOne(cp => cp.Product)
+                .WithMany(p => p.ComboProducts)
+                .HasForeignKey(cp => cp.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(cp => cp.ComboId);
+            entity.HasIndex(cp => cp.ProductId);
         });
 
         modelBuilder.Entity<ProductRecord>(entity =>

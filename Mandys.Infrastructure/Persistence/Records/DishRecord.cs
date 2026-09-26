@@ -24,4 +24,10 @@ public class DishRecord : Record
     /// <see cref="DishProductRecord.Dish"/>).
     /// </summary>
     public ICollection<DishProductRecord> DishProducts { get; set; } = new List<DishProductRecord>();
+
+    /// <summary>
+    /// Combos this dish belongs to (inverse of
+    /// <see cref="ComboDishRecord.Dish"/>).
+    /// </summary>
+    public ICollection<ComboDishRecord> ComboDishes { get; set; } = new List<ComboDishRecord>();
 }
