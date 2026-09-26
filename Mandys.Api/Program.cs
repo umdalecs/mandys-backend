@@ -31,6 +31,8 @@ builder.Services.AddScoped<IValidator<CreateDishRequest>, CreateDishRequestValid
 builder.Services.AddScoped<IValidator<UpdateDishRequest>, UpdateDishRequestValidator>();
 builder.Services.AddScoped<IValidator<CreateComboRequest>, CreateComboRequestValidator>();
 builder.Services.AddScoped<IValidator<UpdateComboRequest>, UpdateComboRequestValidator>();
+builder.Services.AddScoped<IValidator<CreateBranchRequest>, CreateBranchRequestValidator>();
+builder.Services.AddScoped<IValidator<UpdateBranchRequest>, UpdateBranchRequestValidator>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options
@@ -41,6 +43,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IDishRepository, DishRepository>();
 builder.Services.AddScoped<IComboRepository, ComboRepository>();
+builder.Services.AddScoped<IBranchRepository, BranchRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IPasswordHasher, Argon2PasswordHasher>();
 
@@ -50,6 +53,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IDishService, DishService>();
 builder.Services.AddScoped<IComboService, ComboService>();
+builder.Services.AddScoped<IBranchService, BranchService>();
 
 builder.Services.Configure<FrontendOptions>(builder.Configuration.GetSection(FrontendOptions.SectionName));
 builder.Services.Configure<AuthCookieSettings>(builder.Configuration.GetSection(AuthCookieSettings.SectionName));
