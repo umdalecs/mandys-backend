@@ -34,5 +34,5 @@ public class ComboDishRecord : Record
     /// How many portions of the dish the combo includes.
     /// </summary>
     [Required]
-    public int Quantity { get; set; }
+    public decimal Quantity { get; set; }
 }

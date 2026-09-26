@@ -35,5 +35,5 @@ public class ComboProductRecord : Record
     /// unit.
     /// </summary>
     [Required]
-    public int Quantity { get; set; }
+    public decimal Quantity { get; set; }
 }

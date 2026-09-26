@@ -56,9 +56,9 @@ public class Dish
 public class DishProduct
 {
     public int ProductId { get; private set; }
-    public int Quantity { get; private set; }
+    public decimal Quantity { get; private set; }
 
-    public DishProduct(int productId, int quantity)
+    public DishProduct(int productId, decimal quantity)
     {
         if (productId <= 0)
         {

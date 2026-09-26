@@ -69,9 +69,9 @@ public class Combo
 public class ComboDish
 {
     public int DishId { get; private set; }
-    public int Quantity { get; private set; }
+    public decimal Quantity { get; private set; }
 
-    public ComboDish(int dishId, int quantity)
+    public ComboDish(int dishId, decimal quantity)
     {
         if (dishId <= 0)
         {
@@ -94,9 +94,9 @@ public class ComboDish
 public class ComboProduct
 {
     public int ProductId { get; private set; }
-    public int Quantity { get; private set; }
+    public decimal Quantity { get; private set; }
 
-    public ComboProduct(int productId, int quantity)
+    public ComboProduct(int productId, decimal quantity)
     {
         if (productId <= 0)
         {

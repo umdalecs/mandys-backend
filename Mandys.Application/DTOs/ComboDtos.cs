@@ -4,12 +4,12 @@ namespace Mandys.DTOs;
 
 public record ComboDishLineResponse(
     int DishId,
-    int Quantity
+    decimal Quantity
 );
 
 public record ComboProductLineResponse(
     int ProductId,
-    int Quantity
+    decimal Quantity
 );
 
 public record ComboResponse(
@@ -22,12 +22,12 @@ public record ComboResponse(
 
 public record CreateComboDishLineRequest(
     int DishId,
-    int Quantity
+    decimal Quantity
 );
 
 public record CreateComboProductLineRequest(
     int ProductId,
-    int Quantity
+    decimal Quantity
 );
 
 public record CreateComboRequest(

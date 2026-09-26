@@ -4,7 +4,7 @@ namespace Mandys.DTOs;
 
 public record DishRecipeLineResponse(
     int ProductId,
-    int Quantity
+    decimal Quantity
 );
 
 public record DishResponse(
@@ -16,7 +16,7 @@ public record DishResponse(
 
 public record CreateDishRecipeLineRequest(
     int ProductId,
-    int Quantity
+    decimal Quantity
 );
 
 public record CreateDishRequest(
