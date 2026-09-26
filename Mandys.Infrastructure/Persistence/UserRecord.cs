@@ -24,7 +24,6 @@ public class UserRecord : Record
     public string Email { get; set; } = string.Empty;
     [Required]
     [Column("password")]
-    [MaxLength(50)]
     public string PasswordHash { get; set; } = string.Empty;
     [Required]
     [MaxLength(50)]

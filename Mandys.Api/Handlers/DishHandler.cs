@@ -22,6 +22,7 @@ public class DishHandler : ICarterModule
                 Roles.Administrator,
                 Roles.OpChief));
         
+        // Possible roles
         //     ,
         // Roles.BranchChief,
         // Roles.Cashier,
@@ -32,6 +33,7 @@ public class DishHandler : ICarterModule
                 Roles.Administrator,
                 Roles.OpChief));
         
+        // Possible roles
         //     ,
         // Roles.BranchChief,
         // Roles.Cashier,
