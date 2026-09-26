@@ -69,6 +69,24 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasIndex(r => r.TokenHash).IsUnique();
         });
 
+        modelBuilder.Entity<DishRecord>(entity =>
+        {
+            // Note: Make sure to only use static data here
+            var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+            entity.HasData(
+                new { Id = 1, Name = "Hamburguesa clásica", Price = 85m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 2, Name = "Hamburguesa doble", Price = 125m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 3, Name = "Hamburguesa de pollo", Price = 92m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 4, Name = "Taco al pastor", Price = 48m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 5, Name = "Taco de bistec", Price = 52m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 6, Name = "Burrito de carne", Price = 98m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 7, Name = "Quesadilla de pollo", Price = 78m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 8, Name = "Ensalada César", Price = 95m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 9, Name = "Churros con cajeta", Price = 65m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 10, Name = "Sopa de tortilla", Price = 55m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false }
+            );
+        });
+
         modelBuilder.Entity<DishProductRecord>(entity =>
         {
             // Many recipe lines belong to one dish; deleting a dish deletes
@@ -87,6 +105,98 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.HasIndex(dp => dp.DishId);
             entity.HasIndex(dp => dp.ProductId);
+            // Note: Make sure to only use static data here
+            var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+            entity.HasData(
+                new { Id = 1, DishId = 1, ProductId = 61, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 2, DishId = 1, ProductId = 36, Quantity = 0.15m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 3, DishId = 1, ProductId = 73, Quantity = 0.04m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 4, DishId = 1, ProductId = 4, Quantity = 2m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 5, DishId = 1, ProductId = 1, Quantity = 0.05m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 6, DishId = 1, ProductId = 5, Quantity = 0.03m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 7, DishId = 1, ProductId = 87, Quantity = 0.02m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 8, DishId = 1, ProductId = 88, Quantity = 0.01m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 9, DishId = 1, ProductId = 171, Quantity = 0.02m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 10, DishId = 2, ProductId = 62, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 11, DishId = 2, ProductId = 36, Quantity = 0.3m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 12, DishId = 2, ProductId = 75, Quantity = 0.06m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 13, DishId = 2, ProductId = 73, Quantity = 0.04m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 14, DishId = 2, ProductId = 1, Quantity = 0.08m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 15, DishId = 2, ProductId = 5, Quantity = 0.04m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 16, DishId = 2, ProductId = 44, Quantity = 0.05m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 17, DishId = 2, ProductId = 90, Quantity = 0.03m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 18, DishId = 3, ProductId = 64, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 19, DishId = 3, ProductId = 43, Quantity = 0.18m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 20, DishId = 3, ProductId = 78, Quantity = 0.03m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 21, DishId = 3, ProductId = 3, Quantity = 2m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 22, DishId = 3, ProductId = 9, Quantity = 0.04m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 23, DishId = 3, ProductId = 86, Quantity = 0.02m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 24, DishId = 4, ProductId = 69, Quantity = 2m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 25, DishId = 4, ProductId = 38, Quantity = 0.15m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 26, DishId = 4, ProductId = 10, Quantity = 0.02m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 27, DishId = 4, ProductId = 13, Quantity = 0.05m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 28, DishId = 4, ProductId = 2, Quantity = 0.05m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 29, DishId = 4, ProductId = 6, Quantity = 0.03m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 30, DishId = 4, ProductId = 19, Quantity = 0.01m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 31, DishId = 5, ProductId = 69, Quantity = 2m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 32, DishId = 5, ProductId = 39, Quantity = 0.12m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 33, DishId = 5, ProductId = 7, Quantity = 0.08m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 34, DishId = 5, ProductId = 32, Quantity = 0.03m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 35, DishId = 5, ProductId = 105, Quantity = 0.002m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 36, DishId = 5, ProductId = 107, Quantity = 0.001m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 37, DishId = 6, ProductId = 68, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 38, DishId = 6, ProductId = 36, Quantity = 0.18m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 39, DishId = 6, ProductId = 80, Quantity = 0.01m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 40, DishId = 6, ProductId = 172, Quantity = 0.08m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 41, DishId = 6, ProductId = 22, Quantity = 0.03m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 42, DishId = 6, ProductId = 14, Quantity = 0.03m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 43, DishId = 6, ProductId = 82, Quantity = 0.05m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 44, DishId = 6, ProductId = 77, Quantity = 0.04m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 45, DishId = 6, ProductId = 91, Quantity = 0.02m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 46, DishId = 7, ProductId = 68, Quantity = 2m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 47, DishId = 7, ProductId = 42, Quantity = 0.15m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 48, DishId = 7, ProductId = 73, Quantity = 0.08m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 49, DishId = 7, ProductId = 17, Quantity = 0.04m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 50, DishId = 7, ProductId = 92, Quantity = 0.03m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 51, DishId = 7, ProductId = 125, Quantity = 0.01m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 52, DishId = 8, ProductId = 22, Quantity = 0.08m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 53, DishId = 8, ProductId = 23, Quantity = 0.06m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 54, DishId = 8, ProductId = 74, Quantity = 0.04m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 55, DishId = 8, ProductId = 93, Quantity = 0.05m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 56, DishId = 8, ProductId = 171, Quantity = 0.01m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 57, DishId = 8, ProductId = 71, Quantity = 0.03m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 58, DishId = 8, ProductId = 105, Quantity = 0.002m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 59, DishId = 8, ProductId = 107, Quantity = 0.001m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 60, DishId = 9, ProductId = 163, Quantity = 0.1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 61, DishId = 9, ProductId = 132, Quantity = 0.05m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 62, DishId = 9, ProductId = 105, Quantity = 0.002m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 63, DishId = 9, ProductId = 175, Quantity = 0.08m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 64, DishId = 10, ProductId = 1, Quantity = 0.2m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 65, DishId = 10, ProductId = 69, Quantity = 2m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 66, DishId = 10, ProductId = 5, Quantity = 0.06m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 67, DishId = 10, ProductId = 19, Quantity = 0.01m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 68, DishId = 10, ProductId = 125, Quantity = 0.02m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 69, DishId = 10, ProductId = 80, Quantity = 0.01m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 70, DishId = 10, ProductId = 32, Quantity = 0.02m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false }
+            );
+        });
+
+        modelBuilder.Entity<ComboRecord>(entity =>
+        {
+            // Note: Make sure to only use static data here
+            var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+            entity.HasData(
+                new { Id = 1, Name = "Combo Hamburguesa clásica", Price = 129m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 2, Name = "Combo Hamburguesa doble", Price = 169m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 3, Name = "Combo Hamburguesa de pollo", Price = 139m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 4, Name = "Combo Tacos al pastor", Price = 119m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 5, Name = "Combo Tacos de bistec", Price = 125m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 6, Name = "Combo Burrito", Price = 145m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 7, Name = "Combo Quesadillas", Price = 125m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 8, Name = "Combo Ensalada", Price = 119m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 9, Name = "Combo Postre", Price = 119m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 10, Name = "Combo Familiar", Price = 349m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false }
+            );
         });
 
         modelBuilder.Entity<ComboDishRecord>(entity =>
@@ -107,6 +217,21 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.HasIndex(cd => cd.ComboId);
             entity.HasIndex(cd => cd.DishId);
+            // Note: Make sure to only use static data here
+            var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+            entity.HasData(
+                new { Id = 1, ComboId = 1, DishId = 1, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 2, ComboId = 2, DishId = 2, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 3, ComboId = 3, DishId = 3, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 4, ComboId = 4, DishId = 4, Quantity = 2m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 5, ComboId = 5, DishId = 5, Quantity = 2m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 6, ComboId = 6, DishId = 6, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 7, ComboId = 7, DishId = 7, Quantity = 2m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 8, ComboId = 8, DishId = 8, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 9, ComboId = 9, DishId = 9, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 10, ComboId = 10, DishId = 1, Quantity = 2m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 11, ComboId = 10, DishId = 3, Quantity = 2m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false }
+            );
         });
 
         modelBuilder.Entity<ComboProductRecord>(entity =>
@@ -127,6 +252,26 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.HasIndex(cp => cp.ComboId);
             entity.HasIndex(cp => cp.ProductId);
+            // Note: Make sure to only use static data here
+            var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+            entity.HasData(
+                new { Id = 1, ComboId = 1, ProductId = 201, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 2, ComboId = 1, ProductId = 210, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 3, ComboId = 2, ProductId = 202, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 4, ComboId = 2, ProductId = 210, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 5, ComboId = 3, ProductId = 203, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 6, ComboId = 3, ProductId = 210, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 7, ComboId = 4, ProductId = 201, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 8, ComboId = 5, ProductId = 202, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 9, ComboId = 6, ProductId = 204, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 10, ComboId = 6, ProductId = 211, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 11, ComboId = 7, ProductId = 205, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 12, ComboId = 8, ProductId = 203, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 13, ComboId = 9, ProductId = 209, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 14, ComboId = 9, ProductId = 215, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 15, ComboId = 10, ProductId = 201, Quantity = 4m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 16, ComboId = 10, ProductId = 210, Quantity = 2m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false }
+            );
         });
 
         modelBuilder.Entity<ProductRecord>(entity =>
@@ -333,7 +478,22 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 new { Id = 197, Description = "Champiñón portobello", IsSupply = true, Price = 130.00m, MeasureUnit = "kg", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
                 new { Id = 198, Description = "Cebolla perla", IsSupply = true, Price = 42.00m, MeasureUnit = "kg", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
                 new { Id = 199, Description = "Manteca de cerdo", IsSupply = true, Price = 60.00m, MeasureUnit = "kg", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
-                new { Id = 200, Description = "Queso oaxaca", IsSupply = true, Price = 145.00m, MeasureUnit = "kg", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false }
+                new { Id = 200, Description = "Queso oaxaca", IsSupply = true, Price = 145.00m, MeasureUnit = "kg", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 201, Description = "Refresco de cola 600 ml", IsSupply = false, Price = 35m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 202, Description = "Refresco de naranja 600 ml", IsSupply = false, Price = 35m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 203, Description = "Limonada de limón natural 500 ml", IsSupply = false, Price = 38m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 204, Description = "Té de manzanilla 500 ml", IsSupply = false, Price = 32m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 205, Description = "Jugo de naranja natural 450 ml", IsSupply = false, Price = 48m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 206, Description = "Batido de fresa 450 ml", IsSupply = false, Price = 52m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 207, Description = "Malteada de vainilla 500 ml", IsSupply = false, Price = 78m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 208, Description = "Espresso", IsSupply = false, Price = 28m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 209, Description = "Capuchino", IsSupply = false, Price = 45m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 210, Description = "Porción de papas fritas", IsSupply = false, Price = 45m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 211, Description = "Nachos con queso", IsSupply = false, Price = 69m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 212, Description = "Alitas de pollo Buffalo", IsSupply = false, Price = 89m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 213, Description = "Bowl de pollo César", IsSupply = false, Price = 118m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 214, Description = "Flan de caramelo", IsSupply = false, Price = 42m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
+                new { Id = 215, Description = "Pastel de chocolate", IsSupply = false, Price = 48m, MeasureUnit = "pieza", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false }
             );
         });
 
