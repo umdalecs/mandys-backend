@@ -1,7 +1,9 @@
 using Mandys.Domain;
 using Mandys.DTOs;
+using Mandys.Services;
+using Mandys.Services.Interfaces;
 
-namespace Mandys.Services;
+namespace Mandys.Services.Implementations;
 
 public class DishService(IDishRepository dishes, IProductRepository products) : IDishService
 {
@@ -31,17 +33,6 @@ public class DishService(IDishRepository dishes, IProductRepository products) : 
 
     public async Task<DishResponse> CreateDishAsync(CreateDishRequest request)
     {
-        // TODO: Change for fluent validation
-        if (string.IsNullOrWhiteSpace(request.Name))
-        {
-            throw ServiceException.BadRequest("Name is required.");
-        }
-
-        if (request.Price < 0)
-        {
-            throw ServiceException.BadRequest("Price must be non-negative.");
-        }
-
         var recipe = await ValidateRecipeAsync(request.Recipe);
 
         var created = await dishes.AddAsync(new Dish(
@@ -59,12 +50,6 @@ public class DishService(IDishRepository dishes, IProductRepository products) : 
         if (dish is null)
         {
             throw ServiceException.NotFound($"Dish with ID '{id}' not found.");
-        }
-
-        // TODO: Use fluent validation here
-        if (request.Price.HasValue && request.Price.Value < 0)
-        {
-            throw ServiceException.BadRequest("Price must be non-negative.");
         }
 
         var recipe = request.Recipe is null ? null : await ValidateRecipeAsync(request.Recipe);
@@ -89,9 +74,10 @@ public class DishService(IDishRepository dishes, IProductRepository products) : 
     }
 
     /// <summary>
-    /// Validates recipe lines: positive ids and quantities, no duplicates,
-    /// every product exists and is a kitchen supply (insumo), never a
-    /// sellable catalog item.
+    /// Resolves recipe lines against the catalog: every product must exist
+    /// and be a kitchen supply (insumo), never a sellable catalog item.
+    /// Shape rules (positive ids/quantities, no duplicates) are enforced by
+    /// the request validators.
     /// </summary>
     private async Task<IReadOnlyList<DishProduct>> ValidateRecipeAsync(
         IReadOnlyList<CreateDishRecipeLineRequest>? lines)
@@ -99,21 +85,6 @@ public class DishService(IDishRepository dishes, IProductRepository products) : 
         if (lines is null || lines.Count == 0)
         {
             return [];
-        }
-
-        if (lines.Any(l => l.ProductId <= 0))
-        {
-            throw ServiceException.BadRequest("Recipe product ids must be positive.");
-        }
-
-        if (lines.Any(l => l.Quantity <= 0))
-        {
-            throw ServiceException.BadRequest("Recipe quantities must be positive.");
-        }
-
-        if (lines.GroupBy(l => l.ProductId).Any(g => g.Count() > 1))
-        {
-            throw ServiceException.BadRequest("Recipe products must not be duplicated.");
         }
 
         var recipe = new List<DishProduct>();

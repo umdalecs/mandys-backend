@@ -1,9 +1,11 @@
 using FluentValidation;
 using Mandys.Configuration;
 using Mandys.DTOs;
+using Mandys.Services;
+using Mandys.Services.Interfaces;
 using Microsoft.Extensions.Options;
 
-namespace Mandys.Services;
+namespace Mandys.Services.Implementations;
 
 public class AuthService(
     IUserRepository users,

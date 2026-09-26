@@ -1,7 +1,9 @@
 using Mandys.Domain;
 using Mandys.DTOs;
+using Mandys.Services;
+using Mandys.Services.Interfaces;
 
-namespace Mandys.Services;
+namespace Mandys.Services.Implementations;
 
 public class UserService(
     IUserRepository users,
@@ -49,42 +51,15 @@ public class UserService(
 
     public async Task<UserResponse> CreateUserAsync(CreateUserRequest request)
     {
-        // TODO: Change for fluent validation
-        if (string.IsNullOrWhiteSpace(request.Email) ||
-            string.IsNullOrWhiteSpace(request.UserName) ||
-            string.IsNullOrWhiteSpace(request.Password) ||
-            string.IsNullOrWhiteSpace(request.FirstName) ||
-            string.IsNullOrWhiteSpace(request.LastName))
-        {
-            throw ServiceException.BadRequest("First name, last name, username, email, and password are required.");
-        }
-
         var role = string.IsNullOrWhiteSpace(request.Role)
             ? Roles.Customer
             : Roles.Normalize(request.Role.Trim());
-
-        if (!Roles.IsValid(role))
-        {
-            throw ServiceException.BadRequest(
-                $"Invalid role '{request.Role}'. Allowed roles: {string.Join(", ", Roles.All)}.");
-        }
 
         var normalizedEmail = request.Email.Trim().ToLowerInvariant();
 
         if (await users.ExistsByEmailAsync(normalizedEmail))
         {
             throw ServiceException.Conflict($"Email '{normalizedEmail}' is already registered.");
-        }
-
-        if (request.BranchId is <= 0)
-        {
-            throw ServiceException.BadRequest("BranchId must be a positive id.");
-        }
-
-        if (!request.BranchId.HasValue && Roles.RequiresBranch(role))
-        {
-            throw ServiceException.BadRequest(
-                $"Role '{role}' requires a branch. Only administrators and customers may omit it.");
         }
 
         var created = await users.AddAsync(new User(
@@ -117,7 +92,6 @@ public class UserService(
             user.ChangeEmail(trimmedEmail);
         }
 
-        // TODO: Use fluent validation here
         if (!string.IsNullOrWhiteSpace(request.FirstName) || !string.IsNullOrWhiteSpace(request.LastName))
         {
             user.UpdateProfile(
@@ -129,16 +103,6 @@ public class UserService(
         if (!string.IsNullOrWhiteSpace(request.Role))
         {
             newRole = Roles.Normalize(request.Role.Trim());
-            if (!Roles.IsValid(newRole))
-            {
-                throw ServiceException.BadRequest(
-                    $"Invalid role '{request.Role}'. Allowed roles: {string.Join(", ", Roles.All)}.");
-            }
-        }
-
-        if (request.BranchId is <= 0)
-        {
-            throw ServiceException.BadRequest("BranchId must be a positive id.");
         }
 
         // Validate branch against the role taking effect, before mutating.

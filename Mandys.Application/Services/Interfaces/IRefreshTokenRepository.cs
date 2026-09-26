@@ -1,4 +1,6 @@
-namespace Mandys.Services;
+using Mandys.Services;
+
+namespace Mandys.Services.Interfaces;
 
 /// <summary>
 /// Refresh token grants. Implemented by Infrastructure (stored hashed,

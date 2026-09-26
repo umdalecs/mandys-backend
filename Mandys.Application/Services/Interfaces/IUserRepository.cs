@@ -1,6 +1,6 @@
 using Mandys.Domain;
 
-namespace Mandys.Services;
+namespace Mandys.Services.Interfaces;
 
 /// <summary>
 /// User persistence in domain terms. Implemented by Infrastructure.

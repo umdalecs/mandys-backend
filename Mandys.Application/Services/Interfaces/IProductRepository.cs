@@ -1,6 +1,6 @@
 using Mandys.Domain;
 
-namespace Mandys.Services;
+namespace Mandys.Services.Interfaces;
 
 /// <summary>
 /// Product persistence in domain terms. Implemented by Infrastructure.

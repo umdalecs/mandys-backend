@@ -5,6 +5,7 @@ using FluentValidation;
 using Mandys.Configuration;
 using Mandys.DTOs;
 using Mandys.Services;
+using Mandys.Services.Interfaces;
 using Mandys.Validators;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;

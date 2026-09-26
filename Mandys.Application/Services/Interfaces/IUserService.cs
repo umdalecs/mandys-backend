@@ -1,6 +1,6 @@
 using Mandys.DTOs;
 
-namespace Mandys.Services;
+namespace Mandys.Services.Interfaces;
 
 public interface IUserService
 {

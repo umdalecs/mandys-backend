@@ -1,7 +1,9 @@
 using Mandys.Domain;
 using Mandys.DTOs;
+using Mandys.Services;
+using Mandys.Services.Interfaces;
 
-namespace Mandys.Services;
+namespace Mandys.Services.Implementations;
 
 public class ProductService(IProductRepository products) : IProductService
 {
@@ -31,18 +33,6 @@ public class ProductService(IProductRepository products) : IProductService
 
     public async Task<ProductResponse> CreateProductAsync(CreateProductRequest request)
     {
-        // TODO: Change for fluent validation
-        if (string.IsNullOrWhiteSpace(request.Description) ||
-            string.IsNullOrWhiteSpace(request.MeasureUnit))
-        {
-            throw ServiceException.BadRequest("Description, price, and measure unit are required.");
-        }
-
-        if (request.Price < 0)
-        {
-            throw ServiceException.BadRequest("Price must be non-negative.");
-        }
-
         var created = await products.AddAsync(new Product(
             0,
             request.Description.Trim(),
@@ -59,12 +49,6 @@ public class ProductService(IProductRepository products) : IProductService
         if (product is null)
         {
             throw ServiceException.NotFound($"Product with ID '{id}' not found.");
-        }
-
-        // TODO: Use fluent validation here
-        if (request.Price.HasValue && request.Price.Value < 0)
-        {
-            throw ServiceException.BadRequest("Price must be non-negative.");
         }
 
         product.UpdateDetails(

@@ -1,6 +1,6 @@
 using Mandys.Domain;
 
-namespace Mandys.Services;
+namespace Mandys.Services.Interfaces;
 
 public interface ITokenService
 {

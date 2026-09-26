@@ -2,6 +2,7 @@ using Mandys.Domain;
 using Mandys.Infrastructure.Persistence.Mappers;
 using Mandys.Infrastructure.Persistence.Records;
 using Mandys.Services;
+using Mandys.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mandys.Infrastructure.Persistence.Repositories;
