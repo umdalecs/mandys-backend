@@ -102,7 +102,7 @@ public class ComboService(
                 throw ServiceException.NotFound($"Dish with ID '{line.DishId}' not found.");
             }
 
-            resolved.Add(new ComboDish(line.DishId, line.Quantity));
+            resolved.Add(new ComboDish(dish, line.Quantity));
         }
 
         return resolved;
@@ -136,7 +136,7 @@ public class ComboService(
                     $"Product '{product.Description}' (ID '{product.Id}') is a supply and cannot be sold in a combo.");
             }
 
-            resolved.Add(new ComboProduct(line.ProductId, line.Quantity));
+            resolved.Add(new ComboProduct(product, line.Quantity));
         }
 
         return resolved;

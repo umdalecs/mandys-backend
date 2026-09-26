@@ -3,12 +3,12 @@ using Mandys.Domain;
 namespace Mandys.DTOs;
 
 public record ComboDishLineResponse(
-    int DishId,
+    DishResponse Dish,
     decimal Quantity
 );
 
 public record ComboProductLineResponse(
-    int ProductId,
+    ProductResponse Product,
     decimal Quantity
 );
 
@@ -59,7 +59,7 @@ public static class ComboMapper
             combo.Id,
             combo.Name,
             combo.Price,
-            combo.Dishes.Select(l => new ComboDishLineResponse(l.DishId, l.Quantity)).ToList(),
-            combo.Products.Select(l => new ComboProductLineResponse(l.ProductId, l.Quantity)).ToList()
+            combo.Dishes.Select(l => new ComboDishLineResponse(l.Dish.ToResponse(), l.Quantity)).ToList(),
+            combo.Products.Select(l => new ComboProductLineResponse(l.Product.ToResponse(), l.Quantity)).ToList()
         );
 }

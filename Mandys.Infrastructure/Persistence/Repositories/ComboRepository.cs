@@ -14,7 +14,11 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
         var record = await db.Combos
             .AsNoTracking()
             .Include(c => c.ComboDishes)
+            .ThenInclude(l => l.Dish)
+            .ThenInclude(d => d.DishProducts)
+            .ThenInclude(l => l.Product)
             .Include(c => c.ComboProducts)
+            .ThenInclude(l => l.Product)
             .FirstOrDefaultAsync(c => c.Id == id);
         return record?.ToDomain();
     }
@@ -25,7 +29,11 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
         IQueryable<ComboRecord> query = db.Combos
             .AsNoTracking()
             .Include(c => c.ComboDishes)
-            .Include(c => c.ComboProducts);
+            .ThenInclude(l => l.Dish)
+            .ThenInclude(d => d.DishProducts)
+            .ThenInclude(l => l.Product)
+            .Include(c => c.ComboProducts)
+            .ThenInclude(l => l.Product);
 
         if (!string.IsNullOrWhiteSpace(search))
         {
@@ -71,7 +79,7 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
 
         foreach (var line in combo.Dishes)
         {
-            var existing = record.ComboDishes.FirstOrDefault(l => l.DishId == line.DishId);
+            var existing = record.ComboDishes.FirstOrDefault(l => l.DishId == line.Dish.Id);
             if (existing is null)
             {
                 record.ComboDishes.Add(line.ToRecord());
@@ -83,7 +91,7 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
         }
 
         foreach (var stale in record.ComboDishes
-            .Where(l => combo.Dishes.All(nl => nl.DishId != l.DishId))
+            .Where(l => combo.Dishes.All(nl => nl.Dish.Id != l.DishId))
             .ToList())
         {
             db.Remove(stale);
@@ -91,7 +99,7 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
 
         foreach (var line in combo.Products)
         {
-            var existing = record.ComboProducts.FirstOrDefault(l => l.ProductId == line.ProductId);
+            var existing = record.ComboProducts.FirstOrDefault(l => l.ProductId == line.Product.Id);
             if (existing is null)
             {
                 record.ComboProducts.Add(line.ToRecord());
@@ -103,7 +111,7 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
         }
 
         foreach (var stale in record.ComboProducts
-            .Where(l => combo.Products.All(nl => nl.ProductId != l.ProductId))
+            .Where(l => combo.Products.All(nl => nl.Product.Id != l.ProductId))
             .ToList())
         {
             db.Remove(stale);

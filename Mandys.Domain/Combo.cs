@@ -68,14 +68,16 @@ public class Combo
 /// </summary>
 public class ComboDish
 {
-    public int DishId { get; private set; }
+    public Dish Dish { get; private set; }
     public decimal Quantity { get; private set; }
 
-    public ComboDish(int dishId, decimal quantity)
+    public ComboDish(Dish dish, decimal quantity)
     {
-        if (dishId <= 0)
+        ArgumentNullException.ThrowIfNull(dish);
+
+        if (dish.Id <= 0)
         {
-            throw new ArgumentException("Dish id must be positive.", nameof(dishId));
+            throw new ArgumentException("Dish id must be positive.", nameof(dish));
         }
 
         if (quantity <= 0)
@@ -83,7 +85,7 @@ public class ComboDish
             throw new ArgumentException("Quantity must be positive.", nameof(quantity));
         }
 
-        DishId = dishId;
+        Dish = dish;
         Quantity = quantity;
     }
 }
@@ -93,14 +95,16 @@ public class ComboDish
 /// </summary>
 public class ComboProduct
 {
-    public int ProductId { get; private set; }
+    public Product Product { get; private set; }
     public decimal Quantity { get; private set; }
 
-    public ComboProduct(int productId, decimal quantity)
+    public ComboProduct(Product product, decimal quantity)
     {
-        if (productId <= 0)
+        ArgumentNullException.ThrowIfNull(product);
+
+        if (product.Id <= 0)
         {
-            throw new ArgumentException("Product id must be positive.", nameof(productId));
+            throw new ArgumentException("Product id must be positive.", nameof(product));
         }
 
         if (quantity <= 0)
@@ -108,7 +112,7 @@ public class ComboProduct
             throw new ArgumentException("Quantity must be positive.", nameof(quantity));
         }
 
-        ProductId = productId;
+        Product = product;
         Quantity = quantity;
     }
 }

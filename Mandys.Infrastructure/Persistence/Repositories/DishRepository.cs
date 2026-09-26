@@ -14,6 +14,7 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
         var record = await db.Dishes
             .AsNoTracking()
             .Include(d => d.DishProducts)
+            .ThenInclude(l => l.Product)
             .FirstOrDefaultAsync(d => d.Id == id);
         return record?.ToDomain();
     }
@@ -21,7 +22,10 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
     public async Task<(int TotalCount, IReadOnlyList<Dish> Items)> SearchAsync(
         string? search, int page, int pageSize)
     {
-        IQueryable<DishRecord> query = db.Dishes.AsNoTracking().Include(d => d.DishProducts);
+        IQueryable<DishRecord> query = db.Dishes
+            .AsNoTracking()
+            .Include(d => d.DishProducts)
+            .ThenInclude(l => l.Product);
 
         if (!string.IsNullOrWhiteSpace(search))
         {
@@ -66,7 +70,7 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
 
         foreach (var line in dish.Recipe)
         {
-            var existing = record.DishProducts.FirstOrDefault(l => l.ProductId == line.ProductId);
+            var existing = record.DishProducts.FirstOrDefault(l => l.ProductId == line.Product.Id);
             if (existing is null)
             {
                 record.DishProducts.Add(line.ToRecord());
@@ -78,7 +82,7 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
         }
 
         foreach (var stale in record.DishProducts
-            .Where(l => dish.Recipe.All(nl => nl.ProductId != l.ProductId))
+            .Where(l => dish.Recipe.All(nl => nl.Product.Id != l.ProductId))
             .ToList())
         {
             db.Remove(stale);

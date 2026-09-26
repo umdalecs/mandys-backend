@@ -34,12 +34,12 @@ internal static class ComboMapper
 internal static class ComboDishMapper
 {
     internal static ComboDish ToDomain(this ComboDishRecord record) =>
-        new(record.DishId, record.Quantity);
+        new(record.Dish.ToDomain(), record.Quantity);
 
     internal static ComboDishRecord ToRecord(this ComboDish line) =>
         new()
         {
-            DishId = line.DishId,
+            DishId = line.Dish.Id,
             Quantity = line.Quantity,
         };
 }
@@ -50,12 +50,12 @@ internal static class ComboDishMapper
 internal static class ComboProductMapper
 {
     internal static ComboProduct ToDomain(this ComboProductRecord record) =>
-        new(record.ProductId, record.Quantity);
+        new(record.Product.ToDomain(), record.Quantity);
 
     internal static ComboProductRecord ToRecord(this ComboProduct line) =>
         new()
         {
-            ProductId = line.ProductId,
+            ProductId = line.Product.Id,
             Quantity = line.Quantity,
         };
 }

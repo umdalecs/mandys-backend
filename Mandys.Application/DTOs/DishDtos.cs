@@ -3,7 +3,7 @@ using Mandys.Domain;
 namespace Mandys.DTOs;
 
 public record DishRecipeLineResponse(
-    int ProductId,
+    ProductResponse Product,
     decimal Quantity
 );
 
@@ -46,6 +46,6 @@ public static class DishMapper
             dish.Id,
             dish.Name,
             dish.Price,
-            dish.Recipe.Select(l => new DishRecipeLineResponse(l.ProductId, l.Quantity)).ToList()
+            dish.Recipe.Select(l => new DishRecipeLineResponse(l.Product.ToResponse(), l.Quantity)).ToList()
         );
 }

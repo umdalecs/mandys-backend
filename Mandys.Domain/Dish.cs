@@ -55,14 +55,16 @@ public class Dish
 /// </summary>
 public class DishProduct
 {
-    public int ProductId { get; private set; }
+    public Product Product { get; private set; }
     public decimal Quantity { get; private set; }
 
-    public DishProduct(int productId, decimal quantity)
+    public DishProduct(Product product, decimal quantity)
     {
-        if (productId <= 0)
+        ArgumentNullException.ThrowIfNull(product);
+
+        if (product.Id <= 0)
         {
-            throw new ArgumentException("Product id must be positive.", nameof(productId));
+            throw new ArgumentException("Product id must be positive.", nameof(product));
         }
 
         if (quantity <= 0)
@@ -70,7 +72,7 @@ public class DishProduct
             throw new ArgumentException("Quantity must be positive.", nameof(quantity));
         }
 
-        ProductId = productId;
+        Product = product;
         Quantity = quantity;
     }
 }

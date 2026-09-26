@@ -102,7 +102,7 @@ public class DishService(IDishRepository dishes, IProductRepository products) : 
                     $"Product '{product.Description}' (ID '{product.Id}') is not a supply and cannot be a recipe ingredient.");
             }
 
-            recipe.Add(new DishProduct(line.ProductId, line.Quantity));
+            recipe.Add(new DishProduct(product, line.Quantity));
         }
 
         return recipe;

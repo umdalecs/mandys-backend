@@ -32,12 +32,12 @@ internal static class DishMapper
 internal static class DishProductMapper
 {
     internal static DishProduct ToDomain(this DishProductRecord record) =>
-        new(record.ProductId, record.Quantity);
+        new(record.Product.ToDomain(), record.Quantity);
 
     internal static DishProductRecord ToRecord(this DishProduct line) =>
         new()
         {
-            ProductId = line.ProductId,
+            ProductId = line.Product.Id,
             Quantity = line.Quantity,
         };
 }
