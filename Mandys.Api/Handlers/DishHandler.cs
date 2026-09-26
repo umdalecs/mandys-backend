@@ -24,7 +24,7 @@ public class DishHandler : ICarterModule
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
                 Roles.OpChief));
-        
+
         // Possible roles
         //     ,
         // Roles.BranchChief,
@@ -35,7 +35,7 @@ public class DishHandler : ICarterModule
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
                 Roles.OpChief));
-        
+
         // Possible roles
         //     ,
         // Roles.BranchChief,
