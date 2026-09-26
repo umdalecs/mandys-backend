@@ -12,6 +12,9 @@ run-api:
 run-database:
 	docker compose -f docker/compose.yml up database -d
 
+stop-database:
+	docker compose -f docker/compose.yml down database -v
+
 migrations-fresh: migrations-clean migrations-init
 
 migrations-clean:
