@@ -181,6 +181,22 @@ docker compose -f docker/compose.yml -f docker/compose.database.yml down
 
 (add `-v` only to wipe the database).
 
+### Optional: pgAdmin 4 (browse the database / ERD)
+
+Behind the `tools` profile, so the run modes above are unaffected:
+
+```bash
+docker compose -f docker/compose.database.yml --profile tools up -d pgadmin
+```
+
+Open `http://localhost:5050` and log in with `admin@mandys.com` / `postgres`
+(override with `PGADMIN_EMAIL` / `PGADMIN_PASSWORD` / `PGADMIN_PORT` in
+`docker/.env`). Register the server once: host `database`, port `5432`,
+maintenance database `mandys`. Use **Tools → ERD Server** for the diagram, and
+**Tools → Query Tool** to inspect data.
+
+Stop it with `docker compose -f docker/compose.database.yml --profile tools stop pgadmin`.
+
 ### Verify it works
 
 ```bash

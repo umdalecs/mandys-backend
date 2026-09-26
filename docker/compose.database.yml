@@ -10,6 +10,14 @@
 #   docker compose -f docker/compose.yml -f docker/compose.database.yml up --build
 # Usage (from inside docker/):
 #   docker compose -f compose.yml -f compose.database.yml up --build
+#
+# Optional tools live behind the `tools` profile, so the flows above are
+# unaffected. Start pgAdmin 4 (browser + ERD view of the same database) with:
+#   docker compose -f docker/compose.database.yml --profile tools up -d pgadmin
+# then open http://localhost:${PGADMIN_PORT:-5050} and log in with
+# ${PGADMIN_EMAIL:-admin@mandys.com} / ${PGADMIN_PASSWORD:-postgres}. Register
+# the server manually once: host `database`, port 5432, maintenance database
+# ${POSTGRES_DB:-mandys}.
 
 services:
   database:
@@ -29,6 +37,20 @@ services:
       retries: 10
       start_period: 10s
 
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    profiles: ["tools"]
+    ports:
+      - ${PGADMIN_PORT:-5050}:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@mandyspos.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-administrator}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      database:
+        condition: service_healthy
+
   api:
     # Build is repeated from compose.yml so this file is also valid on its
     # own (e.g. `docker compose -f compose.database.yml up -d database`).
@@ -45,3 +67,4 @@ services:
 
 volumes:
   database-data:
+  pgadmin-data:
