@@ -19,12 +19,20 @@ public class UserRecord : Record
     [Required]
     [MaxLength(50)]
     public string LastName { get; set; } = string.Empty;
-    [Required]
+    /// <summary>
+    /// Login handle. Null when the user has no login credentials (a
+    /// point-of-sale customer that never registered), which also makes the
+    /// row unreachable by the login lookup.
+    /// </summary>
     [MaxLength(50)]
-    public string Email { get; set; } = string.Empty;
-    [Required]
+    public string? Email { get; set; }
+
+    /// <summary>
+    /// Argon2 hash of the login password. Null when the user has no login
+    /// credentials.
+    /// </summary>
     [Column("password")]
-    public string PasswordHash { get; set; } = string.Empty;
+    public string? PasswordHash { get; set; }
     [Required]
     [MaxLength(50)]
     public string Role { get; set; } = Roles.Customer;

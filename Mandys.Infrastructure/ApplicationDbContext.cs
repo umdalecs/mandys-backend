@@ -41,6 +41,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.HasIndex(u => u.BranchId);
 
+            // Credential-less users keep a null email, and Postgres allows
+            // any number of nulls in a unique index, so this only stops two
+            // login handles from colliding.
+            entity.HasIndex(u => u.Email).IsUnique();
+
                         // Note: Make sure to only use static data here
             entity.HasData(
                 new

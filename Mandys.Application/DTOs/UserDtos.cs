@@ -6,17 +6,18 @@ public record UserResponse(
     int Id,
     string FirstName,
     string LastName,
-    string Email,
+    string? Email,
     string Role,
-    int? BranchId
+    int? BranchId,
+    bool HasLogin
 );
 
 public record CreateUserRequest(
     string FirstName,
     string LastName,
-    string Email,
-    string UserName,
-    string Password,
+    string? Email = null,
+    string? UserName = null,
+    string? Password = null,
     string? Role = null,
     int? BranchId = null
 );
@@ -49,6 +50,7 @@ public static class UserMapper
             user.LastName,
             user.Email,
             user.Role,
-            user.BranchId
+            user.BranchId,
+            user.HasLogin
         );
 }

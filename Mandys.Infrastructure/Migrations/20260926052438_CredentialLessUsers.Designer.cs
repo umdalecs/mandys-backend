@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Mandys.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260926020320_Initial")]
-    partial class Initial
+    [Migration("20260926052438_CredentialLessUsers")]
+    partial class CredentialLessUsers
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -3938,7 +3938,6 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnName("deleted_at");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("email");
@@ -3960,7 +3959,6 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnName("last_name");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("password");
 
@@ -3979,6 +3977,10 @@ namespace Mandys.Infrastructure.Migrations
 
                     b.HasIndex("BranchId")
                         .HasDatabaseName("ix_users_branch_id");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_email");
 
                     b.ToTable("users", (string)null);
 

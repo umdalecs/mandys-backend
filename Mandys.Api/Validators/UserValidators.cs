@@ -17,18 +17,22 @@ public class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
             .WithMessage("Last name is required.");
 
         RuleFor(x => x.Email)
-            .NotEmpty()
-            .WithMessage("Email is required.")
             .EmailAddress()
+            .When(x => !string.IsNullOrWhiteSpace(x.Email))
             .WithMessage("Invalid email.");
 
-        RuleFor(x => x.UserName)
-            .NotEmpty()
-            .WithMessage("Username is required.");
-
+        // No email and no password means the user has no login credentials,
+        // which is valid for a point-of-sale customer. Supplying one without
+        // the other is not.
         RuleFor(x => x.Password)
             .NotEmpty()
-            .WithMessage("Password is required.");
+            .When(x => !string.IsNullOrWhiteSpace(x.Email))
+            .WithMessage("Password is required when an email is set.");
+
+        RuleFor(x => x.UserName)
+            .MaximumLength(50)
+            .When(x => !string.IsNullOrWhiteSpace(x.UserName))
+            .WithMessage("Username must be at most 50 characters.");
 
         RuleFor(x => x.Role)
             .Must(role => Roles.IsValid(role))

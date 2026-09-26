@@ -54,19 +54,27 @@ public class UserService(
             ? Roles.Customer
             : Roles.Normalize(request.Role.Trim());
 
-        var normalizedEmail = request.Email.Trim().ToLowerInvariant();
+        // No password means no login credentials: a point-of-sale customer
+        // that never registered. Email and password go together.
+        var wantsLogin = !string.IsNullOrWhiteSpace(request.Password);
+        var email = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email.Trim().ToLowerInvariant();
 
-        if (await users.ExistsByEmailAsync(normalizedEmail))
+        if (wantsLogin && email is null)
         {
-            throw ServiceException.Conflict($"Email '{normalizedEmail}' is already registered.");
+            throw ServiceException.BadRequest("An email is required to set a password.");
+        }
+
+        if (email is not null && await users.ExistsByEmailAsync(email))
+        {
+            throw ServiceException.Conflict($"Email '{email}' is already registered.");
         }
 
         var created = await users.AddAsync(new User(
             0,
             request.FirstName.Trim(),
             request.LastName.Trim(),
-            normalizedEmail,
-            passwordHasher.Hash(request.Password),
+            email,
+            wantsLogin ? passwordHasher.Hash(request.Password!) : null,
             role,
             request.BranchId));
 
@@ -81,7 +89,12 @@ public class UserService(
             throw ServiceException.NotFound($"User with ID '{id}' not found.");
         }
 
-        if (!string.IsNullOrWhiteSpace(request.Email) && request.Email.Trim().ToLowerInvariant() != user.Email.ToLowerInvariant())
+        if (!string.IsNullOrWhiteSpace(request.Password) && string.IsNullOrWhiteSpace(request.Email))
+        {
+            throw ServiceException.BadRequest("An email is required to set a password.");
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Email) && request.Email.Trim().ToLowerInvariant() != user.Email?.ToLowerInvariant())
         {
             var trimmedEmail = request.Email.Trim().ToLowerInvariant();
             if (await users.ExistsByEmailAsync(trimmedEmail, id))

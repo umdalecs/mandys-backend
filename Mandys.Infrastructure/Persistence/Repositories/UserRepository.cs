@@ -18,8 +18,10 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
     public async Task<User?> FindByEmailAsync(string email)
     {
         var normalized = email.Trim().ToLowerInvariant();
+        // Rows with a null email never match, which is what keeps
+        // credential-less users out of the login flow.
         var record = await db.Users
-            .FirstOrDefaultAsync(u => u.Email.ToLower() == normalized);
+            .FirstOrDefaultAsync(u => u.Email!.ToLower() == normalized);
         return record?.ToDomain();
     }
 
@@ -27,8 +29,8 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
     {
         var normalized = email.Trim().ToLowerInvariant();
         return excludingId.HasValue
-            ? db.Users.AnyAsync(u => u.Id != excludingId && u.Email.ToLower() == normalized)
-            : db.Users.AnyAsync(u => u.Email.ToLower() == normalized);
+            ? db.Users.AnyAsync(u => u.Id != excludingId && u.Email!.ToLower() == normalized)
+            : db.Users.AnyAsync(u => u.Email!.ToLower() == normalized);
     }
 
     public async Task<(int TotalCount, IReadOnlyList<User> Items)> SearchAsync(
@@ -40,7 +42,7 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
         {
             var term = search.Trim().ToLower();
             query = query.Where(u =>
-                u.Email.ToLower().Contains(term) ||
+                (u.Email != null && u.Email.ToLower().Contains(term)) ||
                 u.FirstName.ToLower().Contains(term) ||
                 u.LastName.ToLower().Contains(term));
         }

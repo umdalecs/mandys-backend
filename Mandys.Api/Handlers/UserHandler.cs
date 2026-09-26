@@ -28,13 +28,13 @@ public class UserHandler : ICarterModule
 
         adminRoutes.MapGet("", GetUsers);
 
-        adminRoutes.MapGet("/{id:guid}", GetUserById);
+        adminRoutes.MapGet("/{id:int}", GetUserById);
 
         adminRoutes.MapPost("", CreateUser);
 
-        adminRoutes.MapPut("/{id:guid}", UpdateUser);
+        adminRoutes.MapPut("/{id:int}", UpdateUser);
 
-        adminRoutes.MapDelete("/{id:guid}", DeleteUser);
+        adminRoutes.MapDelete("/{id:int}", DeleteUser);
     }
 
     private static async Task<IResult> GetCurrentUser(

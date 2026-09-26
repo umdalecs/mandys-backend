@@ -24,12 +24,18 @@ public class TokenService(IOptions<JwtOptions> jwtOptions) : ITokenService
             new(ClaimTypes.NameIdentifier, user.ID.ToString()),
             new(JwtRegisteredClaimNames.Sub, user.ID.ToString()),
             new(ClaimTypes.Name, user.FirstName),
-            new(ClaimTypes.Email, user.Email),
             new(ClaimTypes.Role, user.Role),
             new("firstName", user.FirstName),
             new("lastName", user.LastName),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
+
+        // Only users with login credentials carry an email, so the claim is
+        // optional.
+        if (user.Email is not null)
+        {
+            claims.Add(new Claim(ClaimTypes.Email, user.Email));
+        }
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {

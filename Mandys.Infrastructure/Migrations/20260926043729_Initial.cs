@@ -52,6 +52,25 @@ namespace Mandys.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "customers",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    points = table.Column<decimal>(type: "numeric", nullable: false),
+                    email = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_customers", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "dishes",
                 columns: table => new
                 {
@@ -665,6 +684,9 @@ namespace Mandys.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "combo_products");
+
+            migrationBuilder.DropTable(
+                name: "customers");
 
             migrationBuilder.DropTable(
                 name: "dish_products");
