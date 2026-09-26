@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Mandys.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260926062329_Initial")]
+    [Migration("20260926063649_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -70,6 +70,18 @@ namespace Mandys.Infrastructure.Migrations
                         .HasName("pk_branches");
 
                     b.ToTable("branches", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "Av. Río Presa 1200, Centro, Culiacán",
+                            CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Sucursal Culiacán Centro",
+                            UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
+                            WarehouseOnly = false
+                        });
                 });
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.ComboDishRecord", b =>
@@ -3994,11 +4006,101 @@ namespace Mandys.Infrastructure.Migrations
                             Id = 1,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "admin@mandyspos.com",
-                            FirstName = "Administrator",
+                            FirstName = "Administrador",
                             IsDeleted = false,
-                            LastName = "Administrator",
-                            PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$YWRtaW5pc3RyYXRvcnNhbHQ$n/2qmo8rW3KVIHy7g2Y0XA",
+                            LastName = "Sistema",
+                            PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
                             Role = "administrador",
+                            UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BranchId = 1,
+                            CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "operaciones@mandyspos.com",
+                            FirstName = "Gerente",
+                            IsDeleted = false,
+                            LastName = "Operaciones",
+                            PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
+                            Role = "gerenteOperaciones",
+                            UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BranchId = 1,
+                            CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "almacen.central@mandyspos.com",
+                            FirstName = "Encargado",
+                            IsDeleted = false,
+                            LastName = "Almacén Central",
+                            PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
+                            Role = "encargadoAlmacenCentral",
+                            UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BranchId = 1,
+                            CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "almacen@mandyspos.com",
+                            FirstName = "Encargado",
+                            IsDeleted = false,
+                            LastName = "Almacén",
+                            PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
+                            Role = "encargadoAlmacen",
+                            UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            BranchId = 1,
+                            CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "caja@mandyspos.com",
+                            FirstName = "Cajero",
+                            IsDeleted = false,
+                            LastName = "Sucursal",
+                            PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
+                            Role = "cajero",
+                            UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 6,
+                            BranchId = 1,
+                            CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "cocina@mandyspos.com",
+                            FirstName = "Jefe",
+                            IsDeleted = false,
+                            LastName = "Cocina",
+                            PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
+                            Role = "jefeCocina",
+                            UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 7,
+                            BranchId = 1,
+                            CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "sucursal@mandyspos.com",
+                            FirstName = "Gerente",
+                            IsDeleted = false,
+                            LastName = "Sucursal",
+                            PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
+                            Role = "gerenteSucursal",
+                            UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "cliente@mandyspos.com",
+                            FirstName = "Cliente",
+                            IsDeleted = false,
+                            LastName = "Demo",
+                            PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
+                            Role = "cliente",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });

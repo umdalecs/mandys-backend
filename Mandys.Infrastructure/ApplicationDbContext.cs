@@ -47,18 +47,134 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasIndex(u => u.Email).IsUnique();
 
             // Note: Make sure to only use static data here
+            // One account per role so every role can be exercised locally.
+            // plain password for all of them: mandyspos
+            const string passwordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q";
+            var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+
+            // Every role but administrador and cliente belongs to the seeded
+            // branch, so those rows carry BranchId 1.
             entity.HasData(
                 new
                 {
                     Id = 1,
                     Email = "admin@mandyspos.com",
-                    // plain password: administrator
-                    PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$YWRtaW5pc3RyYXRvcnNhbHQ$n/2qmo8rW3KVIHy7g2Y0XA",
-                    FirstName = "Administrator",
-                    LastName = "Administrator",
+                    PasswordHash = passwordHash,
+                    FirstName = "Administrador",
+                    LastName = "Sistema",
                     Role = Roles.Administrator,
-                    CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc),
+                    BranchId = (int?)null,
+                    CreatedAt = seededAt,
+                    UpdatedAt = seededAt,
+                    IsDeleted = false,
+                },
+                new
+                {
+                    Id = 2,
+                    Email = "operaciones@mandyspos.com",
+                    PasswordHash = passwordHash,
+                    FirstName = "Gerente",
+                    LastName = "Operaciones",
+                    Role = Roles.OpChief,
+                    BranchId = (int?)1,
+                    CreatedAt = seededAt,
+                    UpdatedAt = seededAt,
+                    IsDeleted = false,
+                },
+                new
+                {
+                    Id = 3,
+                    Email = "almacen.central@mandyspos.com",
+                    PasswordHash = passwordHash,
+                    FirstName = "Encargado",
+                    LastName = "Almacén Central",
+                    Role = Roles.CentralWarehouseChief,
+                    BranchId = (int?)1,
+                    CreatedAt = seededAt,
+                    UpdatedAt = seededAt,
+                    IsDeleted = false,
+                },
+                new
+                {
+                    Id = 4,
+                    Email = "almacen@mandyspos.com",
+                    PasswordHash = passwordHash,
+                    FirstName = "Encargado",
+                    LastName = "Almacén",
+                    Role = Roles.WarehouseChief,
+                    BranchId = (int?)1,
+                    CreatedAt = seededAt,
+                    UpdatedAt = seededAt,
+                    IsDeleted = false,
+                },
+                new
+                {
+                    Id = 5,
+                    Email = "caja@mandyspos.com",
+                    PasswordHash = passwordHash,
+                    FirstName = "Cajero",
+                    LastName = "Sucursal",
+                    Role = Roles.Cashier,
+                    BranchId = (int?)1,
+                    CreatedAt = seededAt,
+                    UpdatedAt = seededAt,
+                    IsDeleted = false,
+                },
+                new
+                {
+                    Id = 6,
+                    Email = "cocina@mandyspos.com",
+                    PasswordHash = passwordHash,
+                    FirstName = "Jefe",
+                    LastName = "Cocina",
+                    Role = Roles.KitchenChief,
+                    BranchId = (int?)1,
+                    CreatedAt = seededAt,
+                    UpdatedAt = seededAt,
+                    IsDeleted = false,
+                },
+                new
+                {
+                    Id = 7,
+                    Email = "sucursal@mandyspos.com",
+                    PasswordHash = passwordHash,
+                    FirstName = "Gerente",
+                    LastName = "Sucursal",
+                    Role = Roles.BranchChief,
+                    BranchId = (int?)1,
+                    CreatedAt = seededAt,
+                    UpdatedAt = seededAt,
+                    IsDeleted = false,
+                },
+                new
+                {
+                    Id = 8,
+                    Email = "cliente@mandyspos.com",
+                    PasswordHash = passwordHash,
+                    FirstName = "Cliente",
+                    LastName = "Demo",
+                    Role = Roles.Customer,
+                    BranchId = (int?)null,
+                    CreatedAt = seededAt,
+                    UpdatedAt = seededAt,
+                    IsDeleted = false,
+                }
+            );
+        });
+
+        modelBuilder.Entity<BranchRecord>(entity =>
+        {
+            // Note: Make sure to only use static data here
+            var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
+            entity.HasData(
+                new
+                {
+                    Id = 1,
+                    Name = "Sucursal Culiacán Centro",
+                    Address = "Av. Río Presa 1200, Centro, Culiacán",
+                    WarehouseOnly = false,
+                    CreatedAt = seededAt,
+                    UpdatedAt = seededAt,
                     IsDeleted = false,
                 }
             );

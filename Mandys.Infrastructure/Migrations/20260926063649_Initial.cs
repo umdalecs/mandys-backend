@@ -233,6 +233,11 @@ namespace Mandys.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "branches",
+                columns: new[] { "id", "address", "created_at", "deleted_at", "is_deleted", "name", "updated_at", "warehouse_only" },
+                values: new object[] { 1, "Av. Río Presa 1200, Centro, Culiacán", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, false, "Sucursal Culiacán Centro", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), false });
+
+            migrationBuilder.InsertData(
                 table: "combos",
                 columns: new[] { "id", "created_at", "deleted_at", "is_deleted", "name", "price", "updated_at" },
                 values: new object[,]
@@ -491,7 +496,11 @@ namespace Mandys.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "users",
                 columns: new[] { "id", "banned_at", "branch_id", "created_at", "deleted_at", "email", "first_name", "is_deleted", "last_name", "password", "role", "updated_at" },
-                values: new object[] { 1, null, null, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "admin@mandyspos.com", "Administrator", false, "Administrator", "$argon2id$v=19$m=16,t=2,p=1$YWRtaW5pc3RyYXRvcnNhbHQ$n/2qmo8rW3KVIHy7g2Y0XA", "administrador", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) });
+                values: new object[,]
+                {
+                    { 1, null, null, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "admin@mandyspos.com", "Administrador", false, "Sistema", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "administrador", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 8, null, null, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "cliente@mandyspos.com", "Cliente", false, "Demo", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "cliente", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) }
+                });
 
             migrationBuilder.InsertData(
                 table: "combo_dishes",
@@ -609,6 +618,19 @@ namespace Mandys.Infrastructure.Migrations
                     { 68, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, 10, false, 125, 0.02m, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
                     { 69, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, 10, false, 80, 0.01m, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
                     { 70, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, 10, false, 32, 0.02m, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "users",
+                columns: new[] { "id", "banned_at", "branch_id", "created_at", "deleted_at", "email", "first_name", "is_deleted", "last_name", "password", "role", "updated_at" },
+                values: new object[,]
+                {
+                    { 2, null, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "operaciones@mandyspos.com", "Gerente", false, "Operaciones", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "gerenteOperaciones", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 3, null, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "almacen.central@mandyspos.com", "Encargado", false, "Almacén Central", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "encargadoAlmacenCentral", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 4, null, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "almacen@mandyspos.com", "Encargado", false, "Almacén", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "encargadoAlmacen", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 5, null, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "caja@mandyspos.com", "Cajero", false, "Sucursal", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "cajero", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 6, null, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "cocina@mandyspos.com", "Jefe", false, "Cocina", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "jefeCocina", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 7, null, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "sucursal@mandyspos.com", "Gerente", false, "Sucursal", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "gerenteSucursal", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) }
                 });
 
             migrationBuilder.CreateIndex(
