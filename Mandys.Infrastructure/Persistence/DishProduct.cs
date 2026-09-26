@@ -34,5 +34,6 @@ public class DishProductRecord : Record
     /// <summary>
     /// Amount of the product used in the dish, in the product's measure unit.
     /// </summary>
+    [Required]
     public int Quantity { get; set; }
 }
