@@ -35,6 +35,13 @@ public class AuthService(
             throw ServiceException.Unauthorized();
         }
 
+        // Checked after the password so a wrong password never reveals that
+        // the account exists but is banned.
+        if (user.IsBanned)
+        {
+            throw ServiceException.Unauthorized();
+        }
+
         var accessToken = tokenService.GenerateToken(user);
         var refreshToken = tokenService.GenerateRefreshToken();
 
@@ -73,6 +80,14 @@ public class AuthService(
         var user = await users.GetByIdAsync(stored.UserId);
         if (user is null)
         {
+            throw ServiceException.Unauthorized();
+        }
+
+        // A ban has to end the sessions too, otherwise an already issued
+        // access token keeps working until it expires.
+        if (user.IsBanned)
+        {
+            await refreshTokens.RevokeAllAsync(user.ID);
             throw ServiceException.Unauthorized();
         }
 

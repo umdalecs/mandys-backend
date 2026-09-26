@@ -44,6 +44,13 @@ public class UserRecord : Record
     public int? BranchId { get; set; }
 
     /// <summary>
+    /// When the account was banned. Null means not banned; the value doubles
+    /// as the reason the account is disabled, so it is kept as a timestamp
+    /// rather than a bare flag.
+    /// </summary>
+    public DateTime? BannedAt { get; set; }
+
+    /// <summary>
     /// Branch this user belongs to. Inverse of <see cref="BranchRecord.Users"/>.
     /// </summary>
     [ForeignKey(nameof(BranchId))]

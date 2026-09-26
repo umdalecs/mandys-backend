@@ -29,8 +29,16 @@ public class User
     /// every other role.
     /// </summary>
     public int? BranchId { get; private set; }
+
+    /// <summary>
+    /// When the account was banned. Null means not banned.
+    /// </summary>
+    public DateTime? BannedAt { get; private set; }
+
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
+
+    public bool IsBanned => BannedAt.HasValue;
 
     /// <summary>
     /// Whether this user can log in. Derived from the credential columns, so
@@ -47,6 +55,7 @@ public class User
         string? passwordHash,
         string role,
         int? branchId = null,
+        DateTime? bannedAt = null,
         DateTime? createdAt = null,
         DateTime? updatedAt = null)
     {
@@ -57,6 +66,7 @@ public class User
         PasswordHash = GuardPasswordHash(passwordHash, Email);
         Role = GuardRole(role);
         BranchId = GuardBranch(Role, branchId);
+        BannedAt = bannedAt;
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
     }
@@ -92,6 +102,17 @@ public class User
 
     public void ClearBranch() => SetBranch(null);
 
+    /// <summary>
+    /// Bans the account: it can no longer log in and its sessions are cut on
+    /// the next refresh. Banning twice keeps the original timestamp.
+    /// </summary>
+    public void Ban()
+    {
+        BannedAt ??= DateTime.UtcNow;
+    }
+
+    public void Unban() => BannedAt = null;
+
     public void SetPasswordHash(string passwordHash)
     {
         PasswordHash = GuardNotEmpty(passwordHash, nameof(passwordHash));
@@ -112,18 +133,17 @@ public class User
         string.IsNullOrWhiteSpace(email) ? null : email.Trim().ToLowerInvariant();
 
     /// <summary>
-    /// A login handle and a password hash go together: an email without a
-    /// hash could never log in, and a hash without an email is unreachable
-    /// because logins are looked up by email.
+    /// Three states are valid: no email and no hash (a counter customer
+    /// nobody can reach), an email without a hash (identified by email, so
+    /// stored points can be reclaimed, but no login), and both together (a
+    /// login). A hash without an email is the one useless combination,
+    /// because logins are looked up by email, so it is rejected.
     /// </summary>
     private static string? GuardPasswordHash(string? passwordHash, string? email)
     {
         if (string.IsNullOrWhiteSpace(passwordHash))
         {
-            return email is null
-                ? null
-                : throw new ArgumentException(
-                    "A password hash is required when an email is set.", nameof(passwordHash));
+            return null;
         }
 
         if (email is null)

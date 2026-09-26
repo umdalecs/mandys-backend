@@ -46,7 +46,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             // login handles from colliding.
             entity.HasIndex(u => u.Email).IsUnique();
 
-                        // Note: Make sure to only use static data here
+            // Note: Make sure to only use static data here
             entity.HasData(
                 new
                 {

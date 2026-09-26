@@ -64,6 +64,15 @@ public class UserService(
             throw ServiceException.BadRequest("An email is required to set a password.");
         }
 
+        // Only customers may exist without credentials. Staff without a
+        // password could never log in, and a claim-by-email elsewhere in the
+        // system would hand the account to whoever knows the address.
+        if (!wantsLogin && !IsCustomer(role))
+        {
+            throw ServiceException.BadRequest(
+                $"Role '{role}' requires login credentials: an email and a password are mandatory.");
+        }
+
         if (email is not null && await users.ExistsByEmailAsync(email))
         {
             throw ServiceException.Conflict($"Email '{email}' is already registered.");
@@ -126,6 +135,14 @@ public class UserService(
                 $"Role '{effectiveRole}' requires a branch. Only administrators and customers may omit it.");
         }
 
+        // Same for credentials: promoting a credential-less customer to a
+        // staff role is only allowed if this request also sets a password.
+        if (!IsCustomer(effectiveRole) && !user.HasLogin && string.IsNullOrWhiteSpace(request.Password))
+        {
+            throw ServiceException.BadRequest(
+                $"Role '{effectiveRole}' requires login credentials: send a password with this change.");
+        }
+
         // Branch first so a simultaneous role upgrade sees the new branch.
         if (request.ClearBranch)
         {
@@ -167,4 +184,11 @@ public class UserService(
         await users.RemoveAsync(id);
         await refreshTokens.RevokeAllAsync(id);
     }
+
+    /// <summary>
+    /// Customers are the only role allowed to exist without login
+    /// credentials.
+    /// </summary>
+    private static bool IsCustomer(string role) =>
+        string.Equals(role, Roles.Customer, StringComparison.OrdinalIgnoreCase);
 }

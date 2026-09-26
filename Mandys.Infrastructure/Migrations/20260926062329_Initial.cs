@@ -52,25 +52,6 @@ namespace Mandys.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "customers",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    points = table.Column<decimal>(type: "numeric", nullable: false),
-                    email = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_customers", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "dishes",
                 columns: table => new
                 {
@@ -116,10 +97,11 @@ namespace Mandys.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     first_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     last_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    email = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    password = table.Column<string>(type: "text", nullable: false),
+                    email = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    password = table.Column<string>(type: "text", nullable: true),
                     role = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     branch_id = table.Column<int>(type: "integer", nullable: true),
+                    banned_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -508,8 +490,8 @@ namespace Mandys.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "users",
-                columns: new[] { "id", "branch_id", "created_at", "deleted_at", "email", "first_name", "is_deleted", "last_name", "password", "role", "updated_at" },
-                values: new object[] { 1, null, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "admin@mandyspos.com", "Administrator", false, "Administrator", "$argon2id$v=19$m=16,t=2,p=1$YWRtaW5pc3RyYXRvcnNhbHQ$n/2qmo8rW3KVIHy7g2Y0XA", "administrador", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) });
+                columns: new[] { "id", "banned_at", "branch_id", "created_at", "deleted_at", "email", "first_name", "is_deleted", "last_name", "password", "role", "updated_at" },
+                values: new object[] { 1, null, null, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "admin@mandyspos.com", "Administrator", false, "Administrator", "$argon2id$v=19$m=16,t=2,p=1$YWRtaW5pc3RyYXRvcnNhbHQ$n/2qmo8rW3KVIHy7g2Y0XA", "administrador", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) });
 
             migrationBuilder.InsertData(
                 table: "combo_dishes",
@@ -674,6 +656,12 @@ namespace Mandys.Infrastructure.Migrations
                 name: "ix_users_branch_id",
                 table: "users",
                 column: "branch_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_users_email",
+                table: "users",
+                column: "email",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -684,9 +672,6 @@ namespace Mandys.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "combo_products");
-
-            migrationBuilder.DropTable(
-                name: "customers");
 
             migrationBuilder.DropTable(
                 name: "dish_products");

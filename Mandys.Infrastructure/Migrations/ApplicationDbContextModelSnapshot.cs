@@ -3922,6 +3922,10 @@ namespace Mandys.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("BannedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("banned_at");
+
                     b.Property<int?>("BranchId")
                         .HasColumnType("integer")
                         .HasColumnName("branch_id");

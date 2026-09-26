@@ -21,13 +21,14 @@ public class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
             .When(x => !string.IsNullOrWhiteSpace(x.Email))
             .WithMessage("Invalid email.");
 
-        // No email and no password means the user has no login credentials,
-        // which is valid for a point-of-sale customer. Supplying one without
-        // the other is not.
+        // Email and password are both optional: neither means a counter
+        // customer, email alone identifies a customer whose points can be
+        // reclaimed, and both together is a login. Only customers may skip
+        // them, so every other role has to arrive with credentials.
         RuleFor(x => x.Password)
             .NotEmpty()
-            .When(x => !string.IsNullOrWhiteSpace(x.Email))
-            .WithMessage("Password is required when an email is set.");
+            .When(x => !IsCustomerRole(EffectiveRole(x.Role)))
+            .WithMessage(x => $"Role '{EffectiveRole(x.Role)}' requires login credentials: email and password are mandatory.");
 
         RuleFor(x => x.UserName)
             .MaximumLength(50)
@@ -52,6 +53,9 @@ public class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
 
     private static string EffectiveRole(string? role) =>
         string.IsNullOrWhiteSpace(role) ? Roles.Customer : Roles.Normalize(role.Trim());
+
+    private static bool IsCustomerRole(string role) =>
+        string.Equals(role, Roles.Customer, StringComparison.OrdinalIgnoreCase);
 }
 
 public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
