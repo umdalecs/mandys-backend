@@ -17,7 +17,7 @@ run-database:
 stop-database:
 	docker compose -f docker/compose.yml down database -v
 
-fresh-migrations: migrations-clean migrations-init
+fresh-migrations: clean-migrations init-migrations
 
 clean-migrations:
 	dotnet ef database update 0 $(EF_ARGS)
