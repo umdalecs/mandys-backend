@@ -31,7 +31,7 @@ public class BranchRepository(ApplicationDbContext db) : IBranchRepository
         var totalCount = await query.CountAsync();
 
         var items = await query
-            .OrderBy(b => b.CreatedAt)
+            .OrderBy(b => b.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

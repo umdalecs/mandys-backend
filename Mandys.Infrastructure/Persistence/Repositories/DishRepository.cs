@@ -13,7 +13,7 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
     {
         var record = await db.Dishes
             .AsNoTracking()
-            .Include(d => d.DishProducts)
+            .Include(d => d.DishProducts.OrderBy(l => l.Id))
             .ThenInclude(l => l.Product)
             .FirstOrDefaultAsync(d => d.Id == id);
         return record?.ToDomain();
@@ -24,7 +24,7 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
     {
         IQueryable<DishRecord> query = db.Dishes
             .AsNoTracking()
-            .Include(d => d.DishProducts)
+            .Include(d => d.DishProducts.OrderBy(l => l.Id))
             .ThenInclude(l => l.Product);
 
         if (!string.IsNullOrWhiteSpace(search))
@@ -36,7 +36,7 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
         var totalCount = await query.CountAsync();
 
         var items = await query
-            .OrderBy(d => d.CreatedAt)
+            .OrderBy(d => d.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

@@ -13,11 +13,11 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
     {
         var record = await db.Combos
             .AsNoTracking()
-            .Include(c => c.ComboDishes)
+            .Include(c => c.ComboDishes.OrderBy(l => l.Id))
             .ThenInclude(l => l.Dish)
-            .ThenInclude(d => d.DishProducts)
+            .ThenInclude(d => d.DishProducts.OrderBy(l => l.Id))
             .ThenInclude(l => l.Product)
-            .Include(c => c.ComboProducts)
+            .Include(c => c.ComboProducts.OrderBy(l => l.Id))
             .ThenInclude(l => l.Product)
             .FirstOrDefaultAsync(c => c.Id == id);
         return record?.ToDomain();
@@ -28,11 +28,11 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
     {
         IQueryable<ComboRecord> query = db.Combos
             .AsNoTracking()
-            .Include(c => c.ComboDishes)
+            .Include(c => c.ComboDishes.OrderBy(l => l.Id))
             .ThenInclude(l => l.Dish)
-            .ThenInclude(d => d.DishProducts)
+            .ThenInclude(d => d.DishProducts.OrderBy(l => l.Id))
             .ThenInclude(l => l.Product)
-            .Include(c => c.ComboProducts)
+            .Include(c => c.ComboProducts.OrderBy(l => l.Id))
             .ThenInclude(l => l.Product);
 
         if (!string.IsNullOrWhiteSpace(search))
@@ -44,7 +44,7 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
         var totalCount = await query.CountAsync();
 
         var items = await query
-            .OrderBy(c => c.CreatedAt)
+            .OrderBy(c => c.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

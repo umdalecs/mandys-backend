@@ -31,7 +31,7 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
         var totalCount = await query.CountAsync();
 
         var items = await query
-            .OrderBy(p => p.CreatedAt)
+            .OrderBy(p => p.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
