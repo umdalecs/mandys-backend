@@ -25,9 +25,9 @@ public class CustomerHandler : ICarterModule
         customerRoutes.MapGet("", GetCustomers)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
+                // Roles.Cashier,
                 Roles.BranchChief,
-                Roles.OpChief,
-                Roles.Cashier));
+                Roles.OpChief));
 
         customerRoutes.MapPost("", CreateCustomer)
             .RequireAuthorization(policy => policy.RequireRole(
