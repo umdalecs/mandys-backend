@@ -19,10 +19,7 @@ COPY . .
 
 RUN dotnet publish Mandys.Api/Mandys.Api.csproj -c Release -o /app/publish /p:UseAppHost=false
 
-# Single runtime image for both flows:
-# - dev (docker/compose*.yml) sets ASPNETCORE_ENVIRONMENT=Development, which
-#   enables Scalar/OpenAPI plus startup auto-migration;
-# - prod (GHCR image) runs with the default Production environment.
+# Runtime:
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .

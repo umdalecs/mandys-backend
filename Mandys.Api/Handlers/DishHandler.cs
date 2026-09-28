@@ -13,9 +13,6 @@ public class DishHandler : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        // Menu catalog: franchise-wide and headquarters-managed. Reads serve
-        // everyone operating sales (cashiers sell, kitchen prepares, branch
-        // chiefs manage); writes are headquarters only (admins, ops chiefs).
         var dishRoutes = app.MapGroup("/dishes")
             .WithTags("Dishes")
             .RequireAuthorization();

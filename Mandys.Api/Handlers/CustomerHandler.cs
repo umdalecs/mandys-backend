@@ -41,8 +41,6 @@ public class CustomerHandler : ICarterModule
                 Roles.Customer,
                 Roles.BranchChief));
 
-        // Banning is a punitive account action, so it is narrower than the
-        // read and edit policies: no cashier, and never a customer.
         customerRoutes.MapPost("/{id:int}/ban", BanCustomer)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,

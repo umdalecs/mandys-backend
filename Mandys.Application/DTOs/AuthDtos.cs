@@ -1,7 +1,7 @@
 namespace Mandys.DTOs;
 
 public record LoginRequest(
-    string? Email = null,
+    string Email = "",
     string Password = ""
 );
 

@@ -46,6 +46,7 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
 
     public async Task<Dish> AddAsync(Dish dish)
     {
+        // here is where createDish breaks
         var record = dish.ToRecord();
         db.Dishes.Add(record);
         await db.SaveChangesAsync();
@@ -54,9 +55,6 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
 
     public async Task UpdateAsync(Dish dish)
     {
-        // Update the tracked record so the identity key and audit columns
-        // are preserved. Recipe lines are synced: quantities updated, missing
-        // lines added, lines absent from the dish removed.
         var record = await db.Dishes
             .Include(d => d.DishProducts)
             .FirstOrDefaultAsync(d => d.Id == dish.Id);

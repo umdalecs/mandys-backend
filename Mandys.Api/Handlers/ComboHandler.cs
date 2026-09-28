@@ -13,8 +13,6 @@ public class ComboHandler : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        // Combo catalog: franchise-wide and headquarters-managed, like dishes
-        // and products. Writes are headquarters only (admins, ops chiefs).
         var comboRoutes = app.MapGroup("/combos")
             .WithTags("Combos")
             .RequireAuthorization();

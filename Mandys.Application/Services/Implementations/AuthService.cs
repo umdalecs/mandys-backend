@@ -1,7 +1,6 @@
 using FluentValidation;
 using Mandys.Configuration;
 using Mandys.DTOs;
-using Mandys.Services;
 using Mandys.Services.Interfaces;
 using Microsoft.Extensions.Options;
 

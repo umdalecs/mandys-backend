@@ -13,12 +13,6 @@ public class BranchHandler : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        // Branches are the franchise structure every operational flow is
-        // scoped to, so any authenticated user may read them (branch pickers
-        // on the user form, the caller's own branch). Changing them is
-        // headquarters only: administrators and operations chiefs.
-        // RequireRole with several roles is OR, so any listed role grants access.
-        // Policies stack with AND, so each route declares its full role set.
         var branchRoutes = app.MapGroup("/branches")
             .WithTags("Branches")
             .RequireAuthorization();

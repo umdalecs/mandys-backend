@@ -13,6 +13,7 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
             .WithMessage("Invalid Email");
 
         RuleFor(lr => lr.Password)
+            .NotNull()
             .MinimumLength(6)
             .WithMessage("Password try is too short");
     }
