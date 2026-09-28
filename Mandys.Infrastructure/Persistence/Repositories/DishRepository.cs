@@ -46,11 +46,17 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
 
     public async Task<Dish> AddAsync(Dish dish)
     {
-        // here is where createDish breaks
         var record = dish.ToRecord();
         db.Dishes.Add(record);
         await db.SaveChangesAsync();
-        return record.ToDomain();
+
+        return new Dish(
+            record.Id,
+            dish.Name,
+            dish.Price,
+            dish.Recipe,
+            record.CreatedAt,
+            record.UpdatedAt);
     }
 
     public async Task UpdateAsync(Dish dish)

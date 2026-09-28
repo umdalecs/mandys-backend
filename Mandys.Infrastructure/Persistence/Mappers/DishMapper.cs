@@ -31,9 +31,6 @@ internal static class DishMapper
 /// </summary>
 internal static class DishProductMapper
 {
-    // TODO: this is called by dishrecord.toDomain() while DishProduct comes in
-    // so, this will need to ensure that product exist in first place
-    // productID, quantity format
     internal static DishProduct ToDomain(this DishProductRecord record) =>
         new(record.Product.ToDomain(), record.Quantity);
 

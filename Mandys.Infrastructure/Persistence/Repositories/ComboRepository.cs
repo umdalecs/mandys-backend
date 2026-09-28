@@ -57,14 +57,20 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
         var record = combo.ToRecord();
         db.Combos.Add(record);
         await db.SaveChangesAsync();
-        return record.ToDomain();
+        
+        return new Combo(
+            record.Id,
+            combo.Name,
+            combo.Price,
+            combo.Dishes,
+            combo.Products,
+            record.CreatedAt,
+            record.UpdatedAt
+            );
     }
 
     public async Task UpdateAsync(Combo combo)
     {
-        // Update the tracked record so the identity key and audit columns
-        // are preserved. Combo lines are synced per collection: quantities
-        // updated, missing lines added, absent lines removed.
         var record = await db.Combos
             .Include(c => c.ComboDishes)
             .Include(c => c.ComboProducts)
