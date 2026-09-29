@@ -36,7 +36,7 @@ public class ProductService(IProductRepository products) : IProductService
             0,
             request.Description.Trim(),
             request.IsSupply,
-            request.Price,
+            request.SalePrice,
             request.MeasureUnit.Trim()));
 
         return created.ToResponse();
@@ -53,7 +53,7 @@ public class ProductService(IProductRepository products) : IProductService
         product.UpdateDetails(
             string.IsNullOrWhiteSpace(request.Description) ? product.Description : request.Description.Trim(),
             request.IsSupply ?? product.IsSupply,
-            request.Price ?? product.Price,
+            request.SalePrice ?? product.SalePrice,
             string.IsNullOrWhiteSpace(request.MeasureUnit) ? product.MeasureUnit : request.MeasureUnit.Trim());
 
         await products.UpdateAsync(product);

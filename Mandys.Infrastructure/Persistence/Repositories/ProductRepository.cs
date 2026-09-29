@@ -59,7 +59,8 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
 
         record.Description = product.Description;
         record.IsSupply = product.IsSupply;
-        record.Price = product.Price;
+        record.CostPrice = product.CostPrice;
+        record.SalePrice = product.SalePrice;
         record.MeasureUnit = product.MeasureUnit;
 
         await db.SaveChangesAsync();

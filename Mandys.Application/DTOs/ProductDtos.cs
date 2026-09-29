@@ -6,21 +6,22 @@ public record ProductResponse(
     int Id,
     string Description,
     bool IsSupply,
-    decimal Price,
+    decimal CostPrice,
+    decimal SalePrice,
     string MeasureUnit
 );
 
 public record CreateProductRequest(
     string Description,
     bool IsSupply,
-    decimal Price,
+    decimal SalePrice,
     string MeasureUnit
 );
 
 public record UpdateProductRequest(
     string? Description = null,
     bool? IsSupply = null,
-    decimal? Price = null,
+    decimal? SalePrice = null,
     string? MeasureUnit = null
 );
 
@@ -39,7 +40,8 @@ public static class ProductMapper
             product.Id,
             product.Description,
             product.IsSupply,
-            product.Price,
+            product.CostPrice,
+            product.SalePrice,
             product.MeasureUnit
         );
 }

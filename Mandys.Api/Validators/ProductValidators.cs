@@ -11,9 +11,9 @@ public class CreateProductRequestValidator : AbstractValidator<CreateProductRequ
             .NotEmpty()
             .WithMessage("Description is required.");
 
-        RuleFor(x => x.Price)
+        RuleFor(x => x.SalePrice)
             .GreaterThanOrEqualTo(0)
-            .WithMessage("Price must be non-negative.");
+            .WithMessage("Sale price must be non-negative.");
 
         RuleFor(x => x.MeasureUnit)
             .NotEmpty()
@@ -25,9 +25,9 @@ public class UpdateProductRequestValidator : AbstractValidator<UpdateProductRequ
 {
     public UpdateProductRequestValidator()
     {
-        RuleFor(x => x.Price)
+        RuleFor(x => x.SalePrice)
             .GreaterThanOrEqualTo(0)
-            .When(x => x.Price.HasValue)
-            .WithMessage("Price must be non-negative.");
+            .When(x => x.SalePrice.HasValue)
+            .WithMessage("Sale price must be non-negative.");
     }
 }

@@ -9,7 +9,8 @@ public class Product
     public int Id { get; private set; }
     public string Description { get; private set; }
     public bool IsSupply { get; private set; }
-    public decimal Price { get; private set; }
+    public decimal CostPrice { get; private set; }
+    public decimal SalePrice { get; private set; }
     public string MeasureUnit { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
@@ -18,25 +19,31 @@ public class Product
         int id,
         string description,
         bool isSupply,
-        decimal price,
+        decimal salePrice,
         string measureUnit,
+        decimal costPrice = 0m,
         DateTime? createdAt = null,
         DateTime? updatedAt = null)
     {
         Id = id;
         Description = GuardNotEmpty(description, nameof(description));
         IsSupply = isSupply;
-        Price = GuardPrice(price, nameof(price));
+        SalePrice = GuardPrice(salePrice, nameof(salePrice));
+        CostPrice = GuardPrice(costPrice, nameof(costPrice));
         MeasureUnit = GuardNotEmpty(measureUnit, nameof(measureUnit));
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
     }
 
-    public void UpdateDetails(string description, bool isSupply, decimal price, string measureUnit)
+    /// <summary>
+    /// Updates the catalog-editable details. <see cref="CostPrice"/> is not
+    /// part of the catalog CRUD; only purchases move it.
+    /// </summary>
+    public void UpdateDetails(string description, bool isSupply, decimal salePrice, string measureUnit)
     {
         Description = GuardNotEmpty(description, nameof(description));
         IsSupply = isSupply;
-        Price = GuardPrice(price, nameof(price));
+        SalePrice = GuardPrice(salePrice, nameof(salePrice));
         MeasureUnit = GuardNotEmpty(measureUnit, nameof(measureUnit));
     }
 

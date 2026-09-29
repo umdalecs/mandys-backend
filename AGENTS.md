@@ -60,8 +60,11 @@ Branch optionality enforced by `Roles.RequiresBranch()`.
 
 ### Products vs Supplies (`Product.IsSupply`)
 
-- `IsSupply = false` → sellable catalog item (menu product), needs `Price`.
+- `IsSupply = false` → sellable catalog item (menu product), needs `SalePrice`.
 - `IsSupply = true` → insumo (ingredient/consumable), priced by purchase cost, measured in stock units.
+
+Prices come in two fields: `SalePrice` is what the catalog CRUD edits, `CostPrice`
+is read-only there (defaults to 0; only purchases move it).
 
 ### Domain Rules (enforce in every new feature)
 

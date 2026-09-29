@@ -20,7 +20,9 @@ public class ProductRecord : Record
     [Required]
     public bool IsSupply { get; set; }
     [Required]
-    public decimal Price { get; set; }
+    public decimal CostPrice { get; set; }
+    [Required]
+    public decimal SalePrice { get; set; }
     [Required]
     [MaxLength(50)]
     public string MeasureUnit { get; set; } = string.Empty;

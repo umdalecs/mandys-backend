@@ -13,8 +13,9 @@ internal static class ProductMapper
             record.Id,
             record.Description,
             record.IsSupply,
-            record.Price,
+            record.SalePrice,
             record.MeasureUnit,
+            record.CostPrice,
             record.CreatedAt,
             record.UpdatedAt);
 
@@ -23,7 +24,8 @@ internal static class ProductMapper
         {
             Description = product.Description,
             IsSupply = product.IsSupply,
-            Price = product.Price,
+            CostPrice = product.CostPrice,
+            SalePrice = product.SalePrice,
             MeasureUnit = product.MeasureUnit,
         };
 }
