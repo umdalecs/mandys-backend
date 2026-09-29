@@ -127,4 +127,14 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
         await db.SaveChangesAsync();
         return true;
     }
+
+    public async Task<bool> ExistsByNameAsync(string name, int? excludingId = null)
+    {
+        var normalized = name.Trim().ToLower();
+        return await db.Dishes
+            .AsNoTracking()
+            .AnyAsync(d =>
+                d.Name.ToLower() == normalized &&
+                (excludingId == null || d.Id != excludingId));
+    }
 }

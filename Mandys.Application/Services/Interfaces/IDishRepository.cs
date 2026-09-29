@@ -19,4 +19,7 @@ public interface IDishRepository
 
     /// <returns>False when no dish with the id exists (soft-delete).</returns>
     Task<bool> RemoveAsync(int id);
+
+    /// <returns>True when another dish already has the given name.</returns>
+    Task<bool> ExistsByNameAsync(string name, int? excludingId = null);
 }
