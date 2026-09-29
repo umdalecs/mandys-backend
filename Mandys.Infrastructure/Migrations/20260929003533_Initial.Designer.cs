@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Mandys.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260926063649_Initial")]
+    [Migration("20260929003533_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -1482,6 +1482,10 @@ namespace Mandys.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("CostPrice")
+                        .HasColumnType("numeric")
+                        .HasColumnName("cost_price");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -1510,9 +1514,9 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("measure_unit");
 
-                    b.Property<decimal>("Price")
+                    b.Property<decimal>("SalePrice")
                         .HasColumnType("numeric")
-                        .HasColumnName("price");
+                        .HasColumnName("sale_price");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -1527,2366 +1531,2581 @@ namespace Mandys.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Jitomate saladet",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 28.50m,
+                            SalePrice = 28.50m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 2,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Jitomate cherry",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 55.00m,
+                            SalePrice = 55.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 3,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Lechuga romana",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 18.00m,
+                            SalePrice = 18.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 4,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Lechuga iceberg",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 22.00m,
+                            SalePrice = 22.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 5,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Cebolla blanca",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 32.00m,
+                            SalePrice = 32.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 6,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Cebolla morada",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 38.00m,
+                            SalePrice = 38.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 7,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Cebolla cambray",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "manojo",
-                            Price = 25.00m,
+                            SalePrice = 25.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 8,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Papa blanca para freír",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 26.00m,
+                            SalePrice = 26.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 9,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pepino",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 24.00m,
+                            SalePrice = 24.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 10,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Chile jalapeño",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 35.00m,
+                            SalePrice = 35.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 11,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Aguacate hass",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 85.00m,
+                            SalePrice = 85.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 12,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Limón sin semilla",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 30.00m,
+                            SalePrice = 30.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 13,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Cilantro fresco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "manojo",
-                            Price = 12.00m,
+                            SalePrice = 12.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 14,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Zanahoria",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 22.00m,
+                            SalePrice = 22.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 15,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Champiñón blanco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 95.00m,
+                            SalePrice = 95.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 16,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pimiento morrón verde",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 48.00m,
+                            SalePrice = 48.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 17,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pimiento morrón rojo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 62.00m,
+                            SalePrice = 62.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 18,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Apio",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 28.00m,
+                            SalePrice = 28.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 19,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Ajo fresco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 110.00m,
+                            SalePrice = 110.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 20,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Elote amarillo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 9.00m,
+                            SalePrice = 9.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 21,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Calabacita",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 26.00m,
+                            SalePrice = 26.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 22,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Espinaca baby",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 120.00m,
+                            SalePrice = 120.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 23,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Col blanca",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 20.00m,
+                            SalePrice = 20.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 24,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Rábano",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 24.00m,
+                            SalePrice = 24.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 25,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Nopal limpio",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 30.00m,
+                            SalePrice = 30.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 26,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Piña miel",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 25.00m,
+                            SalePrice = 25.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 27,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Mango ataulfo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 40.00m,
+                            SalePrice = 40.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 28,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Fresa",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 70.00m,
+                            SalePrice = 70.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 29,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Plátano tabasco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 22.00m,
+                            SalePrice = 22.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 30,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Manzana roja",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 45.00m,
+                            SalePrice = 45.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 31,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Naranja para jugo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 20.00m,
+                            SalePrice = 20.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 32,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Perejil fresco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "manojo",
-                            Price = 12.00m,
+                            SalePrice = 12.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 33,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Epazote fresco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "manojo",
-                            Price = 10.00m,
+                            SalePrice = 10.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 34,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Chayote",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 18.00m,
+                            SalePrice = 18.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 35,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Betabel",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 26.00m,
+                            SalePrice = 26.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 36,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Carne molida de res 80/20",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 165.00m,
+                            SalePrice = 165.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 37,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Carne molida de res 90/10",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 185.00m,
+                            SalePrice = 185.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 38,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Arrachera marinada",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 240.00m,
+                            SalePrice = 240.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 39,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Milanesa de res",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 190.00m,
+                            SalePrice = 190.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 40,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pechuga de pollo sin hueso",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 120.00m,
+                            SalePrice = 120.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 41,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Muslo de pollo sin hueso",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 95.00m,
+                            SalePrice = 95.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 42,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Tiras de pollo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 115.00m,
+                            SalePrice = 115.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 43,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Milanesa de pollo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 125.00m,
+                            SalePrice = 125.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 44,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Tocino ahumado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 210.00m,
+                            SalePrice = 210.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 45,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Jamón de pavo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 130.00m,
+                            SalePrice = 130.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 46,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Chuleta ahumada",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 150.00m,
+                            SalePrice = 150.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 47,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Salchicha para asar",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 90.00m,
+                            SalePrice = 90.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 48,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Longaniza",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 110.00m,
+                            SalePrice = 110.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 49,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pepperoni",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 220.00m,
+                            SalePrice = 220.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 50,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Huevo fresco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 52.00m,
+                            SalePrice = 52.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 51,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Huevo líquido pasteurizado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 65.00m,
+                            SalePrice = 65.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 52,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Filete de pescado empanizado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 140.00m,
+                            SalePrice = 140.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 53,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Camarón mediano sin cáscara",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 260.00m,
+                            SalePrice = 260.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 54,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Atún enlatado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "lata",
-                            Price = 32.00m,
+                            SalePrice = 32.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 55,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Costilla de cerdo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 145.00m,
+                            SalePrice = 145.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 56,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pulled pork",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 175.00m,
+                            SalePrice = 175.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 57,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Salami",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 200.00m,
+                            SalePrice = 200.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 58,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Chorizo argentino",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 135.00m,
+                            SalePrice = 135.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 59,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pavo molido",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 150.00m,
+                            SalePrice = 150.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 60,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Lomo de cerdo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 130.00m,
+                            SalePrice = 130.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 61,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pan para hamburguesa con ajonjolí",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 8.50m,
+                            SalePrice = 8.50m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 62,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pan brioche para hamburguesa",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 11.00m,
+                            SalePrice = 11.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 63,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pan integral para hamburguesa",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 10.00m,
+                            SalePrice = 10.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 64,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pan de papa para hamburguesa",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 12.00m,
+                            SalePrice = 12.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 65,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pan para hot dog",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 7.50m,
+                            SalePrice = 7.50m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 66,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pan telera",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 6.50m,
+                            SalePrice = 6.50m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 67,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pan pita",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 9.00m,
+                            SalePrice = 9.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 68,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Tortilla de harina",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 3.50m,
+                            SalePrice = 3.50m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 69,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Tortilla de maíz",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 2.50m,
+                            SalePrice = 2.50m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 70,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Totopos de maíz",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 55.00m,
+                            SalePrice = 55.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 71,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pan molido para empanizar",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 48.00m,
+                            SalePrice = 48.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 72,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Crotones sazonados",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 85.00m,
+                            SalePrice = 85.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 73,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Queso americano en rebanadas",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 145.00m,
+                            SalePrice = 145.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 74,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Queso cheddar rallado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 160.00m,
+                            SalePrice = 160.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 75,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Queso mozzarella rallado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 155.00m,
+                            SalePrice = 155.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 76,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Queso gouda en rebanadas",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 175.00m,
+                            SalePrice = 175.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 77,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Queso asadero",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 150.00m,
+                            SalePrice = 150.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 78,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Queso cotija rallado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 140.00m,
+                            SalePrice = 140.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 79,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Queso crema",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 95.00m,
+                            SalePrice = 95.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 80,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Mantequilla sin sal",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 180.00m,
+                            SalePrice = 180.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 81,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Crema ácida",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 60.00m,
+                            SalePrice = 60.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 82,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Leche entera",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 28.00m,
+                            SalePrice = 28.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 83,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Leche deslactosada",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 30.00m,
+                            SalePrice = 30.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 84,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Yogur natural",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 45.00m,
+                            SalePrice = 45.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 85,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Mayonesa",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 68.00m,
+                            SalePrice = 68.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 86,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Mayonesa chipotle",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 78.00m,
+                            SalePrice = 78.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 87,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Catsup",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 45.00m,
+                            SalePrice = 45.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 88,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Mostaza amarilla",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 42.00m,
+                            SalePrice = 42.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 89,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Mostaza dijon",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 95.00m,
+                            SalePrice = 95.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 90,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Salsa BBQ",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 55.00m,
+                            SalePrice = 55.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 91,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Salsa BBQ picante",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 62.00m,
+                            SalePrice = 62.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 92,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Aderezo ranch",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 72.00m,
+                            SalePrice = 72.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 93,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Aderezo césar",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 75.00m,
+                            SalePrice = 75.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 94,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Aderezo mil islas",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 70.00m,
+                            SalePrice = 70.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 95,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Salsa de chipotle",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 65.00m,
+                            SalePrice = 65.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 96,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Salsa inglesa",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 58.00m,
+                            SalePrice = 58.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 97,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Salsa de soya",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 48.00m,
+                            SalePrice = 48.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 98,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Salsa verde envasada",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 52.00m,
+                            SalePrice = 52.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 99,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Salsa roja de árbol envasada",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 56.00m,
+                            SalePrice = 56.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 100,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Salsa de habanero envasada",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 68.00m,
+                            SalePrice = 68.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 101,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Salsa teriyaki",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 82.00m,
+                            SalePrice = 82.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 102,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Salsa agridulce",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 60.00m,
+                            SalePrice = 60.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 103,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Alioli de ajo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 80.00m,
+                            SalePrice = 80.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 104,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Salsa de tamarindo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 54.00m,
+                            SalePrice = 54.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 105,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Sal refinada",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 14.00m,
+                            SalePrice = 14.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 106,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Sal de mar",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 22.00m,
+                            SalePrice = 22.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 107,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pimienta negra molida",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 180.00m,
+                            SalePrice = 180.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 108,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Paprika",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 160.00m,
+                            SalePrice = 160.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 109,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Ajo en polvo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 140.00m,
+                            SalePrice = 140.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 110,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Cebolla en polvo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 130.00m,
+                            SalePrice = 130.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 111,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Orégano seco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 120.00m,
+                            SalePrice = 120.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 112,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Comino molido",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 150.00m,
+                            SalePrice = 150.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 113,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Hoja de laurel",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 200.00m,
+                            SalePrice = 200.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 114,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Tomillo seco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 220.00m,
+                            SalePrice = 220.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 115,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Romero seco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 230.00m,
+                            SalePrice = 230.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 116,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Albahaca seca",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 210.00m,
+                            SalePrice = 210.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 117,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Perejil seco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 110.00m,
+                            SalePrice = 110.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 118,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Chile de árbol seco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 170.00m,
+                            SalePrice = 170.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 119,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Chile chipotle seco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 190.00m,
+                            SalePrice = 190.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 120,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Consomé de pollo en polvo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 85.00m,
+                            SalePrice = 85.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 121,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Sazonador tipo tajín",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 95.00m,
+                            SalePrice = 95.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 122,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Azúcar estándar",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 32.00m,
+                            SalePrice = 32.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 123,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Azúcar mascabado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 45.00m,
+                            SalePrice = 45.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 124,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Miel de abeja",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 150.00m,
+                            SalePrice = 150.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 125,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Aceite vegetal",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 48.00m,
+                            SalePrice = 48.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 126,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Aceite de oliva extra virgen",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 180.00m,
+                            SalePrice = 180.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 127,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Aceite en aerosol",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 95.00m,
+                            SalePrice = 95.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 128,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Vinagre blanco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 25.00m,
+                            SalePrice = 25.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 129,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Vinagre de manzana",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 42.00m,
+                            SalePrice = 42.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 130,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Vinagre balsámico",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 120.00m,
+                            SalePrice = 120.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 131,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Jugo de limón embotellado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 38.00m,
+                            SalePrice = 38.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 132,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Manteca vegetal",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 55.00m,
+                            SalePrice = 55.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 133,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Refresco de cola en lata",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 16.50m,
+                            SalePrice = 16.50m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 134,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Refresco de naranja en lata",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 16.50m,
+                            SalePrice = 16.50m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 135,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Refresco de limón en lata",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 16.50m,
+                            SalePrice = 16.50m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 136,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Refresco de manzana en lata",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 16.50m,
+                            SalePrice = 16.50m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 137,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Agua embotellada 600ml",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 9.00m,
+                            SalePrice = 9.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 138,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Agua mineral 600ml",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 12.00m,
+                            SalePrice = 12.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 139,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Jugo de naranja envasado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 35.00m,
+                            SalePrice = 35.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 140,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Café molido americano",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 280.00m,
+                            SalePrice = 280.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 141,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Café descafeinado molido",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 300.00m,
+                            SalePrice = 300.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 142,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Té negro en bolsitas",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 1.80m,
+                            SalePrice = 1.80m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 143,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Té verde en bolsitas",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 2.20m,
+                            SalePrice = 2.20m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 144,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Chocolate en polvo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 120.00m,
+                            SalePrice = 120.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 145,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Jarabe de vainilla",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 110.00m,
+                            SalePrice = 110.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 146,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Jarabe de caramelo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 115.00m,
+                            SalePrice = 115.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 147,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Crema para café en polvo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 90.00m,
+                            SalePrice = 90.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 148,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Mermelada de fresa",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 75.00m,
+                            SalePrice = 75.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 149,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Papas corte recto congeladas",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 65.00m,
+                            SalePrice = 65.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 150,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Papas gajo congeladas",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 70.00m,
+                            SalePrice = 70.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 151,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Aros de cebolla congelados",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 85.00m,
+                            SalePrice = 85.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 152,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Nuggets de pollo congelados",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 110.00m,
+                            SalePrice = 110.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 153,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Palitos de queso mozzarella congelados",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 150.00m,
+                            SalePrice = 150.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 154,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Medallón de res congelado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 38.00m,
+                            SalePrice = 38.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 155,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Filete de pollo empanizado congelado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 32.00m,
+                            SalePrice = 32.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 156,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Elote amarillo congelado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 45.00m,
+                            SalePrice = 45.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 157,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Mezcla de verduras congeladas",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 50.00m,
+                            SalePrice = 50.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 158,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pulpa de mango congelada",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 60.00m,
+                            SalePrice = 60.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 159,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Fresa congelada",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 75.00m,
+                            SalePrice = 75.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 160,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Helado de vainilla",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 85.00m,
+                            SalePrice = 85.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 161,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Hielo en bolsa 5kg",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "bolsa",
-                            Price = 35.00m,
+                            SalePrice = 35.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 162,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Masa de pizza congelada",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 28.00m,
+                            SalePrice = 28.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 163,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Harina de trigo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 28.00m,
+                            SalePrice = 28.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 164,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Fécula de maíz",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 45.00m,
+                            SalePrice = 45.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 165,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Arroz blanco",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 30.00m,
+                            SalePrice = 30.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 166,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Frijoles refritos en lata",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "lata",
-                            Price = 22.00m,
+                            SalePrice = 22.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 167,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Elote enlatado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "lata",
-                            Price = 25.00m,
+                            SalePrice = 25.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 168,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Champiñones enlatados",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "lata",
-                            Price = 35.00m,
+                            SalePrice = 35.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 169,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Chiles jalapeños enlatados",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "lata",
-                            Price = 28.00m,
+                            SalePrice = 28.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 170,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Aceitunas negras enlatadas",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "lata",
-                            Price = 55.00m,
+                            SalePrice = 55.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 171,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pepinillos en rodajas",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 48.00m,
+                            SalePrice = 48.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 172,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Puré de tomate envasado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 32.00m,
+                            SalePrice = 32.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 173,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Cacahuate tostado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 90.00m,
+                            SalePrice = 90.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 174,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Ajonjolí",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 110.00m,
+                            SalePrice = 110.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 175,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Cajeta quemada",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 95.00m,
+                            SalePrice = 95.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 176,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Chamoy envasado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 50.00m,
+                            SalePrice = 50.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 177,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Vasos de cartón 12oz",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 1.80m,
+                            SalePrice = 1.80m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 178,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Vasos de cartón 16oz",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 2.20m,
+                            SalePrice = 2.20m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 179,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Tapas para vaso",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 0.90m,
+                            SalePrice = 0.90m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 180,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Popotes de papel",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 0.40m,
+                            SalePrice = 0.40m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 181,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Charolas de cartón",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 3.50m,
+                            SalePrice = 3.50m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 182,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Cajas para hamburguesa",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 2.80m,
+                            SalePrice = 2.80m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 183,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Envolturas de papel encerado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 0.60m,
+                            SalePrice = 0.60m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 184,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Bolsas de papel para llevar",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 1.50m,
+                            SalePrice = 1.50m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 185,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Servilletas",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "paquete",
-                            Price = 38.00m,
+                            SalePrice = 38.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 186,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Toallas de papel en rollo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 45.00m,
+                            SalePrice = 45.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 187,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Guantes desechables",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "caja",
-                            Price = 120.00m,
+                            SalePrice = 120.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 188,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Papel aluminio en rollo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 85.00m,
+                            SalePrice = 85.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 189,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Película plástica adherente",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 75.00m,
+                            SalePrice = 75.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 190,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Jabón líquido para manos",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 55.00m,
+                            SalePrice = 55.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 191,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Queso parmesano rallado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 180.00m,
+                            SalePrice = 180.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 192,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Salsa sriracha",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 70.00m,
+                            SalePrice = 70.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 193,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Aderezo de mostaza y miel",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 76.00m,
+                            SalePrice = 76.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 194,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Jugo de manzana envasado",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "litro",
-                            Price = 34.00m,
+                            SalePrice = 34.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 195,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Agua tónica en lata",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 15.00m,
+                            SalePrice = 15.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 196,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Té de manzanilla en bolsitas",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "pieza",
-                            Price = 1.80m,
+                            SalePrice = 1.80m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 197,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Champiñón portobello",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 130.00m,
+                            SalePrice = 130.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 198,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Cebolla perla",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 42.00m,
+                            SalePrice = 42.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 199,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Manteca de cerdo",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 60.00m,
+                            SalePrice = 60.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 200,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Queso oaxaca",
                             IsDeleted = false,
                             IsSupply = true,
                             MeasureUnit = "kg",
-                            Price = 145.00m,
+                            SalePrice = 145.00m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 201,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Refresco de cola 600 ml",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 35m,
+                            SalePrice = 35m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 202,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Refresco de naranja 600 ml",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 35m,
+                            SalePrice = 35m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 203,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Limonada de limón natural 500 ml",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 38m,
+                            SalePrice = 38m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 204,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Té de manzanilla 500 ml",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 32m,
+                            SalePrice = 32m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 205,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Jugo de naranja natural 450 ml",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 48m,
+                            SalePrice = 48m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 206,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Batido de fresa 450 ml",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 52m,
+                            SalePrice = 52m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 207,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Malteada de vainilla 500 ml",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 78m,
+                            SalePrice = 78m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 208,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Espresso",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 28m,
+                            SalePrice = 28m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 209,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Capuchino",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 45m,
+                            SalePrice = 45m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 210,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Porción de papas fritas",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 45m,
+                            SalePrice = 45m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 211,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Nachos con queso",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 69m,
+                            SalePrice = 69m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 212,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Alitas de pollo Buffalo",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 89m,
+                            SalePrice = 89m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 213,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Bowl de pollo César",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 118m,
+                            SalePrice = 118m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 214,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Flan de caramelo",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 42m,
+                            SalePrice = 42m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 215,
+                            CostPrice = 0m,
                             CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Pastel de chocolate",
                             IsDeleted = false,
                             IsSupply = false,
                             MeasureUnit = "pieza",
-                            Price = 48m,
+                            SalePrice = 48m,
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
@@ -4010,7 +4229,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Sistema",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "administrador",
+                            Role = "Administrador",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -4023,7 +4242,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Operaciones",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "gerenteOperaciones",
+                            Role = "Gerente de Operaciones",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -4036,7 +4255,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Almacén Central",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "encargadoAlmacenCentral",
+                            Role = "Encargado de Almacen Central",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -4049,7 +4268,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Almacén",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "encargadoAlmacen",
+                            Role = "Encargado de Almacen",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -4062,7 +4281,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Sucursal",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "cajero",
+                            Role = "Cajero",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -4075,7 +4294,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Cocina",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "jefeCocina",
+                            Role = "Jefe Cocina",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -4088,7 +4307,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Sucursal",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "gerenteSucursal",
+                            Role = "Gerente Sucursal",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -4100,7 +4319,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Demo",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "cliente",
+                            Role = "Cliente",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });

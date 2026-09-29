@@ -2,14 +2,14 @@ namespace Mandys.Domain;
 
 public static class Roles
 {
-    public const string Administrator = "administrador";
-    public const string OpChief = "gerenteOperaciones";
-    public const string CentralWarehouseChief = "encargadoAlmacenCentral";
-    public const string WarehouseChief = "encargadoAlmacen";
-    public const string Cashier = "cajero";
-    public const string Customer = "cliente";
-    public const string KitchenChief = "jefeCocina";
-    public const string BranchChief = "gerenteSucursal";
+    public const string Administrator = "Administrador";
+    public const string OpChief = "Gerente de Operaciones";
+    public const string CentralWarehouseChief = "Encargado de Almacen Central";
+    public const string WarehouseChief = "Encargado de Almacen";
+    public const string Cashier = "Cajero";
+    public const string Customer = "Cliente";
+    public const string KitchenChief = "Jefe Cocina";
+    public const string BranchChief = "Gerente Sucursal";
 
     public static readonly IReadOnlyList<string> All = [
         Administrator, OpChief, CentralWarehouseChief, WarehouseChief, Cashier, Customer, KitchenChief, BranchChief];

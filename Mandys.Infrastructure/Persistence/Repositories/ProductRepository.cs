@@ -16,7 +16,7 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
     }
 
     public async Task<(int TotalCount, IReadOnlyList<Product> Items)> SearchAsync(
-        string? search, int page, int pageSize, string? orderBy)
+        string? search, int page, int pageSize, string? orderBy, bool? isSupply)
     {
         var query = db.Products.AsNoTracking();
 
@@ -26,6 +26,12 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
             query = query.Where(p =>
                 p.Description.ToLower().Contains(term) ||
                 p.MeasureUnit.ToLower().Contains(term));
+        }
+        
+        if (isSupply.HasValue)
+        {
+            query = query.Where(p =>
+                p.IsSupply == isSupply.Value);
         }
 
         var totalCount = await query.CountAsync();

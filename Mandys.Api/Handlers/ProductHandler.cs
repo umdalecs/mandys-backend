@@ -53,9 +53,10 @@ public class ProductHandler : ICarterModule
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20,
         [FromQuery] string? search = null,
-        [FromQuery] string? orderBy = null)
+        [FromQuery] string? orderBy = null,
+        [FromQuery] bool? isSupply = null)
     {
-        return Results.Ok(await productService.GetProductsAsync(page, pageSize, search, orderBy));
+        return Results.Ok(await productService.GetProductsAsync(page, pageSize, search, orderBy, isSupply));
     }
 
     private static async Task<IResult> GetProductById(

@@ -109,8 +109,6 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
             return false;
         }
 
-        // Recipe lines are soft-deleted together with the dish by the
-        // SaveChangesAsync interceptor.
         foreach (var line in record.DishProducts.ToList())
         {
             db.DishProducts.Remove(line);

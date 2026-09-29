@@ -4226,7 +4226,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Sistema",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "administrador",
+                            Role = "Administrador",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -4239,7 +4239,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Operaciones",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "gerenteOperaciones",
+                            Role = "Gerente de Operaciones",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -4252,7 +4252,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Almacén Central",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "encargadoAlmacenCentral",
+                            Role = "Encargado de Almacen Central",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -4265,7 +4265,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Almacén",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "encargadoAlmacen",
+                            Role = "Encargado de Almacen",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -4278,7 +4278,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Sucursal",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "cajero",
+                            Role = "Cajero",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -4291,7 +4291,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Cocina",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "jefeCocina",
+                            Role = "Jefe Cocina",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -4304,7 +4304,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Sucursal",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "gerenteSucursal",
+                            Role = "Gerente Sucursal",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
@@ -4316,7 +4316,7 @@ namespace Mandys.Infrastructure.Migrations
                             IsDeleted = false,
                             LastName = "Demo",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
-                            Role = "cliente",
+                            Role = "Cliente",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });

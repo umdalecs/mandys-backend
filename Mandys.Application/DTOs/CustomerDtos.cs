@@ -24,11 +24,6 @@ public record PagedCustomersResponse(
     IReadOnlyList<CustomerResponse> Items
 );
 
-/// <summary>
-/// Self-registration of a point-of-sale customer. Deliberately carries no
-/// role and no branch: those are assigned by the server, never by the
-/// caller, so nobody can register themselves as staff.
-/// </summary>
 public record RegisterCustomerRequest(
     string FirstName,
     string LastName,
@@ -36,22 +31,12 @@ public record RegisterCustomerRequest(
     string Password
 );
 
-/// <summary>
-/// A counter customer created on someone else's behalf (walk-in, or a
-/// customer who does not want an account). No password, so the row has no
-/// login credentials. An email is optional but worth capturing: it is what
-/// lets the customer be found again to reclaim stored points.
-/// </summary>
 public record CreateCustomerRequest(
     string FirstName,
     string LastName,
     string? Email = null
 );
 
-/// <summary>
-/// Counter-side edits to a customer. Credentials are not editable here;
-/// passwords belong to the user module.
-/// </summary>
 public record UpdateCustomerRequest(
     string? FirstName = null,
     string? LastName = null,
