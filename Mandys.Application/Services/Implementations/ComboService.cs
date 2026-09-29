@@ -9,13 +9,13 @@ public class ComboService(
     IDishRepository dishes,
     IProductRepository products) : IComboService
 {
-    public async Task<PagedCombosResponse> GetCombosAsync(int page, int pageSize, string? search)
+    public async Task<PagedCombosResponse> GetCombosAsync(int page, int pageSize, string? search, string? orderBy)
     {
         if (page < 1) page = 1;
         if (pageSize < 1) pageSize = 20;
         if (pageSize > 100) pageSize = 100;
 
-        var (totalCount, items) = await combos.SearchAsync(search, page, pageSize);
+        var (totalCount, items) = await combos.SearchAsync(search, page, pageSize, orderBy);
         var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
         return new PagedCombosResponse(totalCount, page, pageSize, totalPages,

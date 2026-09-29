@@ -24,7 +24,7 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
     }
 
     public async Task<(int TotalCount, IReadOnlyList<Combo> Items)> SearchAsync(
-        string? search, int page, int pageSize)
+        string? search, int page, int pageSize, string? orderBy)
     {
         IQueryable<ComboRecord> query = db.Combos
             .AsNoTracking()
@@ -44,7 +44,11 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
         var totalCount = await query.CountAsync();
 
         var items = await query
-            .OrderBy(c => c.Id)
+            .ApplyOrdering(
+                OrderByParser.Parse<ComboSortField>(orderBy)
+                    .Select(k => (k.Field.Selector(), k.Descending))
+                    .ToList(),
+                c => c.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

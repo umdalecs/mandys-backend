@@ -47,9 +47,10 @@ public class ComboHandler : ICarterModule
         IComboService comboService,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20,
-        [FromQuery] string? search = null)
+        [FromQuery] string? search = null,
+        [FromQuery] string? orderBy = null)
     {
-        return Results.Ok(await comboService.GetCombosAsync(page, pageSize, search));
+        return Results.Ok(await comboService.GetCombosAsync(page, pageSize, search, orderBy));
     }
 
     private static async Task<IResult> GetComboById(

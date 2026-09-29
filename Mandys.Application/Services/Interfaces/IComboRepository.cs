@@ -10,7 +10,7 @@ public interface IComboRepository
     Task<Combo?> GetByIdAsync(int id);
 
     Task<(int TotalCount, IReadOnlyList<Combo> Items)> SearchAsync(
-        string? search, int page, int pageSize);
+        string? search, int page, int pageSize, string? orderBy);
 
     /// <returns>The saved combo, with its database-generated id.</returns>
     Task<Combo> AddAsync(Combo combo);

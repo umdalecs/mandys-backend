@@ -4,7 +4,7 @@ namespace Mandys.Services.Interfaces;
 
 public interface IComboService
 {
-    Task<PagedCombosResponse> GetCombosAsync(int page, int pageSize, string? search);
+    Task<PagedCombosResponse> GetCombosAsync(int page, int pageSize, string? search, string? orderBy);
 
     Task<ComboResponse> GetComboByIdAsync(int id);
 
