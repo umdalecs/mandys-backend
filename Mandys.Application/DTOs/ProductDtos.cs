@@ -6,16 +6,16 @@ public record ProductResponse(
     int Id,
     string Description,
     bool IsSupply,
-    decimal CostPrice,
-    decimal SalePrice,
+    decimal? CostPrice,
+    decimal? SalePrice,
     string MeasureUnit
 );
 
 public record CreateProductRequest(
     string Description,
     bool IsSupply,
-    decimal SalePrice,
-    string MeasureUnit
+    string MeasureUnit,
+    decimal? SalePrice = null
 );
 
 public record UpdateProductRequest(

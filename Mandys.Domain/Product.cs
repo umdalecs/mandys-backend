@@ -9,8 +9,8 @@ public class Product
     public int Id { get; private set; }
     public string Description { get; private set; }
     public bool IsSupply { get; private set; }
-    public decimal CostPrice { get; private set; }
-    public decimal SalePrice { get; private set; }
+    public decimal? CostPrice { get; private set; }
+    public decimal? SalePrice { get; private set; }
     public string MeasureUnit { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
@@ -19,17 +19,17 @@ public class Product
         int id,
         string description,
         bool isSupply,
-        decimal salePrice,
+        decimal? salePrice,
         string measureUnit,
-        decimal costPrice = 0m,
+        decimal? costPrice = 0m,
         DateTime? createdAt = null,
         DateTime? updatedAt = null)
     {
         Id = id;
         Description = GuardNotEmpty(description, nameof(description));
         IsSupply = isSupply;
-        SalePrice = GuardPrice(salePrice, nameof(salePrice));
-        CostPrice = GuardPrice(costPrice, nameof(costPrice));
+        SalePrice = GuardPrice(salePrice ?? 0, nameof(salePrice));
+        CostPrice = GuardPrice(costPrice ?? 0, nameof(costPrice));
         MeasureUnit = GuardNotEmpty(measureUnit, nameof(measureUnit));
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
@@ -39,11 +39,11 @@ public class Product
     /// Updates the catalog-editable details. <see cref="CostPrice"/> is not
     /// part of the catalog CRUD; only purchases move it.
     /// </summary>
-    public void UpdateDetails(string description, bool isSupply, decimal salePrice, string measureUnit)
+    public void UpdateDetails(string description, bool isSupply, decimal? salePrice, string measureUnit)
     {
         Description = GuardNotEmpty(description, nameof(description));
         IsSupply = isSupply;
-        SalePrice = GuardPrice(salePrice, nameof(salePrice));
+        SalePrice = GuardPrice(salePrice ?? 0, nameof(salePrice));
         MeasureUnit = GuardNotEmpty(measureUnit, nameof(measureUnit));
     }
 

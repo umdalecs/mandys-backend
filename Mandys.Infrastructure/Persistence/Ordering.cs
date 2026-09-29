@@ -96,8 +96,8 @@ internal static class SortSelectors
         {
             ProductSortField.Description => p => p.Description,
             ProductSortField.IsSupply => p => p.IsSupply,
-            ProductSortField.CostPrice => p => p.CostPrice,
-            ProductSortField.SalePrice => p => p.SalePrice,
+            ProductSortField.CostPrice => p => p.CostPrice ?? 0,
+            ProductSortField.SalePrice => p => p.SalePrice ?? 0,
             ProductSortField.MeasureUnit => p => p.MeasureUnit,
             ProductSortField.CreatedAt => p => p.CreatedAt,
             ProductSortField.UpdatedAt => p => p.UpdatedAt,
