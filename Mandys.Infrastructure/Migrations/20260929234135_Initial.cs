@@ -682,6 +682,12 @@ namespace Mandys.Infrastructure.Migrations
                 column: "product_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_products_description",
+                table: "products",
+                column: "description",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "ix_refresh_tokens_token_hash",
                 table: "refresh_tokens",
                 column: "token_hash",

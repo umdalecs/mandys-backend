@@ -1565,6 +1565,10 @@ namespace Mandys.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_products");
 
+                    b.HasIndex("Description")
+                        .IsUnique()
+                        .HasDatabaseName("ix_products_description");
+
                     b.ToTable("products", (string)null);
 
                     b.HasData(
