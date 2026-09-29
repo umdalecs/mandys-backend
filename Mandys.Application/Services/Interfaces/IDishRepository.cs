@@ -10,7 +10,7 @@ public interface IDishRepository
     Task<Dish?> GetByIdAsync(int id);
 
     Task<(int TotalCount, IReadOnlyList<Dish> Items)> SearchAsync(
-        string? search, int page, int pageSize);
+        string? search, int page, int pageSize, string? orderBy);
 
     /// <returns>The saved dish, with its database-generated id.</returns>
     Task<Dish> AddAsync(Dish dish);

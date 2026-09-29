@@ -4,7 +4,7 @@ namespace Mandys.Services.Interfaces;
 
 public interface IDishService
 {
-    Task<PagedDishesResponse> GetDishesAsync(int page, int pageSize, string? search);
+    Task<PagedDishesResponse> GetDishesAsync(int page, int pageSize, string? search, string? orderBy);
 
     Task<DishResponse> GetDishByIdAsync(int id);
 

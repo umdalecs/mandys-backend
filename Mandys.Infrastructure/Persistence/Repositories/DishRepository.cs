@@ -20,7 +20,7 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
     }
 
     public async Task<(int TotalCount, IReadOnlyList<Dish> Items)> SearchAsync(
-        string? search, int page, int pageSize)
+        string? search, int page, int pageSize, string? orderBy)
     {
         IQueryable<DishRecord> query = db.Dishes
             .AsNoTracking()
@@ -36,7 +36,11 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
         var totalCount = await query.CountAsync();
 
         var items = await query
-            .OrderBy(d => d.Id)
+            .ApplyOrdering(
+                OrderByParser.Parse<DishSortField>(orderBy)
+                    .Select(k => (k.Field.Selector(), k.Descending))
+                    .ToList(),
+                d => d.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
