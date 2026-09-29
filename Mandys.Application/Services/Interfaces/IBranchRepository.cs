@@ -10,7 +10,7 @@ public interface IBranchRepository
     Task<Branch?> GetByIdAsync(int id);
 
     Task<(int TotalCount, IReadOnlyList<Branch> Items)> SearchAsync(
-        string? search, int page, int pageSize);
+        string? search, int page, int pageSize, string? orderBy);
 
     /// <returns>The saved branch, with its database-generated id.</returns>
     Task<Branch> AddAsync(Branch branch);

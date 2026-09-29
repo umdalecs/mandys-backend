@@ -6,13 +6,13 @@ namespace Mandys.Services.Implementations;
 
 public class BranchService(IBranchRepository branches) : IBranchService
 {
-    public async Task<PagedBranchesResponse> GetBranchesAsync(int page, int pageSize, string? search)
+    public async Task<PagedBranchesResponse> GetBranchesAsync(int page, int pageSize, string? search, string? orderBy)
     {
         if (page < 1) page = 1;
         if (pageSize < 1) pageSize = 20;
         if (pageSize > 100) pageSize = 100;
 
-        var (totalCount, items) = await branches.SearchAsync(search, page, pageSize);
+        var (totalCount, items) = await branches.SearchAsync(search, page, pageSize, orderBy);
         var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
         return new PagedBranchesResponse(totalCount, page, pageSize, totalPages,

@@ -41,9 +41,10 @@ public class BranchHandler : ICarterModule
         IBranchService branchService,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20,
-        [FromQuery] string? search = null)
+        [FromQuery] string? search = null,
+        [FromQuery] string? orderBy = null)
     {
-        return Results.Ok(await branchService.GetBranchesAsync(page, pageSize, search));
+        return Results.Ok(await branchService.GetBranchesAsync(page, pageSize, search, orderBy));
     }
 
     private static async Task<IResult> GetBranchById(

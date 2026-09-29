@@ -16,7 +16,7 @@ public class BranchRepository(ApplicationDbContext db) : IBranchRepository
     }
 
     public async Task<(int TotalCount, IReadOnlyList<Branch> Items)> SearchAsync(
-        string? search, int page, int pageSize)
+        string? search, int page, int pageSize, string? orderBy)
     {
         var query = db.Branches.AsNoTracking();
 
@@ -31,7 +31,11 @@ public class BranchRepository(ApplicationDbContext db) : IBranchRepository
         var totalCount = await query.CountAsync();
 
         var items = await query
-            .OrderBy(b => b.Id)
+            .ApplyOrdering(
+                OrderByParser.Parse<BranchSortField>(orderBy)
+                    .Select(k => (k.Field.Selector(), k.Descending))
+                    .ToList(),
+                b => b.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
