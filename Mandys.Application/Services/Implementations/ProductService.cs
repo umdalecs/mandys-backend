@@ -6,13 +6,13 @@ namespace Mandys.Services.Implementations;
 
 public class ProductService(IProductRepository products) : IProductService
 {
-    public async Task<PagedProductsResponse> GetProductsAsync(int page, int pageSize, string? search)
+    public async Task<PagedProductsResponse> GetProductsAsync(int page, int pageSize, string? search, string? orderBy)
     {
         if (page < 1) page = 1;
         if (pageSize < 1) pageSize = 20;
         if (pageSize > 100) pageSize = 100;
 
-        var (totalCount, items) = await products.SearchAsync(search, page, pageSize);
+        var (totalCount, items) = await products.SearchAsync(search, page, pageSize, orderBy);
         var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
         return new PagedProductsResponse(totalCount, page, pageSize, totalPages,

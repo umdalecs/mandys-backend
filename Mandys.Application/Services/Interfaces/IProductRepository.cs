@@ -10,7 +10,7 @@ public interface IProductRepository
     Task<Product?> GetByIdAsync(int id);
 
     Task<(int TotalCount, IReadOnlyList<Product> Items)> SearchAsync(
-        string? search, int page, int pageSize);
+        string? search, int page, int pageSize, string? orderBy);
 
     /// <returns>The saved product, with its database-generated id.</returns>
     Task<Product> AddAsync(Product product);

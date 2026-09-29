@@ -16,7 +16,7 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
     }
 
     public async Task<(int TotalCount, IReadOnlyList<Product> Items)> SearchAsync(
-        string? search, int page, int pageSize)
+        string? search, int page, int pageSize, string? orderBy)
     {
         var query = db.Products.AsNoTracking();
 
@@ -31,7 +31,11 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
         var totalCount = await query.CountAsync();
 
         var items = await query
-            .OrderBy(p => p.Id)
+            .ApplyOrdering(
+                OrderByParser.Parse<ProductSortField>(orderBy)
+                    .Select(k => (k.Field.Selector(), k.Descending))
+                    .ToList(),
+                p => p.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

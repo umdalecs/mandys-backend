@@ -4,7 +4,7 @@ namespace Mandys.Services.Interfaces;
 
 public interface IProductService
 {
-    Task<PagedProductsResponse> GetProductsAsync(int page, int pageSize, string? search);
+    Task<PagedProductsResponse> GetProductsAsync(int page, int pageSize, string? search, string? orderBy);
 
     Task<ProductResponse> GetProductByIdAsync(int id);
 

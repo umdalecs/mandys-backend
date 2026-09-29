@@ -52,9 +52,10 @@ public class ProductHandler : ICarterModule
         IProductService productService,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20,
-        [FromQuery] string? search = null)
+        [FromQuery] string? search = null,
+        [FromQuery] string? orderBy = null)
     {
-        return Results.Ok(await productService.GetProductsAsync(page, pageSize, search));
+        return Results.Ok(await productService.GetProductsAsync(page, pageSize, search, orderBy));
     }
 
     private static async Task<IResult> GetProductById(
