@@ -39,7 +39,7 @@ public class AuthService(
     {
         if (string.IsNullOrWhiteSpace(refreshToken))
         {
-            throw ServiceException.BadRequest("Refresh token is required.");
+            throw ServiceException.BadRequest("El token de actualización es obligatorio.");
         }
 
         var stored = await refreshTokens.FindByTokenAsync(refreshToken);
@@ -81,7 +81,7 @@ public class AuthService(
     {
         if (string.IsNullOrWhiteSpace(refreshToken))
         {
-            throw ServiceException.BadRequest("Refresh token is required.");
+            throw ServiceException.BadRequest("El token de actualización es obligatorio.");
         }
 
         var stored = await refreshTokens.FindByTokenAsync(refreshToken);

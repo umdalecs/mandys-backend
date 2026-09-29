@@ -27,7 +27,7 @@ public class ComboService(
         var combo = await combos.GetByIdAsync(id);
         if (combo is null)
         {
-            throw ServiceException.NotFound($"Combo with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el combo con ID '{id}'.");
         }
 
         return combo.ToResponse();
@@ -53,7 +53,7 @@ public class ComboService(
         var combo = await combos.GetByIdAsync(id);
         if (combo is null)
         {
-            throw ServiceException.NotFound($"Combo with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el combo con ID '{id}'.");
         }
 
         var dishLines = request.Dishes is null ? null : await ValidateDishLinesAsync(request.Dishes);
@@ -75,7 +75,7 @@ public class ComboService(
         var removed = await combos.RemoveAsync(id);
         if (!removed)
         {
-            throw ServiceException.NotFound($"Combo with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el combo con ID '{id}'.");
         }
     }
 
@@ -98,7 +98,7 @@ public class ComboService(
             var dish = await dishes.GetByIdAsync(line.DishId);
             if (dish is null)
             {
-                throw ServiceException.NotFound($"Dish with ID '{line.DishId}' not found.");
+                throw ServiceException.NotFound($"No se encontró el platillo con ID '{line.DishId}'.");
             }
 
             resolved.Add(new ComboDish(dish, line.Quantity));
@@ -126,13 +126,13 @@ public class ComboService(
             var product = await products.GetByIdAsync(line.ProductId);
             if (product is null)
             {
-                throw ServiceException.NotFound($"Product with ID '{line.ProductId}' not found.");
+                throw ServiceException.NotFound($"No se encontró el producto con ID '{line.ProductId}'.");
             }
 
             if (product.IsSupply)
             {
                 throw ServiceException.BadRequest(
-                    $"Product '{product.Description}' (ID '{product.Id}') is a supply and cannot be sold in a combo.");
+                    $"El producto '{product.Description}' (ID '{product.Id}') es un insumo y no puede venderse en un combo.");
             }
 
             resolved.Add(new ComboProduct(product, line.Quantity));

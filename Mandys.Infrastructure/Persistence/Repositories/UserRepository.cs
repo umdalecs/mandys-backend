@@ -79,7 +79,7 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
         var record = await db.Users.FirstOrDefaultAsync(u => u.Id == user.ID);
         if (record is null)
         {
-            throw ServiceException.NotFound($"User with ID '{user.ID}' not found.");
+            throw ServiceException.NotFound($"No se encontró el usuario con ID '{user.ID}'.");
         }
 
         record.FirstName = user.FirstName;

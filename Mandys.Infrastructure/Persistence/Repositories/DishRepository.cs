@@ -70,7 +70,7 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
             .FirstOrDefaultAsync(d => d.Id == dish.Id);
         if (record is null)
         {
-            throw ServiceException.NotFound($"Dish with ID '{dish.Id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el platillo con ID '{dish.Id}'.");
         }
 
         record.Name = dish.Name;
@@ -107,6 +107,15 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
         if (record is null)
         {
             return false;
+        }
+
+        var comboCount = await db.ComboDishes.AsNoTracking()
+            .CountAsync(cd => cd.DishId == id);
+
+        if (comboCount > 0)
+        {
+            throw ServiceException.Conflict(
+                $"No se puede eliminar el platillo '{record.Name}' porque está en uso: {comboCount} línea(s) de combo.");
         }
 
         foreach (var line in record.DishProducts.ToList())

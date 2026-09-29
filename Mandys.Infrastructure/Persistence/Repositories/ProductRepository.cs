@@ -59,12 +59,10 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
 
     public async Task UpdateAsync(Product product)
     {
-        // Update the tracked record so the identity key and audit columns
-        // are preserved.
         var record = await db.Products.FirstOrDefaultAsync(p => p.Id == product.Id);
         if (record is null)
         {
-            throw ServiceException.NotFound($"Product with ID '{product.Id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el producto con ID '{product.Id}'.");
         }
 
         record.Description = product.Description;
@@ -84,9 +82,30 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
             return false;
         }
 
-        // Soft-deleted by the SaveChangesAsync interceptor.
+        var dishCount = await db.DishProducts.AsNoTracking()
+            .CountAsync(dp => dp.ProductId == id);
+        var comboCount = await db.ComboProducts.AsNoTracking()
+            .CountAsync(cp => cp.ProductId == id);
+
+        if (dishCount > 0 || comboCount > 0)
+        {
+            var totalCount = dishCount + comboCount;
+            throw ServiceException.Conflict(
+                $"No se puede eliminar el producto '{record.Description}' porque está en uso {totalCount} vez/veces.");
+        }
+
         db.Products.Remove(record);
         await db.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<bool> ExistsByDescriptionAsync(string description, int? excludingId = null)
+    {
+        var normalized = description.Trim().ToLower();
+        return await db.Products
+            .AsNoTracking()
+            .AnyAsync(p =>
+                p.Description.ToLower() == normalized &&
+                (excludingId == null || p.Id != excludingId));
     }
 }

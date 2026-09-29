@@ -10,11 +10,11 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
         RuleFor(lr => lr.Email)
             .NotNull()
             .EmailAddress()
-            .WithMessage("Invalid Email");
+            .WithMessage("El correo electrónico no es válido.");
 
         RuleFor(lr => lr.Password)
             .NotNull()
             .MinimumLength(6)
-            .WithMessage("Password try is too short");
+            .WithMessage("La contraseña es demasiado corta.");
     }
 }

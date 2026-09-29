@@ -81,7 +81,7 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
             .FirstOrDefaultAsync(c => c.Id == combo.Id);
         if (record is null)
         {
-            throw ServiceException.NotFound($"Combo with ID '{combo.Id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el combo con ID '{combo.Id}'.");
         }
 
         record.Name = combo.Name;
