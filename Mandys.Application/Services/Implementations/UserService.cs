@@ -19,7 +19,7 @@ public class UserService(
         var user = await users.GetByIdAsync(currentUserId.Value);
         if (user is null)
         {
-            throw ServiceException.NotFound("User not found.");
+            throw ServiceException.NotFound("Usuario no encontrado.");
         }
 
         return user.ToResponse();
@@ -42,7 +42,7 @@ public class UserService(
         var user = await users.GetByIdAsync(id);
         if (user is null)
         {
-            throw ServiceException.NotFound($"User with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el usuario con ID '{id}'.");
         }
 
         return user.ToResponse();
@@ -61,7 +61,7 @@ public class UserService(
 
         if (wantsLogin && email is null)
         {
-            throw ServiceException.BadRequest("An email is required to set a password.");
+            throw ServiceException.BadRequest("Se requiere un correo electrónico para establecer una contraseña.");
         }
 
         // Only customers may exist without credentials. Staff without a
@@ -70,12 +70,12 @@ public class UserService(
         if (!wantsLogin && !IsCustomer(role))
         {
             throw ServiceException.BadRequest(
-                $"Role '{role}' requires login credentials: an email and a password are mandatory.");
+                $"El rol '{role}' requiere credenciales de acceso: el correo y la contraseña son obligatorios.");
         }
 
         if (email is not null && await users.ExistsByEmailAsync(email))
         {
-            throw ServiceException.Conflict($"Email '{email}' is already registered.");
+            throw ServiceException.Conflict($"El correo '{email}' ya está registrado.");
         }
 
         var created = await users.AddAsync(new User(
@@ -95,12 +95,12 @@ public class UserService(
         var user = await users.GetByIdAsync(id);
         if (user is null)
         {
-            throw ServiceException.NotFound($"User with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el usuario con ID '{id}'.");
         }
 
         if (!string.IsNullOrWhiteSpace(request.Password) && string.IsNullOrWhiteSpace(request.Email))
         {
-            throw ServiceException.BadRequest("An email is required to set a password.");
+            throw ServiceException.BadRequest("Se requiere un correo electrónico para establecer una contraseña.");
         }
 
         if (!string.IsNullOrWhiteSpace(request.Email) && request.Email.Trim().ToLowerInvariant() != user.Email?.ToLowerInvariant())
@@ -108,7 +108,7 @@ public class UserService(
             var trimmedEmail = request.Email.Trim().ToLowerInvariant();
             if (await users.ExistsByEmailAsync(trimmedEmail, id))
             {
-                throw ServiceException.Conflict($"Email '{trimmedEmail}' is already registered.");
+                throw ServiceException.Conflict($"El correo '{trimmedEmail}' ya está registrado.");
             }
             user.ChangeEmail(trimmedEmail);
         }
@@ -132,7 +132,7 @@ public class UserService(
         if (Roles.RequiresBranch(effectiveRole) && effectiveBranch is null)
         {
             throw ServiceException.BadRequest(
-                $"Role '{effectiveRole}' requires a branch. Only administrators and customers may omit it.");
+                $"El rol '{effectiveRole}' requiere una sucursal. Solo administradores y clientes pueden omitirla.");
         }
 
         // Same for credentials: promoting a credential-less customer to a
@@ -140,7 +140,7 @@ public class UserService(
         if (!IsCustomer(effectiveRole) && !user.HasLogin && string.IsNullOrWhiteSpace(request.Password))
         {
             throw ServiceException.BadRequest(
-                $"Role '{effectiveRole}' requires login credentials: send a password with this change.");
+                $"El rol '{effectiveRole}' requiere credenciales de acceso: envía una contraseña junto con este cambio.");
         }
 
         // Branch first so a simultaneous role upgrade sees the new branch.
@@ -172,13 +172,13 @@ public class UserService(
     {
         if (currentUserId == id)
         {
-            throw ServiceException.BadRequest("Administrators cannot delete their own account.");
+            throw ServiceException.BadRequest("Los administradores no pueden eliminar su propia cuenta.");
         }
 
         var user = await users.GetByIdAsync(id);
         if (user is null)
         {
-            throw ServiceException.NotFound($"User with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el usuario con ID '{id}'.");
         }
 
         await users.RemoveAsync(id);

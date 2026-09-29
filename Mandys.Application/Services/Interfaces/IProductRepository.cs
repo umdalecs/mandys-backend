@@ -19,4 +19,7 @@ public interface IProductRepository
 
     /// <returns>False when no product with the id exists (soft-delete).</returns>
     Task<bool> RemoveAsync(int id);
+
+    /// <returns>True when another product already has the given description.</returns>
+    Task<bool> ExistsByDescriptionAsync(string description, int? excludingId = null);
 }

@@ -10,23 +10,23 @@ public class RegisterCustomerRequestValidator : AbstractValidator<RegisterCustom
         RuleFor(x => x.FirstName)
             .NotEmpty()
             .MaximumLength(50)
-            .WithMessage("First name is required and must be at most 50 characters.");
+            .WithMessage("El nombre es obligatorio y no puede superar los 50 caracteres.");
 
         RuleFor(x => x.LastName)
             .NotEmpty()
             .MaximumLength(50)
-            .WithMessage("Last name is required and must be at most 50 characters.");
+            .WithMessage("El apellido es obligatorio y no puede superar los 50 caracteres.");
 
         RuleFor(x => x.Email)
             .NotEmpty()
             .EmailAddress()
             .MaximumLength(50)
-            .WithMessage("A valid email is required and must be at most 50 characters.");
+            .WithMessage("Se requiere un correo electrónico válido de máximo 50 caracteres.");
 
         RuleFor(x => x.Password)
             .NotEmpty()
             .MinimumLength(6)
-            .WithMessage("Password must be at least 6 characters.");
+            .WithMessage("La contraseña debe tener al menos 6 caracteres.");
     }
 }
 
@@ -38,18 +38,18 @@ public class UpdateCustomerRequestValidator : AbstractValidator<UpdateCustomerRe
             .NotEmpty()
             .MaximumLength(50)
             .When(x => x.FirstName is not null)
-            .WithMessage("First name must not be blank and must be at most 50 characters.");
+            .WithMessage("El nombre no puede estar vacío y no puede superar los 50 caracteres.");
 
         RuleFor(x => x.LastName)
             .NotEmpty()
             .MaximumLength(50)
             .When(x => x.LastName is not null)
-            .WithMessage("Last name must not be blank and must be at most 50 characters.");
+            .WithMessage("El apellido no puede estar vacío y no puede superar los 50 caracteres.");
 
         RuleFor(x => x.Email)
             .EmailAddress()
             .MaximumLength(50)
             .When(x => x.Email is not null)
-            .WithMessage("Email must be a valid address and at most 50 characters.");
+            .WithMessage("El correo electrónico debe ser válido y de máximo 50 caracteres.");
     }
 }

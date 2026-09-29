@@ -70,7 +70,7 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
             .FirstOrDefaultAsync(d => d.Id == dish.Id);
         if (record is null)
         {
-            throw ServiceException.NotFound($"Dish with ID '{dish.Id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el platillo con ID '{dish.Id}'.");
         }
 
         record.Name = dish.Name;

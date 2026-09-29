@@ -24,7 +24,7 @@ public class ProductService(IProductRepository products) : IProductService
         var product = await products.GetByIdAsync(id);
         if (product is null)
         {
-            throw ServiceException.NotFound($"Product with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el producto con ID '{id}'.");
         }
 
         return product.ToResponse();
@@ -32,9 +32,16 @@ public class ProductService(IProductRepository products) : IProductService
 
     public async Task<ProductResponse> CreateProductAsync(CreateProductRequest request)
     {
+        var description = request.Description.Trim();
+
+        if (await products.ExistsByDescriptionAsync(description))
+        {
+            throw ServiceException.Conflict($"Ya existe un producto con el nombre '{description}'.");
+        }
+
         var created = await products.AddAsync(new Product(
             0,
-            request.Description.Trim(),
+            description,
             request.IsSupply,
             request.SalePrice,
             request.MeasureUnit.Trim()));
@@ -47,11 +54,21 @@ public class ProductService(IProductRepository products) : IProductService
         var product = await products.GetByIdAsync(id);
         if (product is null)
         {
-            throw ServiceException.NotFound($"Product with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el producto con ID '{id}'.");
+        }
+
+        var newDescription = string.IsNullOrWhiteSpace(request.Description)
+            ? product.Description
+            : request.Description.Trim();
+
+        if (!string.Equals(newDescription, product.Description, StringComparison.OrdinalIgnoreCase) &&
+            await products.ExistsByDescriptionAsync(newDescription, excludingId: id))
+        {
+            throw ServiceException.Conflict($"Ya existe un producto con el nombre '{newDescription}'.");
         }
 
         product.UpdateDetails(
-            string.IsNullOrWhiteSpace(request.Description) ? product.Description : request.Description.Trim(),
+            newDescription,
             request.IsSupply ?? product.IsSupply,
             request.SalePrice ?? product.SalePrice,
             string.IsNullOrWhiteSpace(request.MeasureUnit) ? product.MeasureUnit : request.MeasureUnit.Trim());
@@ -66,7 +83,7 @@ public class ProductService(IProductRepository products) : IProductService
         var removed = await products.RemoveAsync(id);
         if (!removed)
         {
-            throw ServiceException.NotFound($"Product with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el producto con ID '{id}'.");
         }
     }
 }

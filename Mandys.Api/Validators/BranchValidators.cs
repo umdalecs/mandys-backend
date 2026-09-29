@@ -10,12 +10,12 @@ public class CreateBranchRequestValidator : AbstractValidator<CreateBranchReques
         RuleFor(x => x.Name)
             .NotEmpty()
             .MaximumLength(50)
-            .WithMessage("Name is required and must be at most 50 characters.");
+            .WithMessage("El nombre es obligatorio y no puede superar los 50 caracteres.");
 
         RuleFor(x => x.Address)
             .NotEmpty()
             .MaximumLength(50)
-            .WithMessage("Address is required and must be at most 50 characters.");
+            .WithMessage("La dirección es obligatoria y no puede superar los 50 caracteres.");
     }
 }
 
@@ -27,12 +27,12 @@ public class UpdateBranchRequestValidator : AbstractValidator<UpdateBranchReques
             .NotEmpty()
             .MaximumLength(50)
             .When(x => x.Name is not null)
-            .WithMessage("Name must not be blank and must be at most 50 characters.");
+            .WithMessage("El nombre no puede estar vacío y no puede superar los 50 caracteres.");
 
         RuleFor(x => x.Address)
             .NotEmpty()
             .MaximumLength(50)
             .When(x => x.Address is not null)
-            .WithMessage("Address must not be blank and must be at most 50 characters.");
+            .WithMessage("La dirección no puede estar vacía y no puede superar los 50 caracteres.");
     }
 }

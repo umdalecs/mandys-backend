@@ -58,7 +58,7 @@ public class BranchRepository(ApplicationDbContext db) : IBranchRepository
         var record = await db.Branches.FirstOrDefaultAsync(b => b.Id == branch.Id);
         if (record is null)
         {
-            throw ServiceException.NotFound($"Branch with ID '{branch.Id}' not found.");
+            throw ServiceException.NotFound($"No se encontró la sucursal con ID '{branch.Id}'.");
         }
 
         record.Name = branch.Name;

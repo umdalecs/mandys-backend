@@ -24,7 +24,7 @@ public class DishService(IDishRepository dishes, IProductRepository products) : 
         var dish = await dishes.GetByIdAsync(id);
         if (dish is null)
         {
-            throw ServiceException.NotFound($"Dish with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el platillo con ID '{id}'.");
         }
 
         return dish.ToResponse();
@@ -48,7 +48,7 @@ public class DishService(IDishRepository dishes, IProductRepository products) : 
         var dish = await dishes.GetByIdAsync(id);
         if (dish is null)
         {
-            throw ServiceException.NotFound($"Dish with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el platillo con ID '{id}'.");
         }
 
         var recipe = request.Recipe is null ? null : await ValidateRecipeAsync(request.Recipe);
@@ -68,7 +68,7 @@ public class DishService(IDishRepository dishes, IProductRepository products) : 
         var removed = await dishes.RemoveAsync(id);
         if (!removed)
         {
-            throw ServiceException.NotFound($"Dish with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el platillo con ID '{id}'.");
         }
     }
 
@@ -92,13 +92,13 @@ public class DishService(IDishRepository dishes, IProductRepository products) : 
             var product = await products.GetByIdAsync(line.ProductId);
             if (product is null)
             {
-                throw ServiceException.NotFound($"Product with ID '{line.ProductId}' not found.");
+                throw ServiceException.NotFound($"No se encontró el producto con ID '{line.ProductId}'.");
             }
 
             if (!product.IsSupply)
             {
                 throw ServiceException.BadRequest(
-                    $"Product '{product.Description}' (ID '{product.Id}') is not a supply and cannot be a recipe ingredient.");
+                    $"El producto '{product.Description}' (ID '{product.Id}') no es un insumo y no puede ser ingrediente de una receta.");
             }
 
             recipe.Add(new DishProduct(product, line.Quantity));

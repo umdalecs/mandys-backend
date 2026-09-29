@@ -9,15 +9,15 @@ public class CreateProductRequestValidator : AbstractValidator<CreateProductRequ
     {
         RuleFor(x => x.Description)
             .NotEmpty()
-            .WithMessage("Description is required.");
+            .WithMessage("La descripción es obligatoria.");
 
         RuleFor(x => x.SalePrice)
             .GreaterThanOrEqualTo(0)
-            .WithMessage("Sale price must be non-negative.");
+            .WithMessage("El precio de venta no puede ser negativo.");
 
         RuleFor(x => x.MeasureUnit)
             .NotEmpty()
-            .WithMessage("Measure unit is required.");
+            .WithMessage("La unidad de medida es obligatoria.");
     }
 }
 
@@ -28,6 +28,6 @@ public class UpdateProductRequestValidator : AbstractValidator<UpdateProductRequ
         RuleFor(x => x.SalePrice)
             .GreaterThanOrEqualTo(0)
             .When(x => x.SalePrice.HasValue)
-            .WithMessage("Sale price must be non-negative.");
+            .WithMessage("El precio de venta no puede ser negativo.");
     }
 }

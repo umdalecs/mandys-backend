@@ -398,6 +398,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         modelBuilder.Entity<ProductRecord>(entity =>
         {
+            entity.HasIndex(p => p.Description).IsUnique();
+
             // Note: Make sure to only use static data here
             var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
             entity.HasData(

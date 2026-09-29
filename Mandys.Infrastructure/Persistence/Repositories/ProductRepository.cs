@@ -64,7 +64,7 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
         var record = await db.Products.FirstOrDefaultAsync(p => p.Id == product.Id);
         if (record is null)
         {
-            throw ServiceException.NotFound($"Product with ID '{product.Id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el producto con ID '{product.Id}'.");
         }
 
         record.Description = product.Description;
@@ -88,5 +88,15 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
         db.Products.Remove(record);
         await db.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<bool> ExistsByDescriptionAsync(string description, int? excludingId = null)
+    {
+        var normalized = description.Trim().ToLower();
+        return await db.Products
+            .AsNoTracking()
+            .AnyAsync(p =>
+                p.Description.ToLower() == normalized &&
+                (excludingId == null || p.Id != excludingId));
     }
 }

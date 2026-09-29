@@ -38,7 +38,7 @@ public class CustomerService(
             if (existing.HasLogin ||
                 !string.Equals(existing.Role, Roles.Customer, StringComparison.OrdinalIgnoreCase))
             {
-                throw ServiceException.Conflict($"Email '{email}' is already registered.");
+                throw ServiceException.Conflict($"El correo '{email}' ya está registrado.");
             }
 
             existing.UpdateProfile(firstName, lastName);
@@ -77,7 +77,7 @@ public class CustomerService(
             {
                 if (await users.ExistsByEmailAsync(email, id))
                 {
-                    throw ServiceException.Conflict($"Email '{email}' is already registered.");
+                    throw ServiceException.Conflict($"El correo '{email}' ya está registrado.");
                 }
 
                 customer.ChangeEmail(email);
@@ -95,7 +95,7 @@ public class CustomerService(
         if (user is null || !Roles.IsValid(user.Role) ||
             !string.Equals(user.Role, Roles.Customer, StringComparison.OrdinalIgnoreCase))
         {
-            throw ServiceException.NotFound($"Customer with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el cliente con ID '{id}'.");
         }
 
         return user;
@@ -106,7 +106,7 @@ public class CustomerService(
         var user = await users.GetByIdAsync(id);
         if (user is null)
         {
-            throw ServiceException.NotFound($"User with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró el usuario con ID '{id}'.");
         }
 
         await users.RemoveAsync(id);

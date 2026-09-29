@@ -24,7 +24,7 @@ public class BranchService(IBranchRepository branches) : IBranchService
         var branch = await branches.GetByIdAsync(id);
         if (branch is null)
         {
-            throw ServiceException.NotFound($"Branch with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró la sucursal con ID '{id}'.");
         }
 
         return branch.ToResponse();
@@ -46,7 +46,7 @@ public class BranchService(IBranchRepository branches) : IBranchService
         var branch = await branches.GetByIdAsync(id);
         if (branch is null)
         {
-            throw ServiceException.NotFound($"Branch with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró la sucursal con ID '{id}'.");
         }
 
         branch.UpdateDetails(
@@ -67,13 +67,13 @@ public class BranchService(IBranchRepository branches) : IBranchService
         if (userCount > 0)
         {
             throw ServiceException.Conflict(
-                $"Branch with ID '{id}' still has {userCount} user(s) assigned. Reassign or remove them first.");
+                $"La sucursal con ID '{id}' todavía tiene {userCount} usuario(s) asignado(s). Reasígnalos o elimínalos primero.");
         }
 
         var removed = await branches.RemoveAsync(id);
         if (!removed)
         {
-            throw ServiceException.NotFound($"Branch with ID '{id}' not found.");
+            throw ServiceException.NotFound($"No se encontró la sucursal con ID '{id}'.");
         }
     }
 }
