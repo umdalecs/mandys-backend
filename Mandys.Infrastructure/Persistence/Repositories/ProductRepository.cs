@@ -84,6 +84,24 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
             return false;
         }
 
+        // Refuse deletion while the product is part of any dish recipe or combo.
+        var dishCount = await db.DishProducts.AsNoTracking()
+            .CountAsync(dp => dp.ProductId == id);
+        var comboCount = await db.ComboProducts.AsNoTracking()
+            .CountAsync(cp => cp.ProductId == id);
+
+        if (dishCount > 0 || comboCount > 0)
+        {
+            var parts = new List<string>();
+            if (dishCount > 0)
+                parts.Add($"{dishCount} receta(s) de platillo");
+            if (comboCount > 0)
+                parts.Add($"{comboCount} línea(s) de combo");
+
+            throw ServiceException.Conflict(
+                $"No se puede eliminar el producto '{record.Description}' porque está en uso: {string.Join(" y ", parts)}.");
+        }
+
         // Soft-deleted by the SaveChangesAsync interceptor.
         db.Products.Remove(record);
         await db.SaveChangesAsync();
