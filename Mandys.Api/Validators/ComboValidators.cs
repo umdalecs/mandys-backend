@@ -37,7 +37,8 @@ public class CreateComboRequestValidator : AbstractValidator<CreateComboRequest>
     {
         RuleFor(x => x.Name)
             .NotEmpty()
-            .WithMessage("El nombre es obligatorio.");
+            .MaximumLength(50)
+            .WithMessage("El nombre es obligatorio y no puede superar los 50 caracteres.");
 
         RuleFor(x => x.Price)
             .GreaterThanOrEqualTo(0)
@@ -63,6 +64,12 @@ public class UpdateComboRequestValidator : AbstractValidator<UpdateComboRequest>
 {
     public UpdateComboRequestValidator()
     {
+        RuleFor(x => x.Name)
+            .NotEmpty()
+            .MaximumLength(50)
+            .When(x => x.Name is not null)
+            .WithMessage("El nombre no puede estar vacío y no puede superar los 50 caracteres.");
+
         RuleFor(x => x.Price)
             .GreaterThanOrEqualTo(0)
             .When(x => x.Price.HasValue)

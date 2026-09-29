@@ -9,11 +9,13 @@ public class CreateLogRequestValidator : AbstractValidator<CreateLogRequest>
     {
         RuleFor(lr => lr.Verb)
             .NotNull()
-            .WithMessage("El verbo es obligatorio.");
+            .MaximumLength(200)
+            .WithMessage("El verbo es obligatorio y no puede superar los 200 caracteres.");
 
         RuleFor(lr => lr.Description)
             .NotNull()
             .MinimumLength(25)
-            .WithMessage("La descripción debe tener al menos 25 caracteres.");
+            .MaximumLength(200)
+            .WithMessage("La descripción debe tener entre 25 y 200 caracteres.");
     }
 }
