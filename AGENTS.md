@@ -163,6 +163,12 @@ Plus any `IValidator<CreateXRequest>` / `IValidator<UpdateXRequest>`.
 ### Paging Defaults
 
 - `page = 1`, `pageSize = 20`, max `100`.
+- List endpoints accept `orderBy` (Django-style, e.g. `?orderBy=-salePrice`;
+  comma-separated, `-` prefix = desc). Parsed by `OrderByParser` in
+  `Mandys.Infrastructure/Persistence/Ordering.cs`: case-insensitive,
+  underscores ignored, unknown fields dropped, empty/unknown → `id` asc with
+  `id` appended as final tiebreak. `SearchAsync` takes `orderBy` as a raw
+  string; the whitelist lives in the `*SortField` enums.
 
 ### Error Handling
 
