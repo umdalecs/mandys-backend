@@ -25,14 +25,10 @@ public class CustomerHandler : ICarterModule
         customerRoutes.MapGet("", GetCustomers)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
-                // Roles.Cashier,
+                Roles.Cashier,
                 Roles.BranchChief,
                 Roles.OpChief));
 
-        customerRoutes.MapPost("", CreateCustomer)
-            .RequireAuthorization(policy => policy.RequireRole(
-                Roles.Administrator,
-                Roles.Cashier));
 
         customerRoutes.MapPut("/{id:int}", UpdateCustomer)
             .RequireAuthorization(policy => policy.RequireRole(
@@ -41,17 +37,10 @@ public class CustomerHandler : ICarterModule
                 Roles.Customer,
                 Roles.BranchChief));
 
-        customerRoutes.MapPost("/{id:int}/ban", BanCustomer)
+        customerRoutes.MapDelete("", DeleteCustomer)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
-                Roles.BranchChief,
-                Roles.OpChief));
-
-        customerRoutes.MapDelete("/{id:int}/ban", UnbanCustomer)
-            .RequireAuthorization(policy => policy.RequireRole(
-                Roles.Administrator,
-                Roles.BranchChief,
-                Roles.OpChief));
+                Roles.Cashier));
     }
 
     private static async Task<IResult> GetCustomers(
@@ -81,24 +70,6 @@ public class CustomerHandler : ICarterModule
         }
     }
 
-    private static async Task<IResult> CreateCustomer(
-        [FromBody] CreateCustomerRequest request,
-        IValidator<CreateCustomerRequest> validator,
-        ICustomerService customerService)
-    {
-        try
-        {
-            RequestValidation.ThrowIfInvalid(validator.Validate(request));
-
-            var created = await customerService.CreateAsync(request);
-            return Results.Created($"/users/{created.Id}", created);
-        }
-        catch (ServiceException ex)
-        {
-            return MapCustomerError(ex);
-        }
-    }
-
     private static async Task<IResult> UpdateCustomer(
         int id,
         [FromBody] UpdateCustomerRequest request,
@@ -117,27 +88,14 @@ public class CustomerHandler : ICarterModule
         }
     }
 
-    private static async Task<IResult> BanCustomer(
+    private static async Task<IResult> DeleteCustomer(
         int id,
         ICustomerService customerService)
     {
         try
         {
-            return Results.Ok(await customerService.BanAsync(id));
-        }
-        catch (ServiceException ex)
-        {
-            return MapCustomerError(ex);
-        }
-    }
-
-    private static async Task<IResult> UnbanCustomer(
-        int id,
-        ICustomerService customerService)
-    {
-        try
-        {
-            return Results.Ok(await customerService.UnbanAsync(id));
+            await customerService.DeleteAsync(id);
+            return Results.NoContent();
         }
         catch (ServiceException ex)
         {

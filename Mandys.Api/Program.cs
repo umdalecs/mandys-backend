@@ -25,7 +25,6 @@ builder.Services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
 builder.Services.AddScoped<IValidator<CreateUserRequest>, CreateUserRequestValidator>();
 builder.Services.AddScoped<IValidator<UpdateUserRequest>, UpdateUserRequestValidator>();
 builder.Services.AddScoped<IValidator<RegisterCustomerRequest>, RegisterCustomerRequestValidator>();
-builder.Services.AddScoped<IValidator<CreateCustomerRequest>, CreateCustomerRequestValidator>();
 builder.Services.AddScoped<IValidator<UpdateCustomerRequest>, UpdateCustomerRequestValidator>();
 builder.Services.AddScoped<IValidator<CreateProductRequest>, CreateProductRequestValidator>();
 builder.Services.AddScoped<IValidator<UpdateProductRequest>, UpdateProductRequestValidator>();
@@ -35,6 +34,7 @@ builder.Services.AddScoped<IValidator<CreateComboRequest>, CreateComboRequestVal
 builder.Services.AddScoped<IValidator<UpdateComboRequest>, UpdateComboRequestValidator>();
 builder.Services.AddScoped<IValidator<CreateBranchRequest>, CreateBranchRequestValidator>();
 builder.Services.AddScoped<IValidator<UpdateBranchRequest>, UpdateBranchRequestValidator>();
+builder.Services.AddScoped<IValidator<CreateLogRequest>, CreateLogRequestValidator>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options
@@ -47,6 +47,7 @@ builder.Services.AddScoped<IDishRepository, DishRepository>();
 builder.Services.AddScoped<IComboRepository, ComboRepository>();
 builder.Services.AddScoped<IBranchRepository, BranchRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<IPasswordHasher, Argon2PasswordHasher>();
 
 builder.ConfigureJwt();
@@ -56,6 +57,7 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IDishService, DishService>();
 builder.Services.AddScoped<IComboService, ComboService>();
+builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<IBranchService, BranchService>();
 
 builder.Services.Configure<FrontendOptions>(builder.Configuration.GetSection(FrontendOptions.SectionName));

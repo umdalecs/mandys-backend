@@ -30,28 +30,6 @@ public class RegisterCustomerRequestValidator : AbstractValidator<RegisterCustom
     }
 }
 
-public class CreateCustomerRequestValidator : AbstractValidator<CreateCustomerRequest>
-{
-    public CreateCustomerRequestValidator()
-    {
-        RuleFor(x => x.FirstName)
-            .NotEmpty()
-            .MaximumLength(50)
-            .WithMessage("First name is required and must be at most 50 characters.");
-
-        RuleFor(x => x.LastName)
-            .NotEmpty()
-            .MaximumLength(50)
-            .WithMessage("Last name is required and must be at most 50 characters.");
-
-        RuleFor(x => x.Email)
-            .EmailAddress()
-            .MaximumLength(50)
-            .When(x => !string.IsNullOrWhiteSpace(x.Email))
-            .WithMessage("Email must be a valid address and at most 50 characters.");
-    }
-}
-
 public class UpdateCustomerRequestValidator : AbstractValidator<UpdateCustomerRequest>
 {
     public UpdateCustomerRequestValidator()

@@ -12,8 +12,7 @@ public record CustomerResponse(
     string FirstName,
     string LastName,
     string? Email,
-    bool HasLogin,
-    DateTime? BannedAt
+    bool HasLogin
 );
 
 public record PagedCustomersResponse(
@@ -51,7 +50,6 @@ public static class CustomerMapper
             user.FirstName,
             user.LastName,
             user.Email,
-            user.HasLogin,
-            user.BannedAt
+            user.HasLogin
         );
 }

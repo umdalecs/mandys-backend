@@ -6,6 +6,7 @@ namespace Mandys.Services.Implementations;
 
 public class CustomerService(
     IUserRepository users,
+    IRefreshTokenRepository refreshTokens,
     IPasswordHasher passwordHasher) : ICustomerService
 {
     public async Task<PagedCustomersResponse> GetCustomersAsync(int page, int pageSize, string? search)
@@ -22,16 +23,6 @@ public class CustomerService(
             items.Select(u => u.ToCustomerResponse()).ToList());
     }
 
-    /// <summary>
-    /// Self-registration, and the way a counter customer claims the account
-    /// the counter already created for them: if the email is on file with no
-    /// login, the credentials are attached to that row and its name is
-    /// updated. An email that already has a login, or that belongs to anyone
-    /// other than a customer, is a conflict.
-    /// The role is forced to customer and the branch is left empty, so a
-    /// self-registered row can never hold staff privileges; the domain
-    /// already allows a customer without a branch.
-    /// </summary>
     public async Task<CustomerResponse> RegisterAsync(RegisterCustomerRequest request)
     {
         var email = request.Email.Trim().ToLowerInvariant();
@@ -69,39 +60,6 @@ public class CustomerService(
         return created.ToCustomerResponse();
     }
 
-    /// <summary>
-    /// Counter creation without login credentials: null password hash, so the
-    /// row can never log in. An email is kept when given, because that is
-    /// how the customer is found again to reclaim stored points. The role is
-    /// forced to customer and the branch is left empty.
-    /// </summary>
-    public async Task<CustomerResponse> CreateAsync(CreateCustomerRequest request)
-    {
-        var email = string.IsNullOrWhiteSpace(request.Email)
-            ? null
-            : request.Email.Trim().ToLowerInvariant();
-
-        if (email is not null && await users.ExistsByEmailAsync(email))
-        {
-            throw ServiceException.Conflict($"Email '{email}' is already registered.");
-        }
-
-        var created = await users.AddAsync(new User(
-            0,
-            request.FirstName.Trim(),
-            request.LastName.Trim(),
-            email,
-            null,
-            Roles.Customer));
-
-        return created.ToCustomerResponse();
-    }
-
-    /// <summary>
-    /// Counter-side edits. Names and email only: the role, the branch and
-    /// the password stay under the user module, and an id that is not a
-    /// customer is rejected so this endpoint cannot edit staff.
-    /// </summary>
     public async Task<CustomerResponse> UpdateAsync(int id, UpdateCustomerRequest request)
     {
         var customer = await GetCustomerAsync(id);
@@ -131,30 +89,6 @@ public class CustomerService(
         return customer.ToCustomerResponse();
     }
 
-    public async Task<CustomerResponse> BanAsync(int id)
-    {
-        var customer = await GetCustomerAsync(id);
-        customer.Ban();
-
-        await users.UpdateAsync(customer);
-
-        return customer.ToCustomerResponse();
-    }
-
-    public async Task<CustomerResponse> UnbanAsync(int id)
-    {
-        var customer = await GetCustomerAsync(id);
-        customer.Unban();
-
-        await users.UpdateAsync(customer);
-
-        return customer.ToCustomerResponse();
-    }
-
-    /// <summary>
-    /// Loads a customer, treating any other role as not found so this module
-    /// can never act on a staff account.
-    /// </summary>
     private async Task<User> GetCustomerAsync(int id)
     {
         var user = await users.GetByIdAsync(id);
@@ -165,5 +99,17 @@ public class CustomerService(
         }
 
         return user;
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        var user = await users.GetByIdAsync(id);
+        if (user is null)
+        {
+            throw ServiceException.NotFound($"User with ID '{id}' not found.");
+        }
+
+        await users.RemoveAsync(id);
+        await refreshTokens.RevokeAllAsync(id);
     }
 }

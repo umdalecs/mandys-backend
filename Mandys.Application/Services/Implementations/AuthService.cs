@@ -11,32 +11,17 @@ public class AuthService(
     IRefreshTokenRepository refreshTokens,
     ITokenService tokenService,
     IPasswordHasher passwordHasher,
-    IValidator<LoginRequest> validator,
     IOptions<JwtOptions> jwtOptions) : IAuthService
 {
     private readonly JwtOptions _jwt = jwtOptions.Value;
 
     public async Task<AuthTokenSet> LoginAsync(string? email, string password)
     {
-        var validation = validator.Validate(new LoginRequest(email, password));
-
-        if (!validation.IsValid)
-        {
-            throw ServiceException.BadRequest(validation.Errors.First().ErrorMessage);
-        }
-
         var user = await users.FindByEmailAsync(email!);
 
         // Credential-less users (point-of-sale customers) are unreachable by
         // this lookup anyway; the explicit check keeps the intent clear.
         if (user is null || !user.HasLogin || !passwordHasher.Verify(user.PasswordHash!, password))
-        {
-            throw ServiceException.Unauthorized();
-        }
-
-        // Checked after the password so a wrong password never reveals that
-        // the account exists but is banned.
-        if (user.IsBanned)
         {
             throw ServiceException.Unauthorized();
         }
@@ -79,14 +64,6 @@ public class AuthService(
         var user = await users.GetByIdAsync(stored.UserId);
         if (user is null)
         {
-            throw ServiceException.Unauthorized();
-        }
-
-        // A ban has to end the sessions too, otherwise an already issued
-        // access token keeps working until it expires.
-        if (user.IsBanned)
-        {
-            await refreshTokens.RevokeAllAsync(user.ID);
             throw ServiceException.Unauthorized();
         }
 
