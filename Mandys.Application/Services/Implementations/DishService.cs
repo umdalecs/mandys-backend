@@ -32,6 +32,13 @@ public class DishService(IDishRepository dishes, IProductRepository products) : 
 
     public async Task<DishResponse> CreateDishAsync(CreateDishRequest request)
     {
+        var name = request.Name.Trim();
+
+        if (await dishes.ExistsByNameAsync(name))
+        {
+            throw ServiceException.Conflict($"Ya existe un platillo con el nombre '{name}'.");
+        }
+
         var recipe = await ValidateRecipeAsync(request.Recipe);
 
         var created = await dishes.AddAsync(new Dish(
@@ -51,10 +58,18 @@ public class DishService(IDishRepository dishes, IProductRepository products) : 
             throw ServiceException.NotFound($"No se encontró el platillo con ID '{id}'.");
         }
 
+        var newName = string.IsNullOrWhiteSpace(request.Name) ? dish.Name : request.Name.Trim();
+
+        if (!string.Equals(newName, dish.Name, StringComparison.OrdinalIgnoreCase) &&
+            await dishes.ExistsByNameAsync(newName, excludingId: id))
+        {
+            throw ServiceException.Conflict($"Ya existe un platillo con el nombre '{newName}'.");
+        }
+
         var recipe = request.Recipe is null ? null : await ValidateRecipeAsync(request.Recipe);
 
         dish.UpdateDetails(
-            string.IsNullOrWhiteSpace(request.Name) ? dish.Name : request.Name.Trim(),
+            newName,
             request.Price ?? dish.Price,
             recipe);
 

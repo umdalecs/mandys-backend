@@ -157,4 +157,14 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
         await db.SaveChangesAsync();
         return true;
     }
+
+    public async Task<bool> ExistsByNameAsync(string name, int? excludingId = null)
+    {
+        var normalized = name.Trim().ToLower();
+        return await db.Combos
+            .AsNoTracking()
+            .AnyAsync(c =>
+                c.Name.ToLower() == normalized &&
+                (excludingId == null || c.Id != excludingId));
+    }
 }

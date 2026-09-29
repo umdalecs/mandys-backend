@@ -19,4 +19,7 @@ public interface IComboRepository
 
     /// <returns>False when no combo with the id exists (soft-delete).</returns>
     Task<bool> RemoveAsync(int id);
+
+    /// <returns>True when another combo already has the given name.</returns>
+    Task<bool> ExistsByNameAsync(string name, int? excludingId = null);
 }

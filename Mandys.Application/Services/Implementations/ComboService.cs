@@ -35,12 +35,19 @@ public class ComboService(
 
     public async Task<ComboResponse> CreateComboAsync(CreateComboRequest request)
     {
+        var name = request.Name.Trim();
+
+        if (await combos.ExistsByNameAsync(name))
+        {
+            throw ServiceException.Conflict($"Ya existe un combo con el nombre '{name}'.");
+        }
+
         var dishLines = await ValidateDishLinesAsync(request.Dishes);
         var productLines = await ValidateProductLinesAsync(request.Products);
 
         var created = await combos.AddAsync(new Combo(
             0,
-            request.Name.Trim(),
+            name,
             request.Price,
             dishLines,
             productLines));
@@ -56,11 +63,19 @@ public class ComboService(
             throw ServiceException.NotFound($"No se encontró el combo con ID '{id}'.");
         }
 
+        var newName = string.IsNullOrWhiteSpace(request.Name) ? combo.Name : request.Name.Trim();
+
+        if (!string.Equals(newName, combo.Name, StringComparison.OrdinalIgnoreCase) &&
+            await combos.ExistsByNameAsync(newName, excludingId: id))
+        {
+            throw ServiceException.Conflict($"Ya existe un combo con el nombre '{newName}'.");
+        }
+
         var dishLines = request.Dishes is null ? null : await ValidateDishLinesAsync(request.Dishes);
         var productLines = request.Products is null ? null : await ValidateProductLinesAsync(request.Products);
 
         combo.UpdateDetails(
-            string.IsNullOrWhiteSpace(request.Name) ? combo.Name : request.Name.Trim(),
+            newName,
             request.Price ?? combo.Price,
             dishLines,
             productLines);
