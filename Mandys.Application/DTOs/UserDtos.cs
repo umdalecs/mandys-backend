@@ -9,8 +9,7 @@ public record UserResponse(
     string? Email,
     string Role,
     int? BranchId,
-    bool HasLogin,
-    DateTime? BannedAt
+    bool HasLogin
 );
 
 public record CreateUserRequest(
@@ -52,7 +51,6 @@ public static class UserMapper
             user.Email,
             user.Role,
             user.BranchId,
-            user.HasLogin,
-            user.BannedAt
+            user.HasLogin
         );
 }

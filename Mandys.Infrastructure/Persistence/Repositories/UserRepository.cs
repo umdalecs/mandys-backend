@@ -88,7 +88,6 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
         record.PasswordHash = user.PasswordHash;
         record.Role = user.Role;
         record.BranchId = user.BranchId;
-        record.BannedAt = user.BannedAt;
 
         await db.SaveChangesAsync();
     }
@@ -101,7 +100,6 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
             return false;
         }
 
-        // Soft-deleted by the SaveChangesAsync interceptor.
         db.Users.Remove(record);
         await db.SaveChangesAsync();
         return true;

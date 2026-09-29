@@ -21,19 +21,10 @@ public class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
             .When(x => !string.IsNullOrWhiteSpace(x.Email))
             .WithMessage("Invalid email.");
 
-        // Email and password are both optional: neither means a counter
-        // customer, email alone identifies a customer whose points can be
-        // reclaimed, and both together is a login. Only customers may skip
-        // them, so every other role has to arrive with credentials.
         RuleFor(x => x.Password)
             .NotEmpty()
             .When(x => !IsCustomerRole(EffectiveRole(x.Role)))
             .WithMessage(x => $"Role '{EffectiveRole(x.Role)}' requires login credentials: email and password are mandatory.");
-
-        RuleFor(x => x.UserName)
-            .MaximumLength(50)
-            .When(x => !string.IsNullOrWhiteSpace(x.UserName))
-            .WithMessage("Username must be at most 50 characters.");
 
         RuleFor(x => x.Role)
             .Must(role => Roles.IsValid(role))

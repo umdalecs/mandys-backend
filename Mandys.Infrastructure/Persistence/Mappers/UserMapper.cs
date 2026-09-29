@@ -17,7 +17,6 @@ internal static class UserMapper
             record.PasswordHash,
             record.Role,
             record.BranchId,
-            record.BannedAt,
             record.CreatedAt,
             record.UpdatedAt);
 
@@ -30,6 +29,5 @@ internal static class UserMapper
             PasswordHash = user.PasswordHash,
             Role = user.Role,
             BranchId = user.BranchId,
-            BannedAt = user.BannedAt,
         };
 }

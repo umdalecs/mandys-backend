@@ -30,15 +30,8 @@ public class User
     /// </summary>
     public int? BranchId { get; private set; }
 
-    /// <summary>
-    /// When the account was banned. Null means not banned.
-    /// </summary>
-    public DateTime? BannedAt { get; private set; }
-
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
-
-    public bool IsBanned => BannedAt.HasValue;
 
     /// <summary>
     /// Whether this user can log in. Derived from the credential columns, so
@@ -66,7 +59,6 @@ public class User
         PasswordHash = GuardPasswordHash(passwordHash, Email);
         Role = GuardRole(role);
         BranchId = GuardBranch(Role, branchId);
-        BannedAt = bannedAt;
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
     }
@@ -101,17 +93,6 @@ public class User
     }
 
     public void ClearBranch() => SetBranch(null);
-
-    /// <summary>
-    /// Bans the account: it can no longer log in and its sessions are cut on
-    /// the next refresh. Banning twice keeps the original timestamp.
-    /// </summary>
-    public void Ban()
-    {
-        BannedAt ??= DateTime.UtcNow;
-    }
-
-    public void Unban() => BannedAt = null;
 
     public void SetPasswordHash(string passwordHash)
     {
