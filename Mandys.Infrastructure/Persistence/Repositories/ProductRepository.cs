@@ -59,8 +59,6 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
 
     public async Task UpdateAsync(Product product)
     {
-        // Update the tracked record so the identity key and audit columns
-        // are preserved.
         var record = await db.Products.FirstOrDefaultAsync(p => p.Id == product.Id);
         if (record is null)
         {
@@ -84,7 +82,6 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
             return false;
         }
 
-        // Refuse deletion while the product is part of any dish recipe or combo.
         var dishCount = await db.DishProducts.AsNoTracking()
             .CountAsync(dp => dp.ProductId == id);
         var comboCount = await db.ComboProducts.AsNoTracking()
@@ -92,17 +89,11 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
 
         if (dishCount > 0 || comboCount > 0)
         {
-            var parts = new List<string>();
-            if (dishCount > 0)
-                parts.Add($"{dishCount} receta(s) de platillo");
-            if (comboCount > 0)
-                parts.Add($"{comboCount} línea(s) de combo");
-
+            var totalCount = dishCount + comboCount;
             throw ServiceException.Conflict(
-                $"No se puede eliminar el producto '{record.Description}' porque está en uso: {string.Join(" y ", parts)}.");
+                $"No se puede eliminar el producto '{record.Description}' porque está en uso {totalCount} vez/veces.");
         }
 
-        // Soft-deleted by the SaveChangesAsync interceptor.
         db.Products.Remove(record);
         await db.SaveChangesAsync();
         return true;

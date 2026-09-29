@@ -109,6 +109,15 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
             return false;
         }
 
+        var comboCount = await db.ComboDishes.AsNoTracking()
+            .CountAsync(cd => cd.DishId == id);
+
+        if (comboCount > 0)
+        {
+            throw ServiceException.Conflict(
+                $"No se puede eliminar el platillo '{record.Name}' porque está en uso: {comboCount} línea(s) de combo.");
+        }
+
         foreach (var line in record.DishProducts.ToList())
         {
             db.DishProducts.Remove(line);
