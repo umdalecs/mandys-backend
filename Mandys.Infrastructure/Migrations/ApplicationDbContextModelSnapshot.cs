@@ -1470,6 +1470,49 @@ namespace Mandys.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.LogRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("description");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("Verb")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("verb");
+
+                    b.HasKey("Id")
+                        .HasName("pk_logs");
+
+                    b.ToTable("logs", (string)null);
+                });
+
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.ProductRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -4152,10 +4195,6 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("BannedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("banned_at");
 
                     b.Property<int?>("BranchId")
                         .HasColumnType("integer")

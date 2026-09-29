@@ -16,6 +16,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ComboDishRecord> ComboDishes { get; set; }
     public DbSet<ComboProductRecord> ComboProducts { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<LogRecord> Logs { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

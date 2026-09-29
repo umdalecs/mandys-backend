@@ -70,6 +70,24 @@ namespace Mandys.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "logs",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    verb = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_logs", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "products",
                 columns: table => new
                 {
@@ -102,7 +120,6 @@ namespace Mandys.Infrastructure.Migrations
                     password = table.Column<string>(type: "text", nullable: true),
                     role = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     branch_id = table.Column<int>(type: "integer", nullable: true),
-                    banned_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -496,11 +513,11 @@ namespace Mandys.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "users",
-                columns: new[] { "id", "banned_at", "branch_id", "created_at", "deleted_at", "email", "first_name", "is_deleted", "last_name", "password", "role", "updated_at" },
+                columns: new[] { "id", "branch_id", "created_at", "deleted_at", "email", "first_name", "is_deleted", "last_name", "password", "role", "updated_at" },
                 values: new object[,]
                 {
-                    { 1, null, null, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "admin@mandyspos.com", "Administrador", false, "Sistema", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Administrador", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
-                    { 8, null, null, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "cliente@mandyspos.com", "Cliente", false, "Demo", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Cliente", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) }
+                    { 1, null, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "admin@mandyspos.com", "Administrador", false, "Sistema", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Administrador", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 8, null, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "cliente@mandyspos.com", "Cliente", false, "Demo", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Cliente", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) }
                 });
 
             migrationBuilder.InsertData(
@@ -623,15 +640,15 @@ namespace Mandys.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "users",
-                columns: new[] { "id", "banned_at", "branch_id", "created_at", "deleted_at", "email", "first_name", "is_deleted", "last_name", "password", "role", "updated_at" },
+                columns: new[] { "id", "branch_id", "created_at", "deleted_at", "email", "first_name", "is_deleted", "last_name", "password", "role", "updated_at" },
                 values: new object[,]
                 {
-                    { 2, null, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "operaciones@mandyspos.com", "Gerente", false, "Operaciones", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Gerente de Operaciones", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
-                    { 3, null, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "almacen.central@mandyspos.com", "Encargado", false, "Almacén Central", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Encargado de Almacen Central", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
-                    { 4, null, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "almacen@mandyspos.com", "Encargado", false, "Almacén", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Encargado de Almacen", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
-                    { 5, null, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "caja@mandyspos.com", "Cajero", false, "Sucursal", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Cajero", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
-                    { 6, null, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "cocina@mandyspos.com", "Jefe", false, "Cocina", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Jefe Cocina", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
-                    { 7, null, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "sucursal@mandyspos.com", "Gerente", false, "Sucursal", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Gerente Sucursal", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) }
+                    { 2, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "operaciones@mandyspos.com", "Gerente", false, "Operaciones", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Gerente de Operaciones", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 3, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "almacen.central@mandyspos.com", "Encargado", false, "Almacén Central", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Encargado de Almacen Central", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 4, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "almacen@mandyspos.com", "Encargado", false, "Almacén", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Encargado de Almacen", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 5, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "caja@mandyspos.com", "Cajero", false, "Sucursal", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Cajero", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 6, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "cocina@mandyspos.com", "Jefe", false, "Cocina", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Jefe Cocina", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 7, 1, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "sucursal@mandyspos.com", "Gerente", false, "Sucursal", "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Gerente Sucursal", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) }
                 });
 
             migrationBuilder.CreateIndex(
@@ -698,6 +715,9 @@ namespace Mandys.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "dish_products");
+
+            migrationBuilder.DropTable(
+                name: "logs");
 
             migrationBuilder.DropTable(
                 name: "refresh_tokens");
