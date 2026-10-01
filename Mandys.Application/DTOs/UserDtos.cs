@@ -8,8 +8,7 @@ public record UserResponse(
     string LastName,
     string? Email,
     string Role,
-    int? BranchId,
-    bool HasLogin
+    int? BranchId
 );
 
 public record CreateUserRequest(
@@ -50,7 +49,6 @@ public static class UserMapper
             user.LastName,
             user.Email,
             user.Role,
-            user.BranchId,
-            user.HasLogin
+            user.BranchId
         );
 }

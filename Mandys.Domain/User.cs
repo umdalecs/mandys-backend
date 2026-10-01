@@ -1,10 +1,8 @@
 namespace Mandys.Domain;
 
 /// <summary>
-/// Domain user. One row per person: staff log in, point-of-sale customers
-/// may exist without login credentials (null email and password hash).
-/// Guards its own invariants; persistence mapping lives in
-/// Infrastructure.
+/// Domain user. One row per person. All users have login credentials.
+/// Guards its own invariants; persistence mapping lives in Infrastructure.
 /// </summary>
 public class User
 {
@@ -18,9 +16,9 @@ public class User
     public string? Email { get; private set; }
 
     /// <summary>
-    /// Password hash. Null when the user has no login credentials.
+    /// Argon2 password hash. Always required.
     /// </summary>
-    public string? PasswordHash { get; private set; }
+    public string PasswordHash { get; private set; }
 
     public string Role { get; private set; }
     /// <summary>
@@ -38,7 +36,7 @@ public class User
         string firstName,
         string lastName,
         string? email,
-        string? passwordHash,
+        string passwordHash,
         string role,
         int? branchId = null,
         DateTime? createdAt = null,
@@ -48,7 +46,7 @@ public class User
         FirstName = GuardName(firstName, nameof(firstName));
         LastName = GuardName(lastName, nameof(lastName));
         Email = GuardEmail(email);
-        PasswordHash = GuardPasswordHash(passwordHash, Email);
+        PasswordHash = GuardNotEmpty(passwordHash, nameof(passwordHash));
         Role = GuardRole(role);
         BranchId = GuardBranch(Role, branchId);
         CreatedAt = createdAt ?? DateTime.UtcNow;
@@ -105,28 +103,6 @@ public class User
     private static string? GuardEmail(string? email) =>
         string.IsNullOrWhiteSpace(email) ? null : email.Trim().ToLowerInvariant();
 
-    /// <summary>
-    /// Three states are valid: no email and no hash (a counter customer
-    /// nobody can reach), an email without a hash (identified by email, so
-    /// stored points can be reclaimed, but no login), and both together (a
-    /// login). A hash without an email is the one useless combination,
-    /// because logins are looked up by email, so it is rejected.
-    /// </summary>
-    private static string? GuardPasswordHash(string? passwordHash, string? email)
-    {
-        if (string.IsNullOrWhiteSpace(passwordHash))
-        {
-            return null;
-        }
-
-        if (email is null)
-        {
-            throw new ArgumentException(
-                "An email is required when a password hash is set.", nameof(email));
-        }
-
-        return passwordHash.Trim();
-    }
 
     private static string GuardRole(string role)
     {

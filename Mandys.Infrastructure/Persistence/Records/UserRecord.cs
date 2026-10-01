@@ -28,11 +28,11 @@ public class UserRecord : Record
     public string? Email { get; set; }
 
     /// <summary>
-    /// Argon2 hash of the login password. Null when the user has no login
-    /// credentials.
+    /// Argon2 hash of the login password. Always required.
     /// </summary>
+    [Required]
     [Column("password")]
-    public string? PasswordHash { get; set; }
+    public string PasswordHash { get; set; } = string.Empty;
     [Required]
     [MaxLength(50)]
     public string Role { get; set; } = Roles.Customer;

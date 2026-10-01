@@ -135,13 +135,6 @@ public class UserService(
                 $"El rol '{effectiveRole}' requiere una sucursal. Solo administradores y clientes pueden omitirla.");
         }
 
-        // Same for credentials: promoting a credential-less customer to a
-        // staff role is only allowed if this request also sets a password.
-        if (!IsCustomer(effectiveRole) && !user.HasLogin && string.IsNullOrWhiteSpace(request.Password))
-        {
-            throw ServiceException.BadRequest(
-                $"El rol '{effectiveRole}' requiere credenciales de acceso: envía una contraseña junto con este cambio.");
-        }
 
         // Branch first so a simultaneous role upgrade sees the new branch.
         if (request.ClearBranch)

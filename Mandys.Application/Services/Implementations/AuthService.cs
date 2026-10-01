@@ -21,7 +21,7 @@ public class AuthService(
 
         // Credential-less users (point-of-sale customers) are unreachable by
         // this lookup anyway; the explicit check keeps the intent clear.
-        if (user is null || !user.HasLogin || !passwordHasher.Verify(user.PasswordHash!, password))
+        if (user is null || !passwordHasher.Verify(user.PasswordHash!, password))
         {
             throw ServiceException.Unauthorized();
         }
