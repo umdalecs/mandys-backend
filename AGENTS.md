@@ -16,6 +16,10 @@
 | Database | PostgreSQL 18 via Docker, connection in `appsettings.Development.json` |
 | Migrations | Auto-applied on dev startup; scaffold with `dotnet ef migrations add <Name> --project Mandys.Infrastructure --startup-project Mandys.Api` |
 | CI | GitHub Actions → build Docker image → push to `ghcr.io/umdalecs/mandys-backend` |
+## Agent Policies
+
+- **NO AUTO COMMIT**: Never create git commits automatically or proactively. Only commit when explicitly requested by the user.
+- **Never edit migrations manually**: Always scaffold model changes via `dotnet ef migrations add <Name> --project Mandys.Infrastructure --startup-project Mandys.Api` or regenerate cleanly; never hand-edit scaffolded migration files.
 
 ## Architecture (Clean Architecture, 4 layers)
 
@@ -92,6 +96,7 @@ Consequences:
 
 ### General
 
+- **NO AUTO COMMIT**: Never create git commits automatically. Only commit when explicitly requested by the user.
 - **Indent**: 4 spaces, LF line endings, UTF-8 (see `.editorconfig`).
 - **Nullable reference types**: enabled globally (`Directory.Build.props`).
 - **Implicit usings**: enabled.
