@@ -14,7 +14,7 @@ public interface IUserRepository
     Task<bool> ExistsByEmailAsync(string email, int? excludingId = null);
 
     Task<(int TotalCount, IReadOnlyList<User> Items)> SearchAsync(
-        string? search, string? role, int page, int pageSize);
+        string? search, string? role, int page, int pageSize, string? orderBy = null);
 
     /// <returns>The saved user, with its database-generated id.</returns>
     Task<User> AddAsync(User user);

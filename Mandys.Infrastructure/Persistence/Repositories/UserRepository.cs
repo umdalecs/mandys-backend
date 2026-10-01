@@ -4,6 +4,7 @@ using Mandys.Infrastructure.Persistence.Records;
 using Mandys.Services;
 using Mandys.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Mandys.Infrastructure.Persistence;
 
 namespace Mandys.Infrastructure.Persistence.Repositories;
 
@@ -34,7 +35,7 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
     }
 
     public async Task<(int TotalCount, IReadOnlyList<User> Items)> SearchAsync(
-        string? search, string? role, int page, int pageSize)
+        string? search, string? role, int page, int pageSize, string? orderBy = null)
     {
         var query = db.Users.AsNoTracking();
 
@@ -55,8 +56,12 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
 
         var totalCount = await query.CountAsync();
 
+        var keys = OrderByParser.Parse<UserSortField>(orderBy)
+            .Select(k => (k.Field.Selector(), k.Descending))
+            .ToList();
+
         var items = await query
-            .OrderBy(u => u.Id)
+            .ApplyOrdering(keys, u => u.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

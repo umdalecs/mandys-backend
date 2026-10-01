@@ -9,14 +9,14 @@ public class CustomerService(
     IRefreshTokenRepository refreshTokens,
     IPasswordHasher passwordHasher) : ICustomerService
 {
-    public async Task<PagedCustomersResponse> GetCustomersAsync(int page, int pageSize, string? search)
+    public async Task<PagedCustomersResponse> GetCustomersAsync(int page, int pageSize, string? search, string? orderBy)
     {
         if (page < 1) page = 1;
         if (pageSize < 1) pageSize = 20;
         if (pageSize > 100) pageSize = 100;
 
         // The role filter is what keeps staff out of the customer list.
-        var (totalCount, items) = await users.SearchAsync(search, Roles.Customer, page, pageSize);
+        var (totalCount, items) = await users.SearchAsync(search, Roles.Customer, page, pageSize, orderBy);
         var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
         return new PagedCustomersResponse(totalCount, page, pageSize, totalPages,

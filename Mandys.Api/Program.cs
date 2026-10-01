@@ -112,7 +112,6 @@ else
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGroup("api/")
-    .MapCarter();
+app.MapCarter();
 
 app.Run();

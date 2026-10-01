@@ -51,6 +51,17 @@ internal enum BranchSortField
     UpdatedAt,
 }
 
+/// <inheritdoc cref="ProductSortField"/>
+internal enum UserSortField
+{
+    Id,
+    FirstName,
+    LastName,
+    Email,
+    CreatedAt,
+    UpdatedAt,
+}
+
 /// <summary>
 /// Parses a comma-separated Django-style ordering (<c>name,-price</c>).
 /// Matching is case-insensitive and ignores underscores, so both
@@ -133,6 +144,17 @@ internal static class SortSelectors
             BranchSortField.CreatedAt => b => b.CreatedAt,
             BranchSortField.UpdatedAt => b => b.UpdatedAt,
             _ => b => b.Id,
+        };
+
+    internal static Expression<Func<UserRecord, object>> Selector(this UserSortField field) =>
+        field switch
+        {
+            UserSortField.FirstName => u => u.FirstName,
+            UserSortField.LastName => u => u.LastName,
+            UserSortField.Email => u => u.Email!,
+            UserSortField.CreatedAt => u => u.CreatedAt,
+            UserSortField.UpdatedAt => u => u.UpdatedAt,
+            _ => u => u.Id,
         };
 }
 
