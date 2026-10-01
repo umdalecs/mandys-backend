@@ -23,9 +23,7 @@ public class BranchRepository(ApplicationDbContext db) : IBranchRepository
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = search.Trim().ToLower();
-            query = query.Where(b =>
-                b.Name.ToLower().Contains(term) ||
-                b.Address.ToLower().Contains(term));
+            query = query.Where(b => b.Name.ToLower().Contains(term));
         }
 
         var totalCount = await query.CountAsync();

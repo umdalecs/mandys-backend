@@ -43,7 +43,6 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
         {
             var term = search.Trim().ToLower();
             query = query.Where(u =>
-                (u.Email != null && u.Email.ToLower().Contains(term)) ||
                 u.FirstName.ToLower().Contains(term) ||
                 u.LastName.ToLower().Contains(term));
         }

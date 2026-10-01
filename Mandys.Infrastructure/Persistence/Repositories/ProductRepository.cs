@@ -23,9 +23,7 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = search.Trim().ToLower();
-            query = query.Where(p =>
-                p.Description.ToLower().Contains(term) ||
-                p.MeasureUnit.ToLower().Contains(term));
+            query = query.Where(p => p.Description.ToLower().Contains(term));
         }
         
         if (isSupply.HasValue)
