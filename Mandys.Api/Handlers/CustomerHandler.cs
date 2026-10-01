@@ -20,7 +20,7 @@ public class CustomerHandler : ICarterModule
         var customerRoutes = app.MapGroup("/customers")
             .WithTags("Customers");
 
-        customerRoutes.MapPost("/register", RegisterCustomer);
+        customerRoutes.MapPost("", RegisterCustomer);
 
         customerRoutes.MapGet("", GetCustomers)
             .RequireAuthorization(policy => policy.RequireRole(
@@ -29,6 +29,12 @@ public class CustomerHandler : ICarterModule
                 Roles.BranchChief,
                 Roles.OpChief));
 
+        customerRoutes.MapGet("/{id:int}", GetCustomerById)
+            .RequireAuthorization(policy => policy.RequireRole(
+                Roles.Administrator,
+                Roles.Cashier,
+                Roles.BranchChief,
+                Roles.OpChief));
 
         customerRoutes.MapPut("/{id:int}", UpdateCustomer)
             .RequireAuthorization(policy => policy.RequireRole(
@@ -37,7 +43,7 @@ public class CustomerHandler : ICarterModule
                 Roles.Customer,
                 Roles.BranchChief));
 
-        customerRoutes.MapDelete("", DeleteCustomer)
+        customerRoutes.MapDelete("/{id:int}", DeleteCustomer)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
                 Roles.Cashier));
@@ -52,6 +58,20 @@ public class CustomerHandler : ICarterModule
         return Results.Ok(await customerService.GetCustomersAsync(page, pageSize, search));
     }
 
+    private static async Task<IResult> GetCustomerById(
+        int id,
+        ICustomerService customerService)
+    {
+        try
+        {
+            return Results.Ok(await customerService.GetByIdAsync(id));
+        }
+        catch (ServiceException ex)
+        {
+            return MapCustomerError(ex);
+        }
+    }
+
     private static async Task<IResult> RegisterCustomer(
         [FromBody] RegisterCustomerRequest request,
         IValidator<RegisterCustomerRequest> validator,
@@ -62,7 +82,7 @@ public class CustomerHandler : ICarterModule
             RequestValidation.ThrowIfInvalid(validator.Validate(request));
 
             var created = await customerService.RegisterAsync(request);
-            return Results.Created($"/users/{created.Id}", created);
+            return Results.Created($"/customers/{created.Id}", created);
         }
         catch (ServiceException ex)
         {

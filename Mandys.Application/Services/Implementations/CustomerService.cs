@@ -30,24 +30,8 @@ public class CustomerService(
         var lastName = request.LastName.Trim();
         var passwordHash = passwordHasher.Hash(request.Password);
 
-        var existing = await users.FindByEmailAsync(email);
-        if (existing is not null)
-        {
-            // Same message either way, so a caller cannot learn from the
-            // response that an address is on file as staff.
-            if (existing.HasLogin ||
-                !string.Equals(existing.Role, Roles.Customer, StringComparison.OrdinalIgnoreCase))
-            {
-                throw ServiceException.Conflict($"El correo '{email}' ya está registrado.");
-            }
-
-            existing.UpdateProfile(firstName, lastName);
-            existing.SetPasswordHash(passwordHash);
-
-            await users.UpdateAsync(existing);
-
-            return existing.ToCustomerResponse();
-        }
+        if (await users.FindByEmailAsync(email) is not null)
+            throw ServiceException.Conflict($"El correo '{email}' ya está registrado.");
 
         var created = await users.AddAsync(new User(
             0,
@@ -60,54 +44,50 @@ public class CustomerService(
         return created.ToCustomerResponse();
     }
 
+    public async Task<CustomerResponse> GetByIdAsync(int id)
+    {
+        var user = await users.GetByIdAsync(id);
+        if (user is null || !string.Equals(user.Role, Roles.Customer, StringComparison.OrdinalIgnoreCase))
+            throw ServiceException.NotFound($"No se encontró el cliente con ID '{id}'.");
+
+        return user.ToCustomerResponse();
+    }
+
     public async Task<CustomerResponse> UpdateAsync(int id, UpdateCustomerRequest request)
     {
-        var customer = await GetCustomerAsync(id);
+        var user = await users.GetByIdAsync(id);
+        if (user is null || !string.Equals(user.Role, Roles.Customer, StringComparison.OrdinalIgnoreCase))
+            throw ServiceException.NotFound($"No se encontró el cliente con ID '{id}'.");
+
         if (!string.IsNullOrWhiteSpace(request.FirstName) || !string.IsNullOrWhiteSpace(request.LastName))
         {
-            customer.UpdateProfile(
-                string.IsNullOrWhiteSpace(request.FirstName) ? customer.FirstName : request.FirstName.Trim(),
-                string.IsNullOrWhiteSpace(request.LastName) ? customer.LastName : request.LastName.Trim());
+            user.UpdateProfile(
+                string.IsNullOrWhiteSpace(request.FirstName) ? user.FirstName : request.FirstName.Trim(),
+                string.IsNullOrWhiteSpace(request.LastName) ? user.LastName : request.LastName.Trim());
         }
 
         if (!string.IsNullOrWhiteSpace(request.Email))
         {
             var email = request.Email.Trim().ToLowerInvariant();
-            if (!string.Equals(email, customer.Email, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(email, user.Email, StringComparison.OrdinalIgnoreCase))
             {
                 if (await users.ExistsByEmailAsync(email, id))
-                {
                     throw ServiceException.Conflict($"El correo '{email}' ya está registrado.");
-                }
 
-                customer.ChangeEmail(email);
+                user.ChangeEmail(email);
             }
         }
 
-        await users.UpdateAsync(customer);
+        await users.UpdateAsync(user);
 
-        return customer.ToCustomerResponse();
-    }
-
-    private async Task<User> GetCustomerAsync(int id)
-    {
-        var user = await users.GetByIdAsync(id);
-        if (user is null || !Roles.IsValid(user.Role) ||
-            !string.Equals(user.Role, Roles.Customer, StringComparison.OrdinalIgnoreCase))
-        {
-            throw ServiceException.NotFound($"No se encontró el cliente con ID '{id}'.");
-        }
-
-        return user;
+        return user.ToCustomerResponse();
     }
 
     public async Task DeleteAsync(int id)
     {
         var user = await users.GetByIdAsync(id);
         if (user is null)
-        {
             throw ServiceException.NotFound($"No se encontró el usuario con ID '{id}'.");
-        }
 
         await users.RemoveAsync(id);
         await refreshTokens.RevokeAllAsync(id);

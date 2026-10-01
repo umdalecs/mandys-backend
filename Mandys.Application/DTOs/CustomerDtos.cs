@@ -11,8 +11,7 @@ public record CustomerResponse(
     int Id,
     string FirstName,
     string LastName,
-    string? Email,
-    bool HasLogin
+    string? Email
 );
 
 public record PagedCustomersResponse(
@@ -49,7 +48,6 @@ public static class CustomerMapper
             user.ID,
             user.FirstName,
             user.LastName,
-            user.Email,
-            user.HasLogin
+            user.Email
         );
 }

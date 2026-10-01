@@ -33,13 +33,6 @@ public class User
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
 
-    /// <summary>
-    /// Whether this user can log in. Derived from the credential columns, so
-    /// it needs no column of its own: a password hash exists exactly when
-    /// login credentials were set.
-    /// </summary>
-    public bool HasLogin => !string.IsNullOrWhiteSpace(PasswordHash);
-
     public User(
         int id,
         string firstName,
@@ -48,7 +41,6 @@ public class User
         string? passwordHash,
         string role,
         int? branchId = null,
-        DateTime? bannedAt = null,
         DateTime? createdAt = null,
         DateTime? updatedAt = null)
     {
