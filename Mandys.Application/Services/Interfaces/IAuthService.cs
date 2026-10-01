@@ -16,7 +16,7 @@ public sealed record AuthTokenSet(
 /// </summary>
 public interface IAuthService
 {
-    Task<AuthTokenSet> LoginAsync(string? email, string password);
+    Task<AuthTokenSet> LoginAsync(string email, string password);
 
     Task<AuthTokenSet> RefreshAsync(string? refreshToken);
 

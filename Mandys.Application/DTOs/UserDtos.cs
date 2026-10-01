@@ -6,7 +6,7 @@ public record UserResponse(
     int Id,
     string FirstName,
     string LastName,
-    string? Email,
+    string Email,
     string Role,
     int? BranchId
 );
@@ -14,9 +14,8 @@ public record UserResponse(
 public record CreateUserRequest(
     string FirstName,
     string LastName,
-    string? Email = null,
-    string? UserName = null,
-    string? Password = null,
+    string Email,
+    string Password,
     string? Role = null,
     int? BranchId = null
 );
@@ -25,7 +24,6 @@ public record UpdateUserRequest(
     string? FirstName = null,
     string? LastName = null,
     string? Email = null,
-    string? UserName = null,
     string? Password = null,
     string? Role = null,
     int? BranchId = null,

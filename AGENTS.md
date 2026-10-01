@@ -66,6 +66,19 @@ Branch optionality enforced by `Roles.RequiresBranch()`.
 Prices come in two fields: `SalePrice` is what the catalog CRUD edits, `CostPrice`
 is read-only there (defaults to 0; only purchases move it).
 
+### User invariants
+
+Every `User` row — regardless of role — **must have both an email and a password hash**. There are no passwordless or email-less users anywhere in the system:
+
+- `User.Email` — `string` (non-nullable). Normalised to lowercase on write. Unique index on the table.
+- `User.PasswordHash` — `string` (non-nullable). Argon2 hash. Always set at creation.
+
+Consequences:
+- `RegisterCustomerRequest` always requires `Email` + `Password`.
+- `CreateUserRequest` always requires `Email` + `Password`.
+- `CustomerResponse.Email` and `UserResponse.Email` are `string` (never null in JSON).
+- `TokenService` always emits a `ClaimTypes.Email` claim.
+
 ### Domain Rules (enforce in every new feature)
 
 1. **Branch-scope everything operational.** Stock, sales, orders, shifts always carry a branch id. Branch roles only see/mutate **their own branch**.
@@ -73,6 +86,7 @@ is read-only there (defaults to 0; only purchases move it).
 3. **Staff belong to one branch** (`UserRecord.BranchId`). Optional only for `administrador` and `cliente`.
 4. **Warehouse-only branches don't sell.** Selling flows must check branch kind.
 5. **Supplies flow inward, products flow outward.** Central warehouse → branch warehouse → kitchen → sale.
+6. **All users have credentials.** Never create a `User` without email + password hash. The `User` constructor enforces this — both fields are `string` (non-nullable) and guarded against blank values.
 
 ## Coding Conventions
 

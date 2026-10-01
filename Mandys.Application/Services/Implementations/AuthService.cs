@@ -15,13 +15,11 @@ public class AuthService(
 {
     private readonly JwtOptions _jwt = jwtOptions.Value;
 
-    public async Task<AuthTokenSet> LoginAsync(string? email, string password)
+    public async Task<AuthTokenSet> LoginAsync(string email, string password)
     {
-        var user = await users.FindByEmailAsync(email!);
+        var user = await users.FindByEmailAsync(email);
 
-        // Credential-less users (point-of-sale customers) are unreachable by
-        // this lookup anyway; the explicit check keeps the intent clear.
-        if (user is null || !passwordHasher.Verify(user.PasswordHash!, password))
+        if (user is null || !passwordHasher.Verify(user.PasswordHash, password))
         {
             throw ServiceException.Unauthorized();
         }

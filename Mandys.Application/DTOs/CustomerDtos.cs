@@ -11,7 +11,7 @@ public record CustomerResponse(
     int Id,
     string FirstName,
     string LastName,
-    string? Email
+    string Email
 );
 
 public record PagedCustomersResponse(
@@ -27,12 +27,6 @@ public record RegisterCustomerRequest(
     string LastName,
     string Email,
     string Password
-);
-
-public record CreateCustomerRequest(
-    string FirstName,
-    string LastName,
-    string? Email = null
 );
 
 public record UpdateCustomerRequest(

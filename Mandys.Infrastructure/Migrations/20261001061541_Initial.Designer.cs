@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Mandys.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260929234135_Initial")]
+    [Migration("20261001061541_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -4216,6 +4216,7 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnName("deleted_at");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("email");
@@ -4237,6 +4238,7 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnName("last_name");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("password");
 

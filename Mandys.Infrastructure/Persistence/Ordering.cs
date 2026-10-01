@@ -151,7 +151,7 @@ internal static class SortSelectors
         {
             UserSortField.FirstName => u => u.FirstName,
             UserSortField.LastName => u => u.LastName,
-            UserSortField.Email => u => u.Email!,
+            UserSortField.Email => u => u.Email,
             UserSortField.CreatedAt => u => u.CreatedAt,
             UserSortField.UpdatedAt => u => u.UpdatedAt,
             _ => u => u.Id,

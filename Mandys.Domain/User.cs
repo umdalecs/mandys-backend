@@ -11,9 +11,9 @@ public class User
     public string LastName { get; private set; }
 
     /// <summary>
-    /// Login handle. Null when the user has no login credentials.
+    /// Login handle. Always required.
     /// </summary>
-    public string? Email { get; private set; }
+    public string Email { get; private set; }
 
     /// <summary>
     /// Argon2 password hash. Always required.
@@ -35,7 +35,7 @@ public class User
         int id,
         string firstName,
         string lastName,
-        string? email,
+        string email,
         string passwordHash,
         string role,
         int? branchId = null,
@@ -45,7 +45,9 @@ public class User
         ID = id;
         FirstName = GuardName(firstName, nameof(firstName));
         LastName = GuardName(lastName, nameof(lastName));
-        Email = GuardEmail(email);
+        Email = string.IsNullOrWhiteSpace(email)
+            ? throw new ArgumentException("email is required.", nameof(email))
+            : email.Trim().ToLowerInvariant();
         PasswordHash = GuardNotEmpty(passwordHash, nameof(passwordHash));
         Role = GuardRole(role);
         BranchId = GuardBranch(Role, branchId);
@@ -61,7 +63,9 @@ public class User
 
     public void ChangeEmail(string email)
     {
-        Email = GuardEmail(email);
+        Email = string.IsNullOrWhiteSpace(email)
+            ? throw new ArgumentException("email is required.", nameof(email))
+            : email.Trim().ToLowerInvariant();
     }
 
     public void SetRole(string role)
@@ -96,12 +100,6 @@ public class User
 
     private static string GuardName(string value, string name) =>
         GuardNotEmpty(value, name);
-
-    /// <summary>
-    /// Null/blank means the user has no login handle, so no email is stored.
-    /// </summary>
-    private static string? GuardEmail(string? email) =>
-        string.IsNullOrWhiteSpace(email) ? null : email.Trim().ToLowerInvariant();
 
 
     private static string GuardRole(string role)

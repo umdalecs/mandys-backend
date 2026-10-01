@@ -19,15 +19,14 @@ public class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
             .WithMessage("El apellido es obligatorio y no puede superar los 50 caracteres.");
 
         RuleFor(x => x.Email)
+            .NotEmpty()
             .EmailAddress()
             .MaximumLength(50)
-            .When(x => !string.IsNullOrWhiteSpace(x.Email))
-            .WithMessage("El correo electrónico no es válido o supera los 50 caracteres.");
+            .WithMessage("El correo electrónico es obligatorio y debe ser válido (máx. 50 caracteres).");
 
         RuleFor(x => x.Password)
             .NotEmpty()
-            .When(x => !IsCustomerRole(EffectiveRole(x.Role)))
-            .WithMessage(x => $"El rol '{EffectiveRole(x.Role)}' requiere credenciales de acceso: el correo y la contraseña son obligatorios.");
+            .WithMessage("La contraseña es obligatoria.");
 
         RuleFor(x => x.Role)
             .Must(role => Roles.IsValid(role))
@@ -47,9 +46,6 @@ public class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
 
     private static string EffectiveRole(string? role) =>
         string.IsNullOrWhiteSpace(role) ? Roles.Customer : Roles.Normalize(role.Trim());
-
-    private static bool IsCustomerRole(string role) =>
-        string.Equals(role, Roles.Customer, StringComparison.OrdinalIgnoreCase);
 }
 
 public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>

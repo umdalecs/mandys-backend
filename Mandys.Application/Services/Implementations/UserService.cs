@@ -54,36 +54,17 @@ public class UserService(
             ? Roles.Customer
             : Roles.Normalize(request.Role.Trim());
 
-        // No password means no login credentials: a point-of-sale customer
-        // that never registered. Email and password go together.
-        var wantsLogin = !string.IsNullOrWhiteSpace(request.Password);
-        var email = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email.Trim().ToLowerInvariant();
+        var email = request.Email.Trim().ToLowerInvariant();
 
-        if (wantsLogin && email is null)
-        {
-            throw ServiceException.BadRequest("Se requiere un correo electrónico para establecer una contraseña.");
-        }
-
-        // Only customers may exist without credentials. Staff without a
-        // password could never log in, and a claim-by-email elsewhere in the
-        // system would hand the account to whoever knows the address.
-        if (!wantsLogin && !IsCustomer(role))
-        {
-            throw ServiceException.BadRequest(
-                $"El rol '{role}' requiere credenciales de acceso: el correo y la contraseña son obligatorios.");
-        }
-
-        if (email is not null && await users.ExistsByEmailAsync(email))
-        {
+        if (await users.ExistsByEmailAsync(email))
             throw ServiceException.Conflict($"El correo '{email}' ya está registrado.");
-        }
 
         var created = await users.AddAsync(new User(
             0,
             request.FirstName.Trim(),
             request.LastName.Trim(),
             email,
-            wantsLogin ? passwordHasher.Hash(request.Password!) : null,
+            passwordHasher.Hash(request.Password),
             role,
             request.BranchId));
 
@@ -98,12 +79,7 @@ public class UserService(
             throw ServiceException.NotFound($"No se encontró el usuario con ID '{id}'.");
         }
 
-        if (!string.IsNullOrWhiteSpace(request.Password) && string.IsNullOrWhiteSpace(request.Email))
-        {
-            throw ServiceException.BadRequest("Se requiere un correo electrónico para establecer una contraseña.");
-        }
-
-        if (!string.IsNullOrWhiteSpace(request.Email) && request.Email.Trim().ToLowerInvariant() != user.Email?.ToLowerInvariant())
+        if (!string.IsNullOrWhiteSpace(request.Email) && request.Email.Trim().ToLowerInvariant() != user.Email.ToLowerInvariant())
         {
             var trimmedEmail = request.Email.Trim().ToLowerInvariant();
             if (await users.ExistsByEmailAsync(trimmedEmail, id))
@@ -178,10 +154,4 @@ public class UserService(
         await refreshTokens.RevokeAllAsync(id);
     }
 
-    /// <summary>
-    /// Customers are the only role allowed to exist without login
-    /// credentials.
-    /// </summary>
-    private static bool IsCustomer(string role) =>
-        string.Equals(role, Roles.Customer, StringComparison.OrdinalIgnoreCase);
 }
