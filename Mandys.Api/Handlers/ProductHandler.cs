@@ -24,6 +24,7 @@ public class ProductHandler : ICarterModule
         productRoutes.MapGet("", GetProducts)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
+                Roles.CentralWarehouseChief,
                 Roles.WarehouseChief,
                 Roles.OpChief));
 
