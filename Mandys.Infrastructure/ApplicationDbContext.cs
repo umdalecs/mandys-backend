@@ -2,7 +2,7 @@ using Mandys.Domain;
 using Mandys.Infrastructure.Persistence.Records;
 using Microsoft.EntityFrameworkCore;
 
-namespace Mandys;
+namespace Mandys.Infrastructure;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : DbContext(options)

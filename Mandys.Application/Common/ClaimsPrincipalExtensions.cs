@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Mandys.Common;
+namespace Mandys.Application.Common;
 
 public static class ClaimsPrincipalExtensions
 {

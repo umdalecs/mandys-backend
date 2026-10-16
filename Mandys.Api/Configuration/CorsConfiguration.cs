@@ -1,4 +1,6 @@
-namespace Mandys.Configuration;
+using Mandys.Application.Configuration;
+
+namespace Mandys.Api.Configuration;
 
 public static class CorsConfiguration
 {

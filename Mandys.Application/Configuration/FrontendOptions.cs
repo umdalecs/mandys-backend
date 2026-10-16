@@ -1,4 +1,4 @@
-namespace Mandys.Configuration;
+namespace Mandys.Application.Configuration;
 
 /// <summary>
 /// Public origin(s) of the frontend SPA, bound from the "Frontend"

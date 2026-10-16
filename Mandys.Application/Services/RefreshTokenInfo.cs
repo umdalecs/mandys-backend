@@ -1,4 +1,4 @@
-namespace Mandys.Services;
+namespace Mandys.Application.Services;
 
 /// <summary>
 /// Refresh token grant data. A plain carrier, not a domain entity: token

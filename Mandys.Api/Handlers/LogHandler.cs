@@ -1,12 +1,12 @@
 using Carter;
 using FluentValidation;
-using Mandys.DTOs;
-using Mandys.Services;
-using Mandys.Services.Interfaces;
-using Mandys.Validators;
+using Mandys.Api.Validators;
+using Mandys.Application.DTOs;
+using Mandys.Application.Services;
+using Mandys.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Mandys.Handlers;
+namespace Mandys.Api.Handlers;
 
 public class LogHandler : ICarterModule
 {

@@ -1,4 +1,4 @@
-namespace Mandys.Services.Interfaces;
+namespace Mandys.Application.Services.Interfaces;
 
 /// <summary>
 /// Tokens issued by <see cref="IAuthService"/>. The handler decides how to

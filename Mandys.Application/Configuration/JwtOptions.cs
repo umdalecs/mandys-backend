@@ -1,4 +1,4 @@
-namespace Mandys.Configuration;
+namespace Mandys.Application.Configuration;
 
 /// <summary>
 /// JWT settings consumed by Application and Infrastructure; bound from the

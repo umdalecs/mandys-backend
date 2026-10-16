@@ -1,7 +1,7 @@
 using FluentValidation;
-using Mandys.DTOs;
+using Mandys.Application.DTOs;
 
-namespace Mandys.Validators;
+namespace Mandys.Api.Validators;
 
 public class RegisterCustomerRequestValidator : AbstractValidator<RegisterCustomerRequest>
 {

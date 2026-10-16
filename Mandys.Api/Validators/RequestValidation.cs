@@ -1,7 +1,7 @@
 using FluentValidation.Results;
-using Mandys.Services;
+using Mandys.Application.Services;
 
-namespace Mandys.Validators;
+namespace Mandys.Api.Validators;
 
 /// <summary>
 /// Bridges FluentValidation results to the ServiceException flow so handlers

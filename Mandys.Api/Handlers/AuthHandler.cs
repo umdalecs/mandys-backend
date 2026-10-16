@@ -2,16 +2,16 @@ using System.Security.Cryptography;
 using System.Text;
 using Carter;
 using FluentValidation;
-using Mandys.Configuration;
-using Mandys.DTOs;
-using Mandys.Services;
-using Mandys.Services.Interfaces;
-using Mandys.Validators;
+using Mandys.Api.Validators;
+using Mandys.Application.Configuration;
+using Mandys.Application.DTOs;
+using Mandys.Application.Services;
+using Mandys.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 
-namespace Mandys.Handlers;
+namespace Mandys.Api.Handlers;
 
 public class AuthHandler : ICarterModule
 {

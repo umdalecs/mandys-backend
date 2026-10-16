@@ -1,4 +1,4 @@
-namespace Mandys.Configuration;
+namespace Mandys.Application.Configuration;
 
 /// <summary>
 /// Cookie policy for the auth cookies, bound from the "Auth" configuration

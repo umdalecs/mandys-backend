@@ -1,6 +1,6 @@
 using Isopoh.Cryptography.Argon2;
+using Mandys.Application.Services.Interfaces;
 using Mandys.Services;
-using Mandys.Services.Interfaces;
 
 namespace Mandys.Infrastructure.Security;
 

@@ -1,8 +1,8 @@
+using Mandys.Application.DTOs;
+using Mandys.Application.Services.Interfaces;
 using Mandys.Domain;
-using Mandys.DTOs;
-using Mandys.Services.Interfaces;
 
-namespace Mandys.Services.Implementations;
+namespace Mandys.Application.Services.Implementations;
 
 public class UserService(
     IUserRepository users,

@@ -1,6 +1,6 @@
 using Mandys.Domain;
 
-namespace Mandys.Services.Interfaces;
+namespace Mandys.Application.Services.Interfaces;
 
 /// <summary>
 /// Dish persistence in domain terms. Implemented by Infrastructure.

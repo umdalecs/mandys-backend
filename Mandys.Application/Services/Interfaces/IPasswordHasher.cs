@@ -1,4 +1,4 @@
-namespace Mandys.Services.Interfaces;
+namespace Mandys.Application.Services.Interfaces;
 
 /// <summary>
 /// Password hashing. Implemented by Infrastructure (Argon2id).

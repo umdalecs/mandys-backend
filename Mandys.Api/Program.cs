@@ -3,16 +3,17 @@ using FluentValidation;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-
-using Mandys.Configuration;
 using Mandys.Domain;
-using Mandys.DTOs;
 using Mandys.Infrastructure.Persistence.Repositories;
 using Mandys.Infrastructure.Security;
-using Mandys.Services.Implementations;
-using Mandys.Services.Interfaces;
-using Mandys.Validators;
 using Mandys;
+using Mandys.Api.Configuration;
+using Mandys.Api.Validators;
+using Mandys.Application.Configuration;
+using Mandys.Application.DTOs;
+using Mandys.Application.Services.Implementations;
+using Mandys.Application.Services.Interfaces;
+using Mandys.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

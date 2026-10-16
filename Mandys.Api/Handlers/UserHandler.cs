@@ -1,15 +1,15 @@
 using System.Security.Claims;
 using Carter;
 using FluentValidation;
-using Mandys.Common;
+using Mandys.Api.Validators;
+using Mandys.Application.Common;
+using Mandys.Application.DTOs;
+using Mandys.Application.Services;
+using Mandys.Application.Services.Interfaces;
 using Mandys.Domain;
-using Mandys.DTOs;
-using Mandys.Services;
-using Mandys.Services.Interfaces;
-using Mandys.Validators;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Mandys.Handlers;
+namespace Mandys.Api.Handlers;
 
 public class UserHandler : ICarterModule
 {

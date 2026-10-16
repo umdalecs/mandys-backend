@@ -2,13 +2,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Mandys.Configuration;
+using Mandys.Application.Configuration;
+using Mandys.Application.Services.Interfaces;
 using Mandys.Domain;
-using Mandys.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Mandys.Services;
+namespace Mandys.Infrastructure.Services;
 
 public class TokenService(IOptions<JwtOptions> jwtOptions) : ITokenService
 {

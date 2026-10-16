@@ -1,11 +1,12 @@
 using System.Security.Claims;
 using System.Text;
-using Mandys.Services;
-using Mandys.Services.Interfaces;
+using Mandys.Application.Configuration;
+using Mandys.Application.Services.Interfaces;
+using Mandys.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Mandys.Configuration;
+namespace Mandys.Api.Configuration;
 
 public static class JwtConfiguration
 {

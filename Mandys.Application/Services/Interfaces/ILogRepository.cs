@@ -1,6 +1,4 @@
-using Mandys.DTOs;
-
-namespace Mandys.Services.Interfaces;
+namespace Mandys.Application.Services.Interfaces;
 
 public interface ILogRepository
 {

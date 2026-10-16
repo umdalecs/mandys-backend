@@ -1,4 +1,4 @@
-namespace Mandys.Services;
+namespace Mandys.Application.Services;
 
 /// <summary>
 /// Thrown by application services for expected failures so handlers can map

@@ -1,6 +1,6 @@
 using Mandys.Domain;
 
-namespace Mandys.DTOs;
+namespace Mandys.Application.DTOs;
 
 /// <summary>
 /// Customer view of a user row. Named separately from

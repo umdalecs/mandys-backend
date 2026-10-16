@@ -1,6 +1,6 @@
-using Mandys.DTOs;
+using Mandys.Application.DTOs;
 
-namespace Mandys.Services.Interfaces;
+namespace Mandys.Application.Services.Interfaces;
 
 public interface IComboService
 {

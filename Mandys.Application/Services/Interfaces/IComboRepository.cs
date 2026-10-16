@@ -1,6 +1,6 @@
 using Mandys.Domain;
 
-namespace Mandys.Services.Interfaces;
+namespace Mandys.Application.Services.Interfaces;
 
 /// <summary>
 /// Combo persistence in domain terms. Implemented by Infrastructure.

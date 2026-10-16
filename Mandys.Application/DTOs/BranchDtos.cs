@@ -1,6 +1,6 @@
 using Mandys.Domain;
 
-namespace Mandys.DTOs;
+namespace Mandys.Application.DTOs;
 
 public record BranchResponse(
     int Id,

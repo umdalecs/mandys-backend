@@ -1,5 +1,5 @@
+using Mandys.Application.Services.Interfaces;
 using Mandys.Infrastructure.Persistence.Records;
-using Mandys.Services.Interfaces;
 
 namespace Mandys.Infrastructure.Persistence.Repositories;
 

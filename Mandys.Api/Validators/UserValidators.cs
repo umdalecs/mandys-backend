@@ -1,8 +1,8 @@
 using FluentValidation;
+using Mandys.Application.DTOs;
 using Mandys.Domain;
-using Mandys.DTOs;
 
-namespace Mandys.Validators;
+namespace Mandys.Api.Validators;
 
 public class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
 {

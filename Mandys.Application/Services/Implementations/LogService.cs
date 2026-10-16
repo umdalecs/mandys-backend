@@ -1,7 +1,6 @@
+using Mandys.Application.Services.Interfaces;
 
-using Mandys.Services.Interfaces;
-
-namespace Mandys.Services.Implementations;
+namespace Mandys.Application.Services.Implementations;
 
 public class LogService(ILogRepository logRepository) : ILogService
 {
