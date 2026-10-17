@@ -4,11 +4,6 @@ using Mandys.Domain;
 
 namespace Mandys.Infrastructure.Persistence.Records;
 
-/// <summary>
-/// Persistence record for the product table. Mapped to/from
-/// <see cref="Product"/> by <see cref="Mappers.ProductMapper"/>.
-/// One product is used by many <see cref="DishProductRecord"/> recipe lines.
-/// </summary>
 public class ProductRecord : Record
 {
     [Key]
@@ -26,16 +21,6 @@ public class ProductRecord : Record
     [Required]
     [MaxLength(50)]
     public string MeasureUnit { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Recipe lines using this product (inverse of
-    /// <see cref="DishProductRecord.Product"/>).
-    /// </summary>
     public ICollection<DishProductRecord> DishProducts { get; set; } = new List<DishProductRecord>();
-
-    /// <summary>
-    /// Combos this product belongs to (inverse of
-    /// <see cref="ComboProductRecord.Product"/>).
-    /// </summary>
     public ICollection<ComboProductRecord> ComboProducts { get; set; } = new List<ComboProductRecord>();
 }

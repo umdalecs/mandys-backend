@@ -3,9 +3,6 @@ using Mandys.Infrastructure.Persistence.Records;
 
 namespace Mandys.Infrastructure.Persistence.Mappers;
 
-/// <summary>
-/// Maps between the dishes table record and the domain entity.
-/// </summary>
 internal static class DishMapper
 {
     internal static Dish ToDomain(this DishRecord record) =>
@@ -26,9 +23,6 @@ internal static class DishMapper
         };
 }
 
-/// <summary>
-/// Maps between the dish products table record and the domain recipe line.
-/// </summary>
 internal static class DishProductMapper
 {
     internal static DishProduct ToDomain(this DishProductRecord record) =>

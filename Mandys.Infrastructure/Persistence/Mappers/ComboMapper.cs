@@ -3,9 +3,6 @@ using Mandys.Infrastructure.Persistence.Records;
 
 namespace Mandys.Infrastructure.Persistence.Mappers;
 
-/// <summary>
-/// Maps between the combos table record and the domain entity.
-/// </summary>
 internal static class ComboMapper
 {
     internal static Combo ToDomain(this ComboRecord record) =>

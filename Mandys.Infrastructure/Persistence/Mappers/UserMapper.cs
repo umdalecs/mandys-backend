@@ -3,9 +3,6 @@ using Mandys.Infrastructure.Persistence.Records;
 
 namespace Mandys.Infrastructure.Persistence.Mappers;
 
-/// <summary>
-/// Maps between the users table record and the domain entity.
-/// </summary>
 internal static class UserMapper
 {
     internal static User ToDomain(this UserRecord record) =>

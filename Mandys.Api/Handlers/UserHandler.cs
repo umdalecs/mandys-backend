@@ -18,22 +18,16 @@ public class UserHandler : ICarterModule
         var userRoutes = app.MapGroup("/users")
             .WithTags("Users");
 
-        // Profile of currently authenticated user
         userRoutes.MapGet("/me", GetCurrentUser)
             .RequireAuthorization();
 
-        // User management endpoints - restricted to Admin users only
         var adminRoutes = userRoutes.MapGroup("")
             .RequireAuthorization(policy => policy.RequireRole(Roles.Administrator));
 
         adminRoutes.MapGet("", GetUsers);
-
         adminRoutes.MapGet("/{id:int}", GetUserById);
-
         adminRoutes.MapPost("", CreateUser);
-
         adminRoutes.MapPut("/{id:int}", UpdateUser);
-
         adminRoutes.MapDelete("/{id:int}", DeleteUser);
     }
 

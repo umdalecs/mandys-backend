@@ -27,10 +27,9 @@ public class TokenService(IOptions<JwtOptions> jwtOptions) : ITokenService
             new(ClaimTypes.Role, user.Role),
             new("firstName", user.FirstName),
             new("lastName", user.LastName),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.Email, user.Email)
         };
-
-        claims.Add(new Claim(ClaimTypes.Email, user.Email));
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {

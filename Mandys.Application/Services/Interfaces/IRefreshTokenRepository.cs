@@ -1,9 +1,5 @@
 namespace Mandys.Application.Services.Interfaces;
 
-/// <summary>
-/// Refresh token grants. Implemented by Infrastructure (stored hashed,
-/// never raw).
-/// </summary>
 public interface IRefreshTokenRepository
 {
     Task<RefreshTokenInfo?> FindByTokenAsync(string rawToken);

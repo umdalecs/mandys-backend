@@ -1,31 +1,13 @@
 namespace Mandys.Domain;
 
-/// <summary>
-/// Domain user. One row per person. All users have login credentials.
-/// Guards its own invariants; persistence mapping lives in Infrastructure.
-/// </summary>
 public class User
 {
     public int ID { get; private set; }
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
-
-    /// <summary>
-    /// Login handle. Always required.
-    /// </summary>
     public string Email { get; private set; }
-
-    /// <summary>
-    /// Argon2 password hash. Always required.
-    /// </summary>
     public string PasswordHash { get; private set; }
-
     public string Role { get; private set; }
-    /// <summary>
-    /// Branch the user belongs to (many users to one branch). Optional for
-    /// administrators and customers, who can use any branch; required for
-    /// every other role.
-    /// </summary>
     public int? BranchId { get; private set; }
 
     public DateTime CreatedAt { get; private set; }

@@ -13,14 +13,10 @@ public class ProductHandler : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        // Supplies catalog: headquarters admins and branch warehouse chiefs.
-        // RequireRole with several roles is OR, so any listed role grants access.
-        // Policies stack with AND, so each route declares its full role set.
         var productRoutes = app.MapGroup("/products")
             .WithTags("Products")
             .RequireAuthorization();
 
-        // Operations chiefs may only list the catalog, nothing else.
         productRoutes.MapGet("", GetProducts)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,

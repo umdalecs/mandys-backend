@@ -1,10 +1,5 @@
 namespace Mandys.Domain;
 
-/// <summary>
-/// Sellable menu combo (franchise-wide catalog): a bundle of dishes and
-/// products sold at a single price. Guards its own invariants; persistence
-/// mapping lives in Infrastructure.
-/// </summary>
 public class Combo
 {
     public int Id { get; private set; }

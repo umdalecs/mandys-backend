@@ -1,9 +1,5 @@
 namespace Mandys.Domain;
 
-/// <summary>
-/// Domain product. Guards its own invariants; persistence mapping lives in
-/// Infrastructure.
-/// </summary>
 public class Product
 {
     public int Id { get; private set; }

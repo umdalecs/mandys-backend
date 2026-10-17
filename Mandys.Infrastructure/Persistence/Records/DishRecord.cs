@@ -3,11 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Mandys.Infrastructure.Persistence.Records;
 
-/// <summary>
-/// Persistence record for the dishes table. Mapped to/from
-/// <see cref="Dish"/> by <see cref="Mappers.DishMapper"/>.
-/// One dish has many <see cref="DishProductRecord"/> recipe lines.
-/// </summary>
 public class DishRecord : Record
 {
     [Key]
@@ -18,16 +13,6 @@ public class DishRecord : Record
     public string Name { get; set; } = string.Empty;
     [Required]
     public decimal Price { get; set; }
-
-    /// <summary>
-    /// Recipe lines of this dish (inverse of
-    /// <see cref="DishProductRecord.Dish"/>).
-    /// </summary>
     public ICollection<DishProductRecord> DishProducts { get; set; } = new List<DishProductRecord>();
-
-    /// <summary>
-    /// Combos this dish belongs to (inverse of
-    /// <see cref="ComboDishRecord.Dish"/>).
-    /// </summary>
     public ICollection<ComboDishRecord> ComboDishes { get; set; } = new List<ComboDishRecord>();
 }

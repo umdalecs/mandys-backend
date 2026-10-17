@@ -4,10 +4,6 @@ using Mandys.Domain;
 
 namespace Mandys.Infrastructure.Persistence.Records;
 
-/// <summary>
-/// Persistence record for the users table. Mapped to/from
-/// <see cref="User"/> by <see cref="Repositories.UserRepository"/>.
-/// </summary>
 public class UserRecord : Record
 {
     [Key]
@@ -19,32 +15,15 @@ public class UserRecord : Record
     [Required]
     [MaxLength(50)]
     public string LastName { get; set; } = string.Empty;
-    /// <summary>
-    /// Login handle. Always required.
-    /// </summary>
     [Required]
     [MaxLength(50)]
     public string Email { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Argon2 hash of the login password. Always required.
-    /// </summary>
-    [Required]
     [Column("password")]
     public string PasswordHash { get; set; } = string.Empty;
     [Required]
     [MaxLength(50)]
     public string Role { get; set; } = Roles.Customer;
-
-    /// <summary>
-    /// FK to the branch this user belongs to (many users to one branch).
-    /// Nullable so pre-existing / central users without a branch keep working.
-    /// </summary>
     public int? BranchId { get; set; }
-
-    /// <summary>
-    /// Branch this user belongs to. Inverse of <see cref="BranchRecord.Users"/>.
-    /// </summary>
     [ForeignKey(nameof(BranchId))]
     public BranchRecord? Branch { get; set; }
 }

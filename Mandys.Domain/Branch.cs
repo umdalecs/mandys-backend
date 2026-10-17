@@ -1,9 +1,5 @@
 namespace Mandys.Domain;
 
-/// <summary>
-/// Domain branch. Guards its own invariants; persistence mapping lives in
-/// Infrastructure.
-/// </summary>
 public class Branch
 {
     public int Id { get; private set; }

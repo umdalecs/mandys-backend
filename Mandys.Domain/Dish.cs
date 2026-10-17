@@ -1,9 +1,5 @@
 namespace Mandys.Domain;
 
-/// <summary>
-/// Sellable menu dish (franchise-wide catalog). Guards its own invariants;
-/// persistence mapping lives in Infrastructure.
-/// </summary>
 public class Dish
 {
     public int Id { get; private set; }

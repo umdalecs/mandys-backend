@@ -9,10 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Mandys.Api.Handlers;
 
-/// <summary>
-/// Customer self-service, split from the staff-facing user module. Creating
-/// a user on someone else's behalf stays in <see cref="UserHandler"/>.
-/// </summary>
 public class CustomerHandler : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)

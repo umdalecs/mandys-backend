@@ -3,7 +3,6 @@ using System.Text;
 using Mandys.Application.Services;
 using Mandys.Application.Services.Interfaces;
 using Mandys.Infrastructure.Persistence.Records;
-using Mandys.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mandys.Infrastructure.Persistence.Repositories;

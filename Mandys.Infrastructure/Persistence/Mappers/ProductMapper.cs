@@ -3,9 +3,6 @@ using Mandys.Infrastructure.Persistence.Records;
 
 namespace Mandys.Infrastructure.Persistence.Mappers;
 
-/// <summary>
-/// Maps between the product table record and the domain entity.
-/// </summary>
 internal static class ProductMapper
 {
     internal static Product ToDomain(this ProductRecord record) =>
