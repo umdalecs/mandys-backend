@@ -10,7 +10,8 @@ namespace Mandys.Application.DTOs;
 public record CustomerResponse(
     int Id,
     string FirstName,
-    string LastName,
+    string FatherLastName,
+    string? MotherLastName,
     string Email
 );
 
@@ -24,14 +25,16 @@ public record PagedCustomersResponse(
 
 public record RegisterCustomerRequest(
     string FirstName,
-    string LastName,
+    string FatherLastName,
     string Email,
-    string Password
+    string Password,
+    string? MotherLastName = null
 );
 
 public record UpdateCustomerRequest(
     string? FirstName = null,
-    string? LastName = null,
+    string? FatherLastName = null,
+    string? MotherLastName = null,
     string? Email = null
 );
 
@@ -41,7 +44,8 @@ public static class CustomerMapper
         new(
             user.ID,
             user.FirstName,
-            user.LastName,
+            user.FatherLastName,
+            user.MotherLastName,
             user.Email
         );
 }

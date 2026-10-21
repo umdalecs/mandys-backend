@@ -14,7 +14,9 @@ public class UserRecord : Record
     public string FirstName { get; set; } = string.Empty;
     [Required]
     [MaxLength(50)]
-    public string LastName { get; set; } = string.Empty;
+    public string FatherLastName { get; set; } = string.Empty;
+    [MaxLength(50)]
+    public string? MotherLastName { get; set; }
     [Required]
     [MaxLength(50)]
     public string Email { get; set; } = string.Empty;

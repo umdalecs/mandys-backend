@@ -12,10 +12,15 @@ public class RegisterCustomerRequestValidator : AbstractValidator<RegisterCustom
             .MaximumLength(50)
             .WithMessage("El nombre es obligatorio y no puede superar los 50 caracteres.");
 
-        RuleFor(x => x.LastName)
+        RuleFor(x => x.FatherLastName)
             .NotEmpty()
             .MaximumLength(50)
-            .WithMessage("El apellido es obligatorio y no puede superar los 50 caracteres.");
+            .WithMessage("El apellido paterno es obligatorio y no puede superar los 50 caracteres.");
+
+        RuleFor(x => x.MotherLastName)
+            .MaximumLength(50)
+            .When(x => x.MotherLastName is not null)
+            .WithMessage("El apellido materno no puede superar los 50 caracteres.");
 
         RuleFor(x => x.Email)
             .NotEmpty()
@@ -40,11 +45,16 @@ public class UpdateCustomerRequestValidator : AbstractValidator<UpdateCustomerRe
             .When(x => x.FirstName is not null)
             .WithMessage("El nombre no puede estar vacío y no puede superar los 50 caracteres.");
 
-        RuleFor(x => x.LastName)
+        RuleFor(x => x.FatherLastName)
             .NotEmpty()
             .MaximumLength(50)
-            .When(x => x.LastName is not null)
-            .WithMessage("El apellido no puede estar vacío y no puede superar los 50 caracteres.");
+            .When(x => x.FatherLastName is not null)
+            .WithMessage("El apellido paterno no puede estar vacío y no puede superar los 50 caracteres.");
+
+        RuleFor(x => x.MotherLastName)
+            .MaximumLength(50)
+            .When(x => x.MotherLastName is not null)
+            .WithMessage("El apellido materno no puede superar los 50 caracteres.");
 
         RuleFor(x => x.Email)
             .EmailAddress()

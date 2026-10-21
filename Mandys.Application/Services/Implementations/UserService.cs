@@ -62,7 +62,8 @@ public class UserService(
         var created = await users.AddAsync(new User(
             0,
             request.FirstName.Trim(),
-            request.LastName.Trim(),
+            request.FatherLastName.Trim(),
+            request.MotherLastName?.Trim(),
             email,
             passwordHasher.Hash(request.Password),
             role,
@@ -89,11 +90,12 @@ public class UserService(
             user.ChangeEmail(trimmedEmail);
         }
 
-        if (!string.IsNullOrWhiteSpace(request.FirstName) || !string.IsNullOrWhiteSpace(request.LastName))
+        if (!string.IsNullOrWhiteSpace(request.FirstName) || !string.IsNullOrWhiteSpace(request.FatherLastName) || request.MotherLastName is not null)
         {
             user.UpdateProfile(
                 string.IsNullOrWhiteSpace(request.FirstName) ? user.FirstName : request.FirstName.Trim(),
-                string.IsNullOrWhiteSpace(request.LastName) ? user.LastName : request.LastName.Trim());
+                string.IsNullOrWhiteSpace(request.FatherLastName) ? user.FatherLastName : request.FatherLastName.Trim(),
+                request.MotherLastName is null ? user.MotherLastName : request.MotherLastName.Trim());
         }
 
         string? newRole = null;

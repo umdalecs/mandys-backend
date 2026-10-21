@@ -4,7 +4,8 @@ public class User
 {
     public int ID { get; private set; }
     public string FirstName { get; private set; }
-    public string LastName { get; private set; }
+    public string FatherLastName { get; private set; }
+    public string? MotherLastName { get; private set; }
     public string Email { get; private set; }
     public string PasswordHash { get; private set; }
     public string Role { get; private set; }
@@ -16,7 +17,8 @@ public class User
     public User(
         int id,
         string firstName,
-        string lastName,
+        string fatherLastName,
+        string? motherLastName,
         string email,
         string passwordHash,
         string role,
@@ -26,7 +28,8 @@ public class User
     {
         ID = id;
         FirstName = GuardName(firstName, nameof(firstName));
-        LastName = GuardName(lastName, nameof(lastName));
+        FatherLastName = GuardName(fatherLastName, nameof(fatherLastName));
+        MotherLastName = NormalizeOptional(motherLastName);
         Email = string.IsNullOrWhiteSpace(email)
             ? throw new ArgumentException("email is required.", nameof(email))
             : email.Trim().ToLowerInvariant();
@@ -37,10 +40,11 @@ public class User
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
     }
 
-    public void UpdateProfile(string firstName, string lastName)
+    public void UpdateProfile(string firstName, string fatherLastName, string? motherLastName)
     {
         FirstName = GuardName(firstName, nameof(firstName));
-        LastName = GuardName(lastName, nameof(lastName));
+        FatherLastName = GuardName(fatherLastName, nameof(fatherLastName));
+        MotherLastName = NormalizeOptional(motherLastName);
     }
 
     public void ChangeEmail(string email)
@@ -82,6 +86,9 @@ public class User
 
     private static string GuardName(string value, string name) =>
         GuardNotEmpty(value, name);
+
+    private static string? NormalizeOptional(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
 
     private static string GuardRole(string role)

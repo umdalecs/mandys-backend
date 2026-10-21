@@ -30,11 +30,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<UserRecord>(entity =>
+        _ = modelBuilder.Entity<UserRecord>(entity =>
         {
-            // Many users belong to one branch. Optional so existing/central
-            // users without a branch keep working; deleting a branch keeps
-            // the users and clears their BranchId.
             entity.HasOne(u => u.Branch)
                 .WithMany(b => b.Users)
                 .HasForeignKey(u => u.BranchId)
@@ -42,27 +39,19 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.HasIndex(u => u.BranchId);
 
-            // Credential-less users keep a null email, and Postgres allows
-            // any number of nulls in a unique index, so this only stops two
-            // login handles from colliding.
             entity.HasIndex(u => u.Email).IsUnique();
 
-            // Note: Make sure to only use static data here
-            // One account per role so every role can be exercised locally.
-            // plain password for all of them: mandyspos
-            const string passwordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q";
+            const string hash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q";
             var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
 
-            // Every role but administrador and cliente belongs to the seeded
-            // branch, so those rows carry BranchId 1.
             entity.HasData(
                 new
                 {
                     Id = 1,
                     Email = "admin@mandyspos.com",
-                    PasswordHash = passwordHash,
+                    PasswordHash = hash,
                     FirstName = "Administrador",
-                    LastName = "Sistema",
+                    FatherLastName = "Sistema",
                     Role = Roles.Administrator,
                     BranchId = (int?)null,
                     CreatedAt = seededAt,
@@ -73,9 +62,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 {
                     Id = 2,
                     Email = "operaciones@mandyspos.com",
-                    PasswordHash = passwordHash,
+                    PasswordHash = hash,
                     FirstName = "Gerente",
-                    LastName = "Operaciones",
+                    FatherLastName = "Operaciones",
                     Role = Roles.OpChief,
                     BranchId = (int?)1,
                     CreatedAt = seededAt,
@@ -86,9 +75,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 {
                     Id = 3,
                     Email = "almacen.central@mandyspos.com",
-                    PasswordHash = passwordHash,
+                    PasswordHash = hash,
                     FirstName = "Encargado",
-                    LastName = "Almacén Central",
+                    FatherLastName = "Almacén Central",
                     Role = Roles.CentralWarehouseChief,
                     BranchId = (int?)1,
                     CreatedAt = seededAt,
@@ -99,9 +88,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 {
                     Id = 4,
                     Email = "almacen@mandyspos.com",
-                    PasswordHash = passwordHash,
+                    PasswordHash = hash,
                     FirstName = "Encargado",
-                    LastName = "Almacén",
+                    FatherLastName = "Almacén",
                     Role = Roles.WarehouseChief,
                     BranchId = (int?)1,
                     CreatedAt = seededAt,
@@ -112,9 +101,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 {
                     Id = 5,
                     Email = "caja@mandyspos.com",
-                    PasswordHash = passwordHash,
+                    PasswordHash = hash,
                     FirstName = "Cajero",
-                    LastName = "Sucursal",
+                    FatherLastName = "Sucursal",
                     Role = Roles.Cashier,
                     BranchId = (int?)1,
                     CreatedAt = seededAt,
@@ -125,9 +114,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 {
                     Id = 6,
                     Email = "cocina@mandyspos.com",
-                    PasswordHash = passwordHash,
+                    PasswordHash = hash,
                     FirstName = "Jefe",
-                    LastName = "Cocina",
+                    FatherLastName = "Cocina",
                     Role = Roles.KitchenChief,
                     BranchId = (int?)1,
                     CreatedAt = seededAt,
@@ -138,9 +127,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 {
                     Id = 7,
                     Email = "sucursal@mandyspos.com",
-                    PasswordHash = passwordHash,
+                    PasswordHash = hash,
                     FirstName = "Gerente",
-                    LastName = "Sucursal",
+                    FatherLastName = "Sucursal",
                     Role = Roles.BranchChief,
                     BranchId = (int?)1,
                     CreatedAt = seededAt,
@@ -151,9 +140,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 {
                     Id = 8,
                     Email = "cliente@mandyspos.com",
-                    PasswordHash = passwordHash,
+                    PasswordHash = hash,
                     FirstName = "Cliente",
-                    LastName = "Demo",
+                    FatherLastName = "Demo",
                     Role = Roles.Customer,
                     BranchId = (int?)null,
                     CreatedAt = seededAt,
@@ -165,7 +154,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         modelBuilder.Entity<BranchRecord>(entity =>
         {
-            // Note: Make sure to only use static data here
             var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
             entity.HasData(
                 new
@@ -193,7 +181,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         modelBuilder.Entity<DishRecord>(entity =>
         {
-            // Note: Make sure to only use static data here
             var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
             entity.HasData(
                 new { Id = 1, Name = "Hamburguesa clásica", Price = 85m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
@@ -211,15 +198,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         modelBuilder.Entity<DishProductRecord>(entity =>
         {
-            // Many recipe lines belong to one dish; deleting a dish deletes
-            // its recipe lines.
             entity.HasOne(dp => dp.Dish)
                 .WithMany(d => d.DishProducts)
                 .HasForeignKey(dp => dp.DishId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Many recipe lines reference one product; deleting a product
-            // deletes its recipe lines.
             entity.HasOne(dp => dp.Product)
                 .WithMany(p => p.DishProducts)
                 .HasForeignKey(dp => dp.ProductId)
@@ -227,7 +210,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.HasIndex(dp => dp.DishId);
             entity.HasIndex(dp => dp.ProductId);
-            // Note: Make sure to only use static data here
+
             var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
             entity.HasData(
                 new { Id = 1, DishId = 1, ProductId = 61, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
@@ -305,7 +288,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         modelBuilder.Entity<ComboRecord>(entity =>
         {
-            // Note: Make sure to only use static data here
             var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
             entity.HasData(
                 new { Id = 1, Name = "Combo Hamburguesa clásica", Price = 129m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
@@ -323,15 +305,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         modelBuilder.Entity<ComboDishRecord>(entity =>
         {
-            // Many combo lines belong to one combo; deleting a combo deletes
-            // its dish lines.
             entity.HasOne(cd => cd.Combo)
                 .WithMany(c => c.ComboDishes)
                 .HasForeignKey(cd => cd.ComboId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Many combo lines reference one dish; deleting a dish deletes
-            // its combo lines.
             entity.HasOne(cd => cd.Dish)
                 .WithMany(d => d.ComboDishes)
                 .HasForeignKey(cd => cd.DishId)
@@ -339,7 +317,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.HasIndex(cd => cd.ComboId);
             entity.HasIndex(cd => cd.DishId);
-            // Note: Make sure to only use static data here
+
             var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
             entity.HasData(
                 new { Id = 1, ComboId = 1, DishId = 1, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
@@ -358,15 +336,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         modelBuilder.Entity<ComboProductRecord>(entity =>
         {
-            // Many combo lines belong to one combo; deleting a combo deletes
-            // its product lines.
             entity.HasOne(cp => cp.Combo)
                 .WithMany(c => c.ComboProducts)
                 .HasForeignKey(cp => cp.ComboId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Many combo lines reference one product; deleting a product
-            // deletes its combo lines.
             entity.HasOne(cp => cp.Product)
                 .WithMany(p => p.ComboProducts)
                 .HasForeignKey(cp => cp.ProductId)
@@ -374,7 +348,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.HasIndex(cp => cp.ComboId);
             entity.HasIndex(cp => cp.ProductId);
-            // Note: Make sure to only use static data here
+
             var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
             entity.HasData(
                 new { Id = 1, ComboId = 1, ProductId = 201, Quantity = 1m, CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },
@@ -400,7 +374,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         {
             entity.HasIndex(p => p.Description).IsUnique();
 
-            // Note: Make sure to only use static data here
             var seededAt = new DateTime(2026, 9, 9, 0, 0, 0, DateTimeKind.Utc);
             entity.HasData(
                 new { Id = 1, Description = "Jitomate saladet", IsSupply = true, SalePrice = 28.50m, CostPrice = 0m, MeasureUnit = "kg", CreatedAt = seededAt, UpdatedAt = seededAt, IsDeleted = false },

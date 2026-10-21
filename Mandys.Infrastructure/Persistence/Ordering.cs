@@ -56,7 +56,8 @@ internal enum UserSortField
 {
     Id,
     FirstName,
-    LastName,
+    FatherLastName,
+    MotherLastName,
     Email,
     CreatedAt,
     UpdatedAt,
@@ -150,7 +151,8 @@ internal static class SortSelectors
         field switch
         {
             UserSortField.FirstName => u => u.FirstName,
-            UserSortField.LastName => u => u.LastName,
+            UserSortField.FatherLastName => u => u.FatherLastName,
+            UserSortField.MotherLastName => u => u.MotherLastName!,
             UserSortField.Email => u => u.Email,
             UserSortField.CreatedAt => u => u.CreatedAt,
             UserSortField.UpdatedAt => u => u.UpdatedAt,

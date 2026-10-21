@@ -9,7 +9,8 @@ internal static class UserMapper
         new(
             record.Id,
             record.FirstName,
-            record.LastName,
+            record.FatherLastName,
+            record.MotherLastName,
             record.Email,
             record.PasswordHash,
             record.Role,
@@ -21,7 +22,8 @@ internal static class UserMapper
         new()
         {
             FirstName = user.FirstName,
-            LastName = user.LastName,
+            FatherLastName = user.FatherLastName,
+            MotherLastName = user.MotherLastName,
             Email = user.Email,
             PasswordHash = user.PasswordHash,
             Role = user.Role,

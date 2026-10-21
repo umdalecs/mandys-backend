@@ -26,7 +26,8 @@ public class TokenService(IOptions<JwtOptions> jwtOptions) : ITokenService
             new(ClaimTypes.Name, user.FirstName),
             new(ClaimTypes.Role, user.Role),
             new("firstName", user.FirstName),
-            new("lastName", user.LastName),
+            new("fatherLastName", user.FatherLastName),
+            new("motherLastName", user.MotherLastName ?? string.Empty),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(ClaimTypes.Email, user.Email)
         };

@@ -27,7 +27,8 @@ public class CustomerService(
     {
         var email = request.Email.Trim().ToLowerInvariant();
         var firstName = request.FirstName.Trim();
-        var lastName = request.LastName.Trim();
+        var fatherLastName = request.FatherLastName.Trim();
+        var motherLastName = request.MotherLastName?.Trim();
         var passwordHash = passwordHasher.Hash(request.Password);
 
         if (await users.FindByEmailAsync(email) is not null)
@@ -36,7 +37,8 @@ public class CustomerService(
         var created = await users.AddAsync(new User(
             0,
             firstName,
-            lastName,
+            fatherLastName,
+            motherLastName,
             email,
             passwordHash,
             Roles.Customer));
@@ -59,11 +61,12 @@ public class CustomerService(
         if (user is null || !string.Equals(user.Role, Roles.Customer, StringComparison.OrdinalIgnoreCase))
             throw ServiceException.NotFound($"No se encontró el cliente con ID '{id}'.");
 
-        if (!string.IsNullOrWhiteSpace(request.FirstName) || !string.IsNullOrWhiteSpace(request.LastName))
+        if (!string.IsNullOrWhiteSpace(request.FirstName) || !string.IsNullOrWhiteSpace(request.FatherLastName) || request.MotherLastName is not null)
         {
             user.UpdateProfile(
                 string.IsNullOrWhiteSpace(request.FirstName) ? user.FirstName : request.FirstName.Trim(),
-                string.IsNullOrWhiteSpace(request.LastName) ? user.LastName : request.LastName.Trim());
+                string.IsNullOrWhiteSpace(request.FatherLastName) ? user.FatherLastName : request.FatherLastName.Trim(),
+                request.MotherLastName is null ? user.MotherLastName : request.MotherLastName.Trim());
         }
 
         if (!string.IsNullOrWhiteSpace(request.Email))

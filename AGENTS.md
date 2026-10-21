@@ -19,6 +19,7 @@
 ## Agent Policies
 
 - **NO AUTO COMMIT**: Never create git commits automatically or proactively. Only commit when explicitly requested by the user.
+- **DONT TEST THE CHANGES**: Only test when the user explicitly requests it.
 - **Never edit migrations manually**: Always scaffold model changes via `dotnet ef migrations add <Name> --project Mandys.Infrastructure --startup-project Mandys.Api` or regenerate cleanly; never hand-edit scaffolded migration files.
 
 ## Architecture (Clean Architecture, 4 layers)

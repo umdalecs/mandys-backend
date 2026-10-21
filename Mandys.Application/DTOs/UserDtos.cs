@@ -5,7 +5,8 @@ namespace Mandys.Application.DTOs;
 public record UserResponse(
     int Id,
     string FirstName,
-    string LastName,
+    string FatherLastName,
+    string? MotherLastName,
     string Email,
     string Role,
     int? BranchId
@@ -13,16 +14,18 @@ public record UserResponse(
 
 public record CreateUserRequest(
     string FirstName,
-    string LastName,
+    string FatherLastName,
     string Email,
     string Password,
+    string? MotherLastName = null,
     string? Role = null,
     int? BranchId = null
 );
 
 public record UpdateUserRequest(
     string? FirstName = null,
-    string? LastName = null,
+    string? FatherLastName = null,
+    string? MotherLastName = null,
     string? Email = null,
     string? Password = null,
     string? Role = null,
@@ -44,7 +47,8 @@ public static class UserMapper
         new(
             user.ID,
             user.FirstName,
-            user.LastName,
+            user.FatherLastName,
+            user.MotherLastName,
             user.Email,
             user.Role,
             user.BranchId

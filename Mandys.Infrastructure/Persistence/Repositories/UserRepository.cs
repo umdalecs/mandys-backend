@@ -40,7 +40,8 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
             var term = search.Trim().ToLower();
             query = query.Where(u =>
                 u.FirstName.ToLower().Contains(term) ||
-                u.LastName.ToLower().Contains(term));
+                u.FatherLastName.ToLower().Contains(term) ||
+                (u.MotherLastName != null && u.MotherLastName.ToLower().Contains(term)));
         }
 
         if (!string.IsNullOrWhiteSpace(role))
@@ -83,7 +84,8 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
         }
 
         record.FirstName = user.FirstName;
-        record.LastName = user.LastName;
+        record.FatherLastName = user.FatherLastName;
+        record.MotherLastName = user.MotherLastName;
         record.Email = user.Email;
         record.PasswordHash = user.PasswordHash;
         record.Role = user.Role;
