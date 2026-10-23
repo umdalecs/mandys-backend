@@ -56,7 +56,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                     BranchId = (int?)null,
                     CreatedAt = seededAt,
                     UpdatedAt = seededAt,
-                    IsDeleted = false,
                 },
                 new
                 {
@@ -69,7 +68,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                     BranchId = (int?)null,
                     CreatedAt = seededAt,
                     UpdatedAt = seededAt,
-                    IsDeleted = false,
                 }
             );
         });
@@ -142,8 +140,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             if (typeof(Record).IsAssignableFrom(entityType.ClrType))
             {
                 var parameter = System.Linq.Expressions.Expression.Parameter(entityType.ClrType, "e");
-                var property = System.Linq.Expressions.Expression.Property(parameter, nameof(Record.IsDeleted));
-                var filter = System.Linq.Expressions.Expression.Lambda(System.Linq.Expressions.Expression.Not(property), parameter);
+                var property = System.Linq.Expressions.Expression.Property(parameter, nameof(Record.DeletedAt));
+                var nullConstant = System.Linq.Expressions.Expression.Constant(null, typeof(DateTime?));
+                var filter = System.Linq.Expressions.Expression.Lambda(System.Linq.Expressions.Expression.Equal(property, nullConstant), parameter);
                 entityType.SetQueryFilter(filter);
             }
         }
@@ -165,7 +164,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             else if (entry.State == EntityState.Deleted)
             {
                 entry.State = EntityState.Modified;
-                entry.Entity.IsDeleted = true;
                 entry.Entity.DeletedAt = DateTime.UtcNow;
             }
         }
