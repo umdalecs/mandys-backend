@@ -6,7 +6,6 @@ using Scalar.AspNetCore;
 using Mandys.Domain;
 using Mandys.Infrastructure.Persistence.Repositories;
 using Mandys.Infrastructure.Security;
-using Mandys;
 using Mandys.Api.Configuration;
 using Mandys.Api.Validators;
 using Mandys.Application.Configuration;
@@ -18,7 +17,7 @@ using Mandys.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
-builder.Services.AddCarter();
+builder.Services.AddCarter(configurator: c => c.WithEmptyValidators());
 
 // Request validators (Mandys.Api/Validators) injected into handlers;
 // failures surface as ServiceException.BadRequest via RequestValidation.

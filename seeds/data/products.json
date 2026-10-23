@@ -39,7 +39,7 @@
     "id": 7,
     "description": "Cebolla cambray",
     "isSupply": true,
-    "measureUnit": "manojo"
+    "measureUnit": "Gramos"
   },
   {
     "id": 8,
@@ -75,7 +75,7 @@
     "id": 13,
     "description": "Cilantro fresco",
     "isSupply": true,
-    "measureUnit": "manojo"
+    "measureUnit": "Gramos"
   },
   {
     "id": 14,
@@ -189,13 +189,13 @@
     "id": 32,
     "description": "Perejil fresco",
     "isSupply": true,
-    "measureUnit": "manojo"
+    "measureUnit": "Gramos"
   },
   {
     "id": 33,
     "description": "Epazote fresco",
     "isSupply": true,
-    "measureUnit": "manojo"
+    "measureUnit": "Gramos"
   },
   {
     "id": 34,
@@ -321,7 +321,7 @@
     "id": 54,
     "description": "Atún enlatado",
     "isSupply": true,
-    "measureUnit": "lata"
+    "measureUnit": "Unidades"
   },
   {
     "id": 55,
@@ -963,7 +963,7 @@
     "id": 161,
     "description": "Hielo en bolsa 5Gramos",
     "isSupply": true,
-    "measureUnit": "bolsa"
+    "measureUnit": "Unidades"
   },
   {
     "id": 162,
@@ -993,31 +993,31 @@
     "id": 166,
     "description": "Frijoles refritos en lata",
     "isSupply": true,
-    "measureUnit": "lata"
+    "measureUnit": "Unidades"
   },
   {
     "id": 167,
     "description": "Elote enlatado",
     "isSupply": true,
-    "measureUnit": "lata"
+    "measureUnit": "Unidades"
   },
   {
     "id": 168,
     "description": "Champiñones enlatados",
     "isSupply": true,
-    "measureUnit": "lata"
+    "measureUnit": "Unidades"
   },
   {
     "id": 169,
     "description": "Chiles jalapeños enlatados",
     "isSupply": true,
-    "measureUnit": "lata"
+    "measureUnit": "Unidades"
   },
   {
     "id": 170,
     "description": "Aceitunas negras enlatadas",
     "isSupply": true,
-    "measureUnit": "lata"
+    "measureUnit": "Unidades"
   },
   {
     "id": 171,
@@ -1105,9 +1105,9 @@
   },
   {
     "id": 185,
-    "description": "Servilletas",
+    "description": "Servilletas 500 piezas",
     "isSupply": true,
-    "measureUnit": "paquete"
+    "measureUnit": "Unidades"
   },
   {
     "id": 186,
@@ -1119,7 +1119,7 @@
     "id": 187,
     "description": "Guantes desechables",
     "isSupply": true,
-    "measureUnit": "caja"
+    "measureUnit": "Unidades"
   },
   {
     "id": 188,
