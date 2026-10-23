@@ -33,6 +33,12 @@ public record PagedProductsResponse(
     IReadOnlyList<ProductResponse> Items
 );
 
+public record MeasureUnitResponse(
+    string Value,
+    bool AllowsDecimals,
+    bool SupplyOnly
+);
+
 public static class ProductMapper
 {
     public static ProductResponse ToResponse(this Product product) =>

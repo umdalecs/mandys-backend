@@ -13,7 +13,9 @@ public class ComboDishLineValidator : AbstractValidator<CreateComboDishLineReque
 
         RuleFor(x => x.Quantity)
             .GreaterThan(0)
-            .WithMessage("Las cantidades de platillos en el combo deben ser positivas.");
+            .WithMessage("Las cantidades de platillos en el combo deben ser positivas.")
+            .Must(decimal.IsInteger)
+            .WithMessage("Las cantidades de platillos en el combo deben ser números enteros.");
     }
 }
 
@@ -27,7 +29,9 @@ public class ComboProductLineValidator : AbstractValidator<CreateComboProductLin
 
         RuleFor(x => x.Quantity)
             .GreaterThan(0)
-            .WithMessage("Las cantidades de productos en el combo deben ser positivas.");
+            .WithMessage("Las cantidades de productos en el combo deben ser positivas.")
+            .Must(decimal.IsInteger)
+            .WithMessage("Las cantidades de productos en el combo deben ser números enteros.");
     }
 }
 

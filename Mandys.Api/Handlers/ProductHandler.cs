@@ -24,6 +24,8 @@ public class ProductHandler : ICarterModule
                 Roles.WarehouseChief,
                 Roles.OpChief));
 
+        productRoutes.MapGet("/measure-units", GetMeasureUnits);
+
         productRoutes.MapGet("/{id:int}", GetProductById)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
@@ -54,6 +56,18 @@ public class ProductHandler : ICarterModule
         [FromQuery] bool? isSupply = null)
     {
         return Results.Ok(await productService.GetProductsAsync(page, pageSize, search, orderBy, isSupply));
+    }
+
+    private static IResult GetMeasureUnits()
+    {
+        var units = MeasureUnits.All
+            .Select(u => new MeasureUnitResponse(
+                Value: u,
+                AllowsDecimals: MeasureUnits.AllowsDecimals(u),
+                SupplyOnly: !MeasureUnits.IsAllowedForProduct(u, isSupply: false)))
+            .ToList();
+
+        return Results.Ok(units);
     }
 
     private static async Task<IResult> GetProductById(

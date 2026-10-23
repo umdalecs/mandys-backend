@@ -68,6 +68,13 @@ public class DishProduct
             throw new ArgumentException("Quantity must be positive.", nameof(quantity));
         }
 
+        if (!MeasureUnits.IsValidQuantity(product.MeasureUnit, quantity))
+        {
+            throw new ArgumentException(
+                $"Product '{product.Description}' measured in '{product.MeasureUnit}' does not allow decimal quantities.",
+                nameof(quantity));
+        }
+
         Product = product;
         Quantity = quantity;
     }

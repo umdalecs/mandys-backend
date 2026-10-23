@@ -86,7 +86,7 @@ public class DishHandler : ICarterModule
     {
         try
         {
-            RequestValidation.ThrowIfInvalid(validator.Validate(request));
+            RequestValidation.ThrowIfInvalid(await validator.ValidateAsync(request));
 
             var created = await dishService.CreateDishAsync(request);
             return Results.Created($"/dishes/{created.Id}", created);
@@ -105,7 +105,7 @@ public class DishHandler : ICarterModule
     {
         try
         {
-            RequestValidation.ThrowIfInvalid(validator.Validate(request));
+            RequestValidation.ThrowIfInvalid(await validator.ValidateAsync(request));
 
             return Results.Ok(await dishService.UpdateDishAsync(id, request));
         }

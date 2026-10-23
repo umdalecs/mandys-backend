@@ -26,7 +26,7 @@ public class Product
         IsSupply = isSupply;
         SalePrice = GuardPrice(salePrice ?? 0, nameof(salePrice));
         CostPrice = GuardPrice(costPrice ?? 0, nameof(costPrice));
-        MeasureUnit = GuardNotEmpty(measureUnit, nameof(measureUnit));
+        MeasureUnit = GuardMeasureUnit(measureUnit, isSupply, nameof(measureUnit));
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
     }
@@ -40,13 +40,29 @@ public class Product
         Description = GuardNotEmpty(description, nameof(description));
         IsSupply = isSupply;
         SalePrice = GuardPrice(salePrice ?? 0, nameof(salePrice));
-        MeasureUnit = GuardNotEmpty(measureUnit, nameof(measureUnit));
+        MeasureUnit = GuardMeasureUnit(measureUnit, isSupply, nameof(measureUnit));
     }
 
     private static string GuardNotEmpty(string value, string name) =>
         string.IsNullOrWhiteSpace(value)
             ? throw new ArgumentException($"{name} is required.", name)
             : value.Trim();
+
+    private static string GuardMeasureUnit(string value, bool isSupply, string name)
+    {
+        if (!MeasureUnits.IsValid(value))
+        {
+            throw new ArgumentException($"Invalid measure unit '{value}'.", name);
+        }
+
+        var normalized = MeasureUnits.Normalize(value);
+        if (!MeasureUnits.IsAllowedForProduct(normalized, isSupply))
+        {
+            throw new ArgumentException($"Sellable products can only use '{MeasureUnits.Units}'.", name);
+        }
+
+        return normalized;
+    }
 
     private static decimal GuardPrice(decimal value, string name) =>
         value < 0

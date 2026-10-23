@@ -44,7 +44,7 @@ public class ProductService(IProductRepository products) : IProductService
             description,
             request.IsSupply,
             request.SalePrice,
-            request.MeasureUnit.Trim()));
+            MeasureUnits.Normalize(request.MeasureUnit)));
 
         return created.ToResponse();
     }
@@ -67,11 +67,22 @@ public class ProductService(IProductRepository products) : IProductService
             throw ServiceException.Conflict($"Ya existe un producto con el nombre '{newDescription}'.");
         }
 
+        var effectiveIsSupply = request.IsSupply ?? product.IsSupply;
+        var effectiveMeasureUnit = string.IsNullOrWhiteSpace(request.MeasureUnit)
+            ? product.MeasureUnit
+            : MeasureUnits.Normalize(request.MeasureUnit);
+
+        if (!MeasureUnits.IsAllowedForProduct(effectiveMeasureUnit, effectiveIsSupply))
+        {
+            throw ServiceException.BadRequest(
+                $"Los productos de venta solo pueden usar la unidad de medida '{MeasureUnits.Units}'.");
+        }
+
         product.UpdateDetails(
             newDescription,
-            request.IsSupply ?? product.IsSupply,
+            effectiveIsSupply,
             request.SalePrice ?? product.SalePrice,
-            string.IsNullOrWhiteSpace(request.MeasureUnit) ? product.MeasureUnit : request.MeasureUnit.Trim());
+            effectiveMeasureUnit);
 
         await products.UpdateAsync(product);
 

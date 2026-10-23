@@ -150,6 +150,12 @@ public class ComboService(
                     $"El producto '{product.Description}' (ID '{product.Id}') es un insumo y no puede venderse en un combo.");
             }
 
+            if (!MeasureUnits.IsValidQuantity(product.MeasureUnit, line.Quantity))
+            {
+                throw ServiceException.BadRequest(
+                    $"El producto '{product.Description}' se mide en '{product.MeasureUnit}' y no permite cantidades decimales.");
+            }
+
             resolved.Add(new ComboProduct(product, line.Quantity));
         }
 

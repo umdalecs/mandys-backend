@@ -80,6 +80,11 @@ public class ComboDish
             throw new ArgumentException("Quantity must be positive.", nameof(quantity));
         }
 
+        if (!decimal.IsInteger(quantity))
+        {
+            throw new ArgumentException("Dish quantity in a combo must be a whole number.", nameof(quantity));
+        }
+
         Dish = dish;
         Quantity = quantity;
     }
@@ -105,6 +110,13 @@ public class ComboProduct
         if (quantity <= 0)
         {
             throw new ArgumentException("Quantity must be positive.", nameof(quantity));
+        }
+
+        if (!MeasureUnits.IsValidQuantity(product.MeasureUnit, quantity))
+        {
+            throw new ArgumentException(
+                $"Product '{product.Description}' measured in '{product.MeasureUnit}' does not allow decimal quantities.",
+                nameof(quantity));
         }
 
         Product = product;

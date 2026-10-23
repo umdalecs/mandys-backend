@@ -1,11 +1,13 @@
 using FluentValidation;
 using Mandys.Application.DTOs;
+using Mandys.Application.Services.Interfaces;
+using Mandys.Domain;
 
 namespace Mandys.Api.Validators;
 
 public class DishRecipeLineValidator : AbstractValidator<CreateDishRecipeLineRequest>
 {
-    public DishRecipeLineValidator()
+    public DishRecipeLineValidator(IProductRepository products)
     {
         RuleFor(x => x.ProductId)
             .GreaterThan(0)
@@ -14,12 +16,25 @@ public class DishRecipeLineValidator : AbstractValidator<CreateDishRecipeLineReq
         RuleFor(x => x.Quantity)
             .GreaterThan(0)
             .WithMessage("Las cantidades en la receta deben ser positivas.");
+
+        RuleFor(x => x)
+            .MustAsync(async (line, _) =>
+            {
+                if (line.ProductId <= 0 || decimal.IsInteger(line.Quantity))
+                {
+                    return true;
+                }
+
+                var product = await products.GetByIdAsync(line.ProductId);
+                return product is null || MeasureUnits.IsValidQuantity(product.MeasureUnit, line.Quantity);
+            })
+            .WithMessage($"Las cantidades para productos con unidad de medida '{MeasureUnits.Units}' deben ser números enteros.");
     }
 }
 
 public class CreateDishRequestValidator : AbstractValidator<CreateDishRequest>
 {
-    public CreateDishRequestValidator()
+    public CreateDishRequestValidator(IProductRepository products)
     {
         RuleFor(x => x.Name)
             .NotEmpty()
@@ -30,7 +45,7 @@ public class CreateDishRequestValidator : AbstractValidator<CreateDishRequest>
             .GreaterThanOrEqualTo(0)
             .WithMessage("El precio no puede ser negativo.");
 
-        RuleForEach(x => x.Recipe).SetValidator(new DishRecipeLineValidator());
+        RuleForEach(x => x.Recipe).SetValidator(new DishRecipeLineValidator(products));
 
         RuleFor(x => x.Recipe)
             .Must(lines => lines!.GroupBy(l => l.ProductId).All(g => g.Count() == 1))
@@ -41,7 +56,7 @@ public class CreateDishRequestValidator : AbstractValidator<CreateDishRequest>
 
 public class UpdateDishRequestValidator : AbstractValidator<UpdateDishRequest>
 {
-    public UpdateDishRequestValidator()
+    public UpdateDishRequestValidator(IProductRepository products)
     {
         RuleFor(x => x.Name)
             .NotEmpty()
@@ -54,7 +69,7 @@ public class UpdateDishRequestValidator : AbstractValidator<UpdateDishRequest>
             .When(x => x.Price.HasValue)
             .WithMessage("El precio no puede ser negativo.");
 
-        RuleForEach(x => x.Recipe).SetValidator(new DishRecipeLineValidator());
+        RuleForEach(x => x.Recipe).SetValidator(new DishRecipeLineValidator(products));
 
         RuleFor(x => x.Recipe)
             .Must(lines => lines!.GroupBy(l => l.ProductId).All(g => g.Count() == 1))

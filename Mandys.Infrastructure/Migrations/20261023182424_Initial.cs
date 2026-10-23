@@ -25,8 +25,7 @@ namespace Mandys.Infrastructure.Migrations
                     warehouse_only = table.Column<bool>(type: "boolean", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -43,8 +42,7 @@ namespace Mandys.Infrastructure.Migrations
                     price = table.Column<decimal>(type: "numeric", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -61,8 +59,7 @@ namespace Mandys.Infrastructure.Migrations
                     price = table.Column<decimal>(type: "numeric", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -79,8 +76,7 @@ namespace Mandys.Infrastructure.Migrations
                     description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -100,8 +96,7 @@ namespace Mandys.Infrastructure.Migrations
                     measure_unit = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -123,8 +118,7 @@ namespace Mandys.Infrastructure.Migrations
                     branch_id = table.Column<int>(type: "integer", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -148,8 +142,7 @@ namespace Mandys.Infrastructure.Migrations
                     quantity = table.Column<decimal>(type: "numeric", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -179,8 +172,7 @@ namespace Mandys.Infrastructure.Migrations
                     quantity = table.Column<decimal>(type: "numeric", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -210,8 +202,7 @@ namespace Mandys.Infrastructure.Migrations
                     quantity = table.Column<decimal>(type: "numeric", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false)
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -253,11 +244,11 @@ namespace Mandys.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "users",
-                columns: new[] { "id", "branch_id", "created_at", "deleted_at", "email", "father_last_name", "first_name", "is_deleted", "mother_last_name", "password", "role", "updated_at" },
+                columns: new[] { "id", "branch_id", "created_at", "deleted_at", "email", "father_last_name", "first_name", "mother_last_name", "password", "role", "updated_at" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "admin@mandyspos.com", "Sistema", "Administrador", false, null, "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Administrador", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
-                    { 2, null, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "cliente@mandyspos.com", "Demo", "Cliente", false, null, "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Cliente", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) }
+                    { 1, null, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "admin@mandyspos.com", "Sistema", "Administrador", null, "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Administrador", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 2, null, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), null, "cliente@mandyspos.com", "Demo", "Cliente", null, "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q", "Cliente", new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc) }
                 });
 
             migrationBuilder.CreateIndex(

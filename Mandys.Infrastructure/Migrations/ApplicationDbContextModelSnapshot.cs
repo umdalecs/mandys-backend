@@ -45,10 +45,6 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -94,10 +90,6 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("dish_id");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
                     b.Property<decimal>("Quantity")
                         .HasColumnType("numeric")
                         .HasColumnName("quantity");
@@ -138,10 +130,6 @@ namespace Mandys.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("integer")
@@ -184,10 +172,6 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -229,10 +213,6 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("dish_id");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
                     b.Property<int>("ProductId")
                         .HasColumnType("integer")
                         .HasColumnName("product_id");
@@ -273,10 +253,6 @@ namespace Mandys.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -321,10 +297,6 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("description");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -367,10 +339,6 @@ namespace Mandys.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("description");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsSupply")
                         .HasColumnType("boolean")
@@ -476,10 +444,6 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("first_name");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
                     b.Property<string>("MotherLastName")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
@@ -520,7 +484,6 @@ namespace Mandys.Infrastructure.Migrations
                             Email = "admin@mandyspos.com",
                             FatherLastName = "Sistema",
                             FirstName = "Administrador",
-                            IsDeleted = false,
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
                             Role = "Administrador",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
@@ -532,7 +495,6 @@ namespace Mandys.Infrastructure.Migrations
                             Email = "cliente@mandyspos.com",
                             FatherLastName = "Demo",
                             FirstName = "Cliente",
-                            IsDeleted = false,
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
                             Role = "Cliente",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)

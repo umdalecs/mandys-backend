@@ -116,6 +116,12 @@ public class DishService(IDishRepository dishes, IProductRepository products) : 
                     $"El producto '{product.Description}' (ID '{product.Id}') no es un insumo y no puede ser ingrediente de una receta.");
             }
 
+            if (!MeasureUnits.IsValidQuantity(product.MeasureUnit, line.Quantity))
+            {
+                throw ServiceException.BadRequest(
+                    $"El producto '{product.Description}' se mide en '{product.MeasureUnit}' y no permite cantidades decimales.");
+            }
+
             recipe.Add(new DishProduct(product, line.Quantity));
         }
 
