@@ -173,3 +173,14 @@ docker run -d --name mandys-api --network mandys -p 8080:8080 \
   -e "Auth__CookieSecure=Always" \
   ghcr.io/umdalecs/mandys-backend:latest
 ```
+
+## Seeding catalog data
+
+Migrations only seed the `admin` and demo `cliente` users. Branches, staff users,
+products, dishes and combos are seeded over HTTP by the Python scripts in
+[`seeds/`](seeds/README.md) (idempotent):
+
+```bash
+pip install -r seeds/requirements.txt
+python seeds/seed.py
+```
