@@ -51,13 +51,7 @@ docker compose -f docker/compose.yml -f down -v
 
 (add `-v` only to wipe the database).
 
-### Optional: pgAdmin 4 (browse the database / ERD)
-
-Behind the `tools` profile, so the run modes above are unaffected:
-
-```bash
-docker compose -f docker/compose.yml --profile tools up -d pgadmin
-```
+### pgAdmin 4 (browse the database / ERD)
 
 Open `http://localhost:5050` and log in with `admin@mandys.com` / `postgres`
 (override with `PGADMIN_EMAIL` / `PGADMIN_PASSWORD` / `PGADMIN_PORT` in
