@@ -1,44 +1,45 @@
 [
     {
         "email": "operaciones@mandyspos.com",
+        "password": "mandyspos",
         "firstName": "Gerente",
         "fatherLastName": "Operaciones",
         "role": "Gerente de Operaciones",
-        "branch": "Sucursal Culiacán Centro"
+        "branch": 1
     },
     {
         "email": "almacen.central@mandyspos.com",
         "firstName": "Encargado",
         "fatherLastName": "Almacén Central",
         "role": "Encargado de Almacen Central",
-        "branch": "Sucursal Culiacán Centro"
+        "branch": 1
     },
     {
         "email": "almacen@mandyspos.com",
         "firstName": "Encargado",
         "fatherLastName": "Almacén",
         "role": "Encargado de Almacen",
-        "branch": "Sucursal Culiacán Centro"
+        "branch": 1
     },
     {
         "email": "caja@mandyspos.com",
         "firstName": "Cajero",
         "fatherLastName": "Sucursal",
         "role": "Cajero",
-        "branch": "Sucursal Culiacán Centro"
+        "branch": 1
     },
     {
         "email": "cocina@mandyspos.com",
         "firstName": "Jefe",
         "fatherLastName": "Cocina",
         "role": "Jefe Cocina",
-        "branch": "Sucursal Culiacán Centro"
+        "branch": 1
     },
     {
         "email": "sucursal@mandyspos.com",
         "firstName": "Gerente",
         "fatherLastName": "Sucursal",
         "role": "Gerente Sucursal",
-        "branch": "Sucursal Culiacán Centro"
+        "branch": 1
     }
 ]
