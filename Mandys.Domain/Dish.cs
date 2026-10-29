@@ -6,6 +6,7 @@ public class Dish
     public string Name { get; private set; }
     public decimal Price { get; private set; }
     public IReadOnlyList<DishProduct> Recipe { get; private set; }
+    public string? ImageUrl { get; set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
 
@@ -15,7 +16,8 @@ public class Dish
         decimal price,
         IEnumerable<DishProduct>? recipe = null,
         DateTime? createdAt = null,
-        DateTime? updatedAt = null)
+        DateTime? updatedAt = null,
+        string? imageUrl = null)
     {
         Id = id;
         Name = GuardNotEmpty(name, nameof(name));
@@ -23,6 +25,7 @@ public class Dish
         Recipe = (recipe ?? []).ToList();
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
+        ImageUrl = imageUrl;
     }
 
     public void UpdateDetails(string name, decimal price, IEnumerable<DishProduct>? recipe = null)

@@ -37,6 +37,12 @@ public class ComboHandler : ICarterModule
                 Roles.Administrator,
                 Roles.OpChief));
 
+        comboRoutes.MapPut("/{id:int}/image", UpdateComboImage)
+            .DisableAntiforgery()
+            .RequireAuthorization(policy => policy.RequireRole(
+                Roles.Administrator,
+                Roles.OpChief));
+
         comboRoutes.MapDelete("/{id:int}", DeleteCombo)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
@@ -96,6 +102,26 @@ public class ComboHandler : ICarterModule
             RequestValidation.ThrowIfInvalid(validator.Validate(request));
 
             return Results.Ok(await comboService.UpdateComboAsync(id, request));
+        }
+        catch (ServiceException ex)
+        {
+            return MapComboError(ex);
+        }
+    }
+
+    private static async Task<IResult> UpdateComboImage(
+       int id,
+       [FromForm] IFormFile file,
+       IComboService comboService)
+    {
+        try
+        {
+            if (!file.ContentType.StartsWith("image/"))
+            {
+                throw ServiceException.BadRequest("Solo se permite subir imagenes");
+            }
+
+            return Results.Ok(await comboService.UpdateComboImageAsync(id, file.OpenReadStream(), file.ContentType));
         }
         catch (ServiceException ex)
         {

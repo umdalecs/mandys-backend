@@ -8,7 +8,8 @@ public record ProductResponse(
     bool IsSupply,
     decimal? CostPrice,
     decimal? SalePrice,
-    string MeasureUnit
+    string MeasureUnit,
+    string? imageUrl
 );
 
 public record CreateProductRequest(
@@ -48,6 +49,7 @@ public static class ProductMapper
             product.IsSupply,
             product.CostPrice,
             product.SalePrice,
-            product.MeasureUnit
+            product.MeasureUnit,
+            product.ImageUrl
         );
 }

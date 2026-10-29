@@ -11,6 +11,8 @@ public interface IComboService
     Task<ComboResponse> CreateComboAsync(CreateComboRequest request);
 
     Task<ComboResponse> UpdateComboAsync(int id, UpdateComboRequest request);
+    
+    Task<ComboResponse> UpdateComboImageAsync(int id, Stream file, string contentType);
 
     Task DeleteComboAsync(int id);
 }

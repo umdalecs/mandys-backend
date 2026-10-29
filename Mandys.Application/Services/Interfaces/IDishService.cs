@@ -12,5 +12,7 @@ public interface IDishService
 
     Task<DishResponse> UpdateDishAsync(int id, UpdateDishRequest request);
 
+    Task<DishResponse> UpdateDishImageAsync(int id, Stream file, string contentType);
+
     Task DeleteDishAsync(int id);
 }

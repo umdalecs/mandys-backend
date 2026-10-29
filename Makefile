@@ -6,9 +6,9 @@ MIGRATIONS_DIR := Mandys.Infrastructure/Migrations
 
 .PHONY: run-api run-database stop-database run-storage stop-storage migrations-fresh migrations-clean migrations-init
 
-run: run-database run-storage run-api
+run: run-database run-storage run-pgadmin run-api
 
-stop: stop-database stop-storage
+stop: stop-database stop-storage stop-pgadmin
 
 run-api:
 	dotnet run --project $(API_PROJECT) --launch-profile $(API_LAUNCH_PROFILE)
@@ -16,10 +16,16 @@ run-api:
 restart-database: stop-database run-database
 
 run-database:
-	docker compose -f docker/compose.yml up database pgadmin -d
+	docker compose -f docker/compose.yml up database -d
 
 stop-database:
-	docker compose -f docker/compose.yml down database pgadmin -v
+	docker compose -f docker/compose.yml down database -v
+
+run-pgadmin:
+	docker compose -f docker/compose.yml up pgadmin -d
+
+stop-pgadmin:
+	docker compose -f docker/compose.yml down pgadmin -v
 
 run-storage:
 	docker compose -f docker/compose.yml up storage storage-init -d

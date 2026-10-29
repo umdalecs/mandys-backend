@@ -7,6 +7,7 @@ public class Combo
     public decimal Price { get; private set; }
     public IReadOnlyList<ComboDish> Dishes { get; private set; }
     public IReadOnlyList<ComboProduct> Products { get; private set; }
+    public string? ImageUrl { get; set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
 
@@ -17,7 +18,8 @@ public class Combo
         IEnumerable<ComboDish>? dishes = null,
         IEnumerable<ComboProduct>? products = null,
         DateTime? createdAt = null,
-        DateTime? updatedAt = null)
+        DateTime? updatedAt = null,
+        string? imageUrl = null)
     {
         Id = id;
         Name = GuardNotEmpty(name, nameof(name));
@@ -26,6 +28,7 @@ public class Combo
         Products = (products ?? []).ToList();
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
+        ImageUrl = imageUrl;
     }
 
     public void UpdateDetails(

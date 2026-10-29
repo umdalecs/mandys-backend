@@ -7,7 +7,8 @@ namespace Mandys.Application.Services.Implementations;
 public class ComboService(
     IComboRepository combos,
     IDishRepository dishes,
-    IProductRepository products) : IComboService
+    IProductRepository products,
+    IStorageService storageService) : IComboService
 {
     public async Task<PagedCombosResponse> GetCombosAsync(int page, int pageSize, string? search, string? orderBy)
     {
@@ -79,6 +80,25 @@ public class ComboService(
             request.Price ?? combo.Price,
             dishLines,
             productLines);
+
+        await combos.UpdateAsync(combo);
+
+        return combo.ToResponse();
+    }
+
+    public async Task<ComboResponse> UpdateComboImageAsync(int id, Stream file, string contentType)
+    {
+        var combo = await combos.GetByIdAsync(id);
+        if (combo is null)
+        {
+            throw ServiceException.NotFound($"No se encontró el platillo con ID '{id}'.");
+        }
+
+        var key = $"combos/{combo.Id}";
+
+        var fileUrl = await storageService.UploadAsync(file, key,contentType);
+
+        combo.ImageUrl = fileUrl;
 
         await combos.UpdateAsync(combo);
 

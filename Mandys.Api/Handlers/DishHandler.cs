@@ -49,6 +49,12 @@ public class DishHandler : ICarterModule
                 Roles.Administrator,
                 Roles.OpChief));
 
+        dishRoutes.MapPut("/{id:int}/image", UpdateDishImage)
+            .DisableAntiforgery()
+            .RequireAuthorization(policy => policy.RequireRole(
+                Roles.Administrator,
+                Roles.OpChief));
+
         dishRoutes.MapDelete("/{id:int}", DeleteDish)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
@@ -108,6 +114,26 @@ public class DishHandler : ICarterModule
             RequestValidation.ThrowIfInvalid(await validator.ValidateAsync(request));
 
             return Results.Ok(await dishService.UpdateDishAsync(id, request));
+        }
+        catch (ServiceException ex)
+        {
+            return MapDishError(ex);
+        }
+    }
+
+    private static async Task<IResult> UpdateDishImage(
+        int id,
+        [FromForm] IFormFile file,
+        IDishService dishService)
+    {
+        try
+        {
+            if (!file.ContentType.StartsWith("image/"))
+            {
+                throw ServiceException.BadRequest("Solo se permite subir imagenes");
+            }
+
+            return Results.Ok(await dishService.UpdateDishImageAsync(id, file.OpenReadStream(), file.ContentType));
         }
         catch (ServiceException ex)
         {

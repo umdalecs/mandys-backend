@@ -4,7 +4,7 @@ using Mandys.Domain;
 
 namespace Mandys.Application.Services.Implementations;
 
-public class ProductService(IProductRepository products) : IProductService
+public class ProductService(IProductRepository products, IStorageService storageService) : IProductService
 {
     public async Task<PagedProductsResponse> GetProductsAsync(int page, int pageSize, string? search, string? orderBy, bool? isSupply)
     {
@@ -83,6 +83,25 @@ public class ProductService(IProductRepository products) : IProductService
             effectiveIsSupply,
             request.SalePrice ?? product.SalePrice,
             effectiveMeasureUnit);
+
+        await products.UpdateAsync(product);
+
+        return product.ToResponse();
+    }
+
+    public async Task<ProductResponse> UpdateProductImageAsync(int id, Stream file, string contentType)
+    {
+        var product = await products.GetByIdAsync(id);
+        if (product is null)
+        {
+            throw ServiceException.NotFound($"No se encontró el producto con ID '{id}'.");
+        }
+
+        var key = $"products/{product.Id}";
+
+        var fileUrl = await storageService.UploadAsync(file, key,contentType);
+
+        product.ImageUrl = fileUrl;
 
         await products.UpdateAsync(product);
 

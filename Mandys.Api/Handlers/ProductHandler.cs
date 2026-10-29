@@ -41,6 +41,12 @@ public class ProductHandler : ICarterModule
                 Roles.Administrator,
                 Roles.WarehouseChief));
 
+        productRoutes.MapPut("/{id:int}/image", UpdateProductImage)
+            .DisableAntiforgery()
+            .RequireAuthorization(policy => policy.RequireRole(
+                Roles.Administrator,
+                Roles.WarehouseChief));
+
         productRoutes.MapDelete("/{id:int}", DeleteProduct)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
@@ -113,6 +119,26 @@ public class ProductHandler : ICarterModule
             RequestValidation.ThrowIfInvalid(validator.Validate(request));
 
             return Results.Ok(await productService.UpdateProductAsync(id, request));
+        }
+        catch (ServiceException ex)
+        {
+            return MapProductError(ex);
+        }
+    }
+
+    private static async Task<IResult> UpdateProductImage(
+        int id,
+        [FromForm] IFormFile file,
+        IProductService productService)
+    {
+        try
+        {
+            if (!file.ContentType.StartsWith("image/"))
+            {
+                throw ServiceException.BadRequest("Solo se permite subir imagenes");
+            }
+
+            return Results.Ok(await productService.UpdateProductImageAsync(id, file.OpenReadStream(), file.ContentType));
         }
         catch (ServiceException ex)
         {

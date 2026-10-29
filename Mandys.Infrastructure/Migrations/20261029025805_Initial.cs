@@ -40,6 +40,7 @@ namespace Mandys.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     price = table.Column<decimal>(type: "numeric", nullable: false),
+                    image_url = table.Column<string>(type: "text", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -57,6 +58,7 @@ namespace Mandys.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     price = table.Column<decimal>(type: "numeric", nullable: false),
+                    image_url = table.Column<string>(type: "text", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -94,6 +96,7 @@ namespace Mandys.Infrastructure.Migrations
                     cost_price = table.Column<decimal>(type: "numeric", nullable: false),
                     sale_price = table.Column<decimal>(type: "numeric", nullable: false),
                     measure_unit = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    image_url = table.Column<string>(type: "text", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)

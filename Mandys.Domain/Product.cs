@@ -8,6 +8,7 @@ public class Product
     public decimal? CostPrice { get; private set; }
     public decimal? SalePrice { get; private set; }
     public string MeasureUnit { get; private set; }
+    public string? ImageUrl { get; set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
 
@@ -19,7 +20,8 @@ public class Product
         string measureUnit,
         decimal? costPrice = 0m,
         DateTime? createdAt = null,
-        DateTime? updatedAt = null)
+        DateTime? updatedAt = null,
+        string? imageUrl = null)
     {
         Id = id;
         Description = GuardNotEmpty(description, nameof(description));
@@ -29,6 +31,7 @@ public class Product
         MeasureUnit = GuardMeasureUnit(measureUnit, isSupply, nameof(measureUnit));
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
+        ImageUrl = imageUrl;
     }
 
     /// <summary>

@@ -21,6 +21,7 @@ public class ProductRecord : Record
     [Required]
     [MaxLength(50)]
     public string MeasureUnit { get; set; } = string.Empty;
+    public string? ImageUrl { get; set; }
     public ICollection<DishProductRecord> DishProducts { get; set; } = new List<DishProductRecord>();
     public ICollection<ComboProductRecord> ComboProducts { get; set; } = new List<ComboProductRecord>();
 }

@@ -13,6 +13,7 @@ public class ComboRecord : Record
     public string Name { get; set; } = string.Empty;
     [Required]
     public decimal Price { get; set; }
+    public string? ImageUrl { get; set; }
     public ICollection<ComboDishRecord> ComboDishes { get; set; } = new List<ComboDishRecord>();
     public ICollection<ComboProductRecord> ComboProducts { get; set; } = new List<ComboProductRecord>();
 }

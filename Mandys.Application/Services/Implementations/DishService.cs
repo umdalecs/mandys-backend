@@ -4,7 +4,7 @@ using Mandys.Domain;
 
 namespace Mandys.Application.Services.Implementations;
 
-public class DishService(IDishRepository dishes, IProductRepository products) : IDishService
+public class DishService(IDishRepository dishes, IProductRepository products, IStorageService storageService) : IDishService
 {
     public async Task<PagedDishesResponse> GetDishesAsync(int page, int pageSize, string? search, string? orderBy)
     {
@@ -72,6 +72,25 @@ public class DishService(IDishRepository dishes, IProductRepository products) : 
             newName,
             request.Price ?? dish.Price,
             recipe);
+
+        await dishes.UpdateAsync(dish);
+
+        return dish.ToResponse();
+    }
+
+    public async Task<DishResponse> UpdateDishImageAsync(int id, Stream file, string contentType)
+    {
+        var dish = await dishes.GetByIdAsync(id);
+        if (dish is null)
+        {
+            throw ServiceException.NotFound($"No se encontró el platillo con ID '{id}'.");
+        }
+
+        var key = $"dishes/{dish.Id}";
+
+        var fileUrl = await storageService.UploadAsync(file, key,contentType);
+
+        dish.ImageUrl = fileUrl;
 
         await dishes.UpdateAsync(dish);
 

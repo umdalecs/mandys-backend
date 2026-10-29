@@ -17,7 +17,8 @@ public record ComboResponse(
     string Name,
     decimal Price,
     IReadOnlyList<ComboDishLineResponse> Dishes,
-    IReadOnlyList<ComboProductLineResponse> Products
+    IReadOnlyList<ComboProductLineResponse> Products,
+    string? ImageUrl
 );
 
 public record CreateComboDishLineRequest(
@@ -60,6 +61,7 @@ public static class ComboMapper
             combo.Name,
             combo.Price,
             combo.Dishes.Select(l => new ComboDishLineResponse(l.Dish.ToResponse(), l.Quantity)).ToList(),
-            combo.Products.Select(l => new ComboProductLineResponse(l.Product.ToResponse(), l.Quantity)).ToList()
+            combo.Products.Select(l => new ComboProductLineResponse(l.Product.ToResponse(), l.Quantity)).ToList(),
+            combo.ImageUrl
         );
 }
