@@ -46,6 +46,14 @@ public class ComboService(
         var dishLines = await ValidateDishLinesAsync(request.Dishes);
         var productLines = await ValidateProductLinesAsync(request.Products);
 
+        var dishesCost = dishLines.Sum(x =>x.Dish.Price * x.Quantity);
+        var productsCost = productLines.Sum(x =>x.Product.CostPrice * x.Quantity);
+
+        if (dishesCost + productsCost < request.Price)
+        {
+            throw ServiceException.BadRequest($"El precio de venta del combo no puede ser menor que su costo de producción");
+        }
+
         var created = await combos.AddAsync(new Combo(
             0,
             name,
@@ -74,6 +82,14 @@ public class ComboService(
 
         var dishLines = request.Dishes is null ? null : await ValidateDishLinesAsync(request.Dishes);
         var productLines = request.Products is null ? null : await ValidateProductLinesAsync(request.Products);
+
+        var dishesCost = dishLines?.Sum(x =>x.Dish.Price * x.Quantity) ?? 0;
+        var productsCost = productLines?.Sum(x =>x.Product.CostPrice * x.Quantity) ?? 0;
+
+        if (dishesCost + productsCost < request.Price)
+        {
+            throw ServiceException.BadRequest($"El precio de venta del combo no puede ser menor que su costo de producción");
+        }
 
         combo.UpdateDetails(
             newName,
