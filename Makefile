@@ -1,17 +1,21 @@
 API_PROJECT := Mandys.Api
 API_LAUNCH_PROFILE := http
+SEED_PROJECT := Mandys.Seeding
 
 EF_ARGS := --project Mandys.Infrastructure --startup-project Mandys.Api
 MIGRATIONS_DIR := Mandys.Infrastructure/Migrations
 
-.PHONY: run-api run-database stop-database run-storage stop-storage migrations-fresh migrations-clean migrations-init
+.PHONY: run-api seed run-database stop-database run-storage stop-storage migrations-fresh migrations-clean migrations-init
 
-run: run-database run-storage run-pgadmin run-api
+run: run-database seed run-storage run-pgadmin run-api
 
 stop: stop-database stop-storage stop-pgadmin
 
 run-api:
 	dotnet run --project $(API_PROJECT) --launch-profile $(API_LAUNCH_PROFILE)
+
+seed:
+	dotnet run --project $(SEED_PROJECT) -- $(ARGS)
 
 restart-database: stop-database run-database
 

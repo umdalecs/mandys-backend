@@ -3,4 +3,5 @@
   <Project Path="Mandys.Application/Mandys.Application.csproj" />
   <Project Path="Mandys.Infrastructure/Mandys.Infrastructure.csproj" />
   <Project Path="Mandys.Api/Mandys.Api.csproj" />
+  <Project Path="Mandys.Seeding/Mandys.Seeding.csproj" />
 </Solution>
