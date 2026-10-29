@@ -1,7 +1,7 @@
 namespace Mandys.Application.Configuration;
 
 /// <summary>
-/// S3-compatible object storage settings (MinIO in local development,
+/// S3-compatible object storage settings (RustFS in local development,
 /// AWS S3 / Cloudflare R2 in production), bound from the "S3" section.
 /// </summary>
 public class S3Options
