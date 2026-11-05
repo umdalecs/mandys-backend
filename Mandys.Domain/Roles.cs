@@ -37,5 +37,6 @@ public static class Roles
     /// </summary>
     public static bool RequiresBranch(string? role) =>
         !string.Equals(role, Administrator, StringComparison.OrdinalIgnoreCase) &&
-        !string.Equals(role, Customer, StringComparison.OrdinalIgnoreCase);
+        !string.Equals(role, Customer, StringComparison.OrdinalIgnoreCase) &&
+        !string.Equals(role, OpChief, StringComparison.OrdinalIgnoreCase);
 }

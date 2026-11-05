@@ -6,7 +6,8 @@ namespace Mandys.Application.Services.Implementations;
 
 public class BranchStorageService(
     IBranchStorageRepository branchStorages,
-    IBranchRepository branches) : IBranchStorageService
+    IBranchRepository branches,
+    IProductRepository products) : IBranchStorageService
 {
     public async Task<PagedBranchStorageResponse> GetBranchStorageAsync(
         int branchId, int page, int pageSize, string? search, string? orderBy, bool? isSupply)
@@ -78,5 +79,158 @@ public class BranchStorageService(
         await branchStorages.UpdateAsync(storage);
 
         return storage.ToResponse();
+    }
+
+    public async Task<BranchStorageHistoryResponse> CreateInMovementAsync(
+        int branchId, CreateStorageInRequest request)
+    {
+        return await ExecuteMovementAsync(
+            branchId,
+            StorageMovementTypes.In,
+            request.Folio,
+            request.Products);
+    }
+
+    public async Task<BranchStorageHistoryResponse> CreateOutMovementAsync(
+        int branchId, CreateStorageOutRequest request)
+    {
+        return await ExecuteMovementAsync(
+            branchId,
+            StorageMovementTypes.Out,
+            request.Folio,
+            request.Products);
+    }
+
+    public async Task<PagedBranchStorageHistoryResponse> GetBranchStorageHistoryAsync(
+        int branchId, int page, int pageSize, string? search, string? type, string? orderBy)
+    {
+        var branch = await branches.GetByIdAsync(branchId);
+        if (branch is null)
+        {
+            throw ServiceException.NotFound($"No se encontró la sucursal con ID '{branchId}'.");
+        }
+
+        if (!string.IsNullOrWhiteSpace(type) && !StorageMovementTypes.IsValid(type))
+        {
+            throw ServiceException.BadRequest(
+                $"El tipo de movimiento '{type}' no es válido. Valores permitidos: {string.Join(", ", StorageMovementTypes.All)}.");
+        }
+
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 20;
+        if (pageSize > 100) pageSize = 100;
+
+        var (totalCount, items) = await branchStorages.SearchHistoryByBranchAsync(
+            branchId, search, type, page, pageSize, orderBy);
+        var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+        return new PagedBranchStorageHistoryResponse(
+            totalCount,
+            page,
+            pageSize,
+            totalPages,
+            items.Select(h => h.ToResponse()).ToList());
+    }
+
+    public async Task<BranchStorageHistoryResponse> GetBranchStorageHistoryByIdAsync(
+        int branchId, int historyId)
+    {
+        var branch = await branches.GetByIdAsync(branchId);
+        if (branch is null)
+        {
+            throw ServiceException.NotFound($"No se encontró la sucursal con ID '{branchId}'.");
+        }
+
+        var history = await branchStorages.GetHistoryByIdAsync(branchId, historyId);
+        if (history is null)
+        {
+            throw ServiceException.NotFound(
+                $"No se encontró el movimiento de almacenamiento con ID '{historyId}' en la sucursal '{branchId}'.");
+        }
+
+        return history.ToResponse();
+    }
+
+    private async Task<BranchStorageHistoryResponse> ExecuteMovementAsync(
+        int branchId,
+        string type,
+        string? folio,
+        IReadOnlyList<CreateStorageMovementProductLineRequest> requestLines)
+    {
+        var branch = await branches.GetByIdAsync(branchId);
+        if (branch is null)
+        {
+            throw ServiceException.NotFound($"No se encontró la sucursal con ID '{branchId}'.");
+        }
+
+        var normalizedFolio = string.IsNullOrWhiteSpace(folio) ? null : folio.Trim();
+        if (normalizedFolio is not null &&
+            await branchStorages.ExistsHistoryByFolioAsync(branchId, normalizedFolio))
+        {
+            throw ServiceException.Conflict(
+                $"Ya existe un movimiento con el folio '{normalizedFolio}' en esta sucursal.");
+        }
+
+        if (requestLines is null || requestLines.Count == 0)
+        {
+            throw ServiceException.BadRequest("El movimiento debe incluir al menos un producto.");
+        }
+
+        var productIds = requestLines.Select(l => l.ProductId).Distinct().ToList();
+        var storages = await branchStorages.GetByBranchAndProductsAsync(branchId, productIds);
+        var storageByProductId = storages.ToDictionary(s => s.Product.Id);
+
+        var historyLines = new List<BranchStorageHistoryProduct>();
+        var updatedStorages = new List<BranchStorage>();
+
+        foreach (var line in requestLines)
+        {
+            if (!storageByProductId.TryGetValue(line.ProductId, out var storage))
+            {
+                var product = await products.GetByIdAsync(line.ProductId);
+                if (product is null)
+                {
+                    throw ServiceException.NotFound($"No se encontró el producto con ID '{line.ProductId}'.");
+                }
+
+                throw ServiceException.NotFound(
+                    $"No se encontró el registro de almacenamiento para el producto '{product.Description}' (ID '{line.ProductId}') en la sucursal '{branchId}'.");
+            }
+
+            if (!MeasureUnits.IsValidQuantity(storage.Product.MeasureUnit, line.Quantity))
+            {
+                throw ServiceException.BadRequest(
+                    $"El producto '{storage.Product.Description}' se mide en '{storage.Product.MeasureUnit}' y no permite cantidades decimales.");
+            }
+
+            if (type == StorageMovementTypes.In)
+            {
+                storage.AddStock(line.Quantity);
+            }
+            else
+            {
+                if (storage.CurrentStock < line.Quantity)
+                {
+                    throw ServiceException.BadRequest(
+                        $"Stock insuficiente para el producto '{storage.Product.Description}'. Stock actual: {storage.CurrentStock}, solicitado: {line.Quantity}.");
+                }
+
+                storage.RemoveStock(line.Quantity);
+            }
+
+            updatedStorages.Add(storage);
+            historyLines.Add(new BranchStorageHistoryProduct(storage.Product, line.Quantity));
+        }
+
+        var history = new BranchStorageHistory(
+            0,
+            branch,
+            type,
+            normalizedFolio,
+            historyLines);
+
+        var created = await branchStorages.ApplyMovementAsync(history, updatedStorages);
+
+        return created.ToResponse();
     }
 }

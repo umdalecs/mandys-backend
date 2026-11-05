@@ -46,6 +46,32 @@ public class BranchStorage
         MinimumStock = GuardStock(minimumStock, Product, nameof(minimumStock));
     }
 
+    public void AddStock(decimal quantity)
+    {
+        if (quantity <= 0)
+        {
+            throw new ArgumentException("Quantity must be positive.", nameof(quantity));
+        }
+
+        CurrentStock = GuardStock(CurrentStock + quantity, Product, nameof(quantity));
+    }
+
+    public void RemoveStock(decimal quantity)
+    {
+        if (quantity <= 0)
+        {
+            throw new ArgumentException("Quantity must be positive.", nameof(quantity));
+        }
+
+        if (CurrentStock < quantity)
+        {
+            throw new InvalidOperationException(
+                $"Insufficient stock for product '{Product.Description}'. Current: {CurrentStock}, requested: {quantity}.");
+        }
+
+        CurrentStock = GuardStock(CurrentStock - quantity, Product, nameof(quantity));
+    }
+
     private static decimal GuardStock(decimal value, Product product, string name)
     {
         if (value < 0)

@@ -1,3 +1,4 @@
+using Amazon.S3.Model;
 using Mandys.Domain;
 using Mandys.Infrastructure.Persistence.Records;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ComboDishRecord> ComboDishes { get; set; }
     public DbSet<ComboProductRecord> ComboProducts { get; set; }
     public DbSet<BranchStorageRecord> BranchStorages { get; set; }
+    public DbSet<BranchStorageHistoryRecord> BranchStorageHistories { get; set; }
+    public DbSet<BranchStorageHistoryProductRecord> BranchStorageHistoryProducts { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<LogRecord> Logs { get; set; }
 
@@ -66,6 +69,18 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                     FirstName = "Cliente",
                     FatherLastName = "Demo",
                     Role = Roles.Customer,
+                    BranchId = (int?)null,
+                    CreatedAt = seededAt,
+                    UpdatedAt = seededAt,
+                },
+                new
+                {
+                    Id = 3,
+                    Email = "operaciones@mandyspos.com",
+                    PasswordHash = hash,
+                    FirstName = "Gerente",
+                    FatherLastName = "Operaciones",
+                    Role = Roles.OpChief,
                     BranchId = (int?)null,
                     CreatedAt = seededAt,
                     UpdatedAt = seededAt,
@@ -151,6 +166,33 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasIndex(bs => bs.BranchId);
             entity.HasIndex(bs => bs.ProductId);
             entity.HasIndex(bs => new { bs.BranchId, bs.ProductId });
+        });
+
+        modelBuilder.Entity<BranchStorageHistoryRecord>(entity =>
+        {
+            entity.HasOne(bsh => bsh.Branch)
+                .WithMany(b => b.BranchStorageHistories)
+                .HasForeignKey(bsh => bsh.BranchId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(bsh => bsh.BranchId);
+            entity.HasIndex(bsh => new { bsh.BranchId, bsh.Folio });
+        });
+
+        modelBuilder.Entity<BranchStorageHistoryProductRecord>(entity =>
+        {
+            entity.HasOne(bshp => bshp.BranchStorageHistory)
+                .WithMany(bsh => bsh.Products)
+                .HasForeignKey(bshp => bshp.BranchStorageHistoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(bshp => bshp.Product)
+                .WithMany(p => p.BranchStorageHistoryProducts)
+                .HasForeignKey(bshp => bshp.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(bshp => bshp.BranchStorageHistoryId);
+            entity.HasIndex(bshp => bshp.ProductId);
         });
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())

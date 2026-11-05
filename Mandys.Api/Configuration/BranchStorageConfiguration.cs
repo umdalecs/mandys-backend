@@ -15,5 +15,7 @@ public static class BranchStorageConfiguration
         wab.Services.AddScoped<IBranchStorageService, BranchStorageService>();
 
         wab.Services.AddScoped<IValidator<UpdateBranchStorageRequest>, UpdateBranchStorageRequestValidator>();
+        wab.Services.AddScoped<IValidator<CreateStorageInRequest>, CreateStorageInRequestValidator>();
+        wab.Services.AddScoped<IValidator<CreateStorageOutRequest>, CreateStorageOutRequestValidator>();
     }
 }

@@ -25,4 +25,5 @@ public class ProductRecord : Record
     public ICollection<DishProductRecord> DishProducts { get; set; } = new List<DishProductRecord>();
     public ICollection<ComboProductRecord> ComboProducts { get; set; } = new List<ComboProductRecord>();
     public ICollection<BranchStorageRecord> BranchStorages { get; set; } = new List<BranchStorageRecord>();
+    public ICollection<BranchStorageHistoryProductRecord> BranchStorageHistoryProducts { get; set; } = new List<BranchStorageHistoryProductRecord>();
 }

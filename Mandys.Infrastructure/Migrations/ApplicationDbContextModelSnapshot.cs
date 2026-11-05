@@ -65,6 +65,99 @@ namespace Mandys.Infrastructure.Migrations
                     b.ToTable("branches", (string)null);
                 });
 
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.BranchStorageHistoryProductRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BranchStorageHistoryId")
+                        .HasColumnType("integer")
+                        .HasColumnName("branch_storage_history_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer")
+                        .HasColumnName("product_id");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric")
+                        .HasColumnName("quantity");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_branch_storage_history_products");
+
+                    b.HasIndex("BranchStorageHistoryId")
+                        .HasDatabaseName("ix_branch_storage_history_products_branch_storage_history_id");
+
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("ix_branch_storage_history_products_product_id");
+
+                    b.ToTable("branch_storage_history_products", (string)null);
+                });
+
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.BranchStorageHistoryRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BranchId")
+                        .HasColumnType("integer")
+                        .HasColumnName("branch_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("Folio")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("folio");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("type");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_branch_storage_histories");
+
+                    b.HasIndex("BranchId")
+                        .HasDatabaseName("ix_branch_storage_histories_branch_id");
+
+                    b.HasIndex("BranchId", "Folio")
+                        .HasDatabaseName("ix_branch_storage_histories_branch_id_folio");
+
+                    b.ToTable("branch_storage_histories", (string)null);
+                });
+
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.BranchStorageRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -562,7 +655,51 @@ namespace Mandys.Infrastructure.Migrations
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
                             Role = "Cliente",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "operaciones@mandyspos.com",
+                            FatherLastName = "Operaciones",
+                            FirstName = "Gerente",
+                            PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
+                            Role = "Gerente de Operaciones",
+                            UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
+                });
+
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.BranchStorageHistoryProductRecord", b =>
+                {
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.BranchStorageHistoryRecord", "BranchStorageHistory")
+                        .WithMany("Products")
+                        .HasForeignKey("BranchStorageHistoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_branch_storage_history_products_branch_storage_histories_br");
+
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.ProductRecord", "Product")
+                        .WithMany("BranchStorageHistoryProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_branch_storage_history_products_products_product_id");
+
+                    b.Navigation("BranchStorageHistory");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.BranchStorageHistoryRecord", b =>
+                {
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.BranchRecord", "Branch")
+                        .WithMany("BranchStorageHistories")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_branch_storage_histories_branches_branch_id");
+
+                    b.Navigation("Branch");
                 });
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.BranchStorageRecord", b =>
@@ -672,9 +809,16 @@ namespace Mandys.Infrastructure.Migrations
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.BranchRecord", b =>
                 {
+                    b.Navigation("BranchStorageHistories");
+
                     b.Navigation("BranchStorages");
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.BranchStorageHistoryRecord", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.ComboRecord", b =>
@@ -693,6 +837,8 @@ namespace Mandys.Infrastructure.Migrations
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.ProductRecord", b =>
                 {
+                    b.Navigation("BranchStorageHistoryProducts");
+
                     b.Navigation("BranchStorages");
 
                     b.Navigation("ComboProducts");

@@ -20,6 +20,19 @@ public class BranchStorageRepository(ApplicationDbContext db) : IBranchStorageRe
         return record?.ToDomain();
     }
 
+    public async Task<IReadOnlyList<BranchStorage>> GetByBranchAndProductsAsync(
+        int branchId, IReadOnlyCollection<int> productIds)
+    {
+        var records = await db.BranchStorages
+            .AsNoTracking()
+            .Include(bs => bs.Branch)
+            .Include(bs => bs.Product)
+            .Where(bs => bs.BranchId == branchId && productIds.Contains(bs.ProductId))
+            .ToListAsync();
+
+        return records.Select(r => r.ToDomain()).ToList();
+    }
+
     public async Task<(int TotalCount, IReadOnlyList<BranchStorage> Items)> SearchByBranchAsync(
         int branchId, string? search, int page, int pageSize, string? orderBy, bool? isSupply)
     {
@@ -162,5 +175,111 @@ public class BranchStorageRepository(ApplicationDbContext db) : IBranchStorageRe
 
         db.BranchStorages.RemoveRange(records);
         await db.SaveChangesAsync();
+    }
+
+    public async Task<bool> ExistsHistoryByFolioAsync(int branchId, string folio)
+    {
+        var normalized = folio.Trim().ToLower();
+        return await db.BranchStorageHistories
+            .AsNoTracking()
+            .AnyAsync(bsh =>
+                bsh.BranchId == branchId &&
+                bsh.Folio != null &&
+                bsh.Folio.ToLower() == normalized);
+    }
+
+    public async Task<BranchStorageHistory> ApplyMovementAsync(
+        BranchStorageHistory history, IReadOnlyList<BranchStorage> updatedStorages)
+    {
+        await using var transaction = await db.Database.BeginTransactionAsync();
+
+        var storageIds = updatedStorages.Select(s => s.Id).ToList();
+        var trackedStorages = await db.BranchStorages
+            .Where(bs => storageIds.Contains(bs.Id))
+            .ToDictionaryAsync(bs => bs.Id);
+
+        foreach (var storage in updatedStorages)
+        {
+            if (!trackedStorages.TryGetValue(storage.Id, out var tracked))
+            {
+                throw ServiceException.NotFound(
+                    $"No se encontró el registro de almacenamiento para el producto '{storage.Product.Id}' en la sucursal '{storage.Branch.Id}'.");
+            }
+
+            if (history.Type == StorageMovementTypes.Out && tracked.CurrentStock < storage.CurrentStock)
+            {
+                throw ServiceException.Conflict(
+                    $"El stock del producto '{storage.Product.Description}' cambió durante la operación.");
+            }
+
+            tracked.MinimumStock = storage.MinimumStock;
+            tracked.CurrentStock = storage.CurrentStock;
+        }
+
+        var historyRecord = history.ToRecord();
+        db.BranchStorageHistories.Add(historyRecord);
+
+        await db.SaveChangesAsync();
+        await transaction.CommitAsync();
+
+        return new BranchStorageHistory(
+            historyRecord.Id,
+            history.Branch,
+            history.Type,
+            history.Folio,
+            history.Products,
+            historyRecord.CreatedAt,
+            historyRecord.UpdatedAt);
+    }
+
+    public async Task<BranchStorageHistory?> GetHistoryByIdAsync(int branchId, int historyId)
+    {
+        var record = await db.BranchStorageHistories
+            .AsNoTracking()
+            .Include(bsh => bsh.Branch)
+            .Include(bsh => bsh.Products.OrderBy(l => l.Id))
+            .ThenInclude(l => l.Product)
+            .FirstOrDefaultAsync(bsh => bsh.BranchId == branchId && bsh.Id == historyId);
+
+        return record?.ToDomain();
+    }
+
+    public async Task<(int TotalCount, IReadOnlyList<BranchStorageHistory> Items)> SearchHistoryByBranchAsync(
+        int branchId, string? search, string? type, int page, int pageSize, string? orderBy)
+    {
+        IQueryable<BranchStorageHistoryRecord> query = db.BranchStorageHistories
+            .AsNoTracking()
+            .Include(bsh => bsh.Branch)
+            .Include(bsh => bsh.Products.OrderBy(l => l.Id))
+            .ThenInclude(l => l.Product)
+            .Where(bsh => bsh.BranchId == branchId);
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = search.Trim().ToLower();
+            query = query.Where(bsh =>
+                (bsh.Folio != null && bsh.Folio.ToLower().Contains(term)) ||
+                bsh.Products.Any(l => l.Product.Description.ToLower().Contains(term)));
+        }
+
+        if (!string.IsNullOrWhiteSpace(type) && StorageMovementTypes.IsValid(type))
+        {
+            var normalizedType = StorageMovementTypes.Normalize(type);
+            query = query.Where(bsh => bsh.Type == normalizedType);
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .ApplyOrdering(
+                OrderByParser.Parse<BranchStorageHistorySortField>(orderBy)
+                    .Select(k => (k.Field.Selector(), k.Descending))
+                    .ToList(),
+                bsh => bsh.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (totalCount, items.Select(r => r.ToDomain()).ToList());
     }
 }

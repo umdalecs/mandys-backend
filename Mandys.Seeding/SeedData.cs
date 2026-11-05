@@ -65,12 +65,11 @@ public static class SeedData
 
     public static readonly IReadOnlyList<UserSeed> Users =
     [
-        new("operaciones@mandyspos.com", "Gerente", "Operaciones", Roles.OpChief, 1),
         new("almacen.central@mandyspos.com", "Encargado", "Almacén Central", Roles.CentralWarehouseChief, 1),
-        new("almacen@mandyspos.com", "Encargado", "Almacén", Roles.WarehouseChief, 1),
-        new("caja@mandyspos.com", "Cajero", "Sucursal", Roles.Cashier, 1),
-        new("cocina@mandyspos.com", "Jefe", "Cocina", Roles.KitchenChief, 1),
-        new("sucursal@mandyspos.com", "Gerente", "Sucursal", Roles.BranchChief, 1)
+        new("almacen@mandyspos.com", "Encargado", "Almacén", Roles.WarehouseChief, 2),
+        new("caja@mandyspos.com", "Cajero", "Sucursal", Roles.Cashier, 2),
+        new("cocina@mandyspos.com", "Jefe", "Cocina", Roles.KitchenChief, 2),
+        new("sucursal@mandyspos.com", "Gerente", "Sucursal", Roles.BranchChief, 2)
     ];
 
     public static readonly IReadOnlyList<ProductSeed> Products =

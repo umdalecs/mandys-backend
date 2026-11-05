@@ -24,3 +24,38 @@ internal static class BranchStorageMapper
             CurrentStock = storage.CurrentStock,
         };
 }
+
+internal static class BranchStorageHistoryMapper
+{
+    internal static BranchStorageHistory ToDomain(this BranchStorageHistoryRecord record) =>
+        new(
+            record.Id,
+            record.Branch.ToDomain(),
+            record.Type,
+            record.Folio,
+            record.Products.Select(l => l.ToDomain()),
+            record.CreatedAt,
+            record.UpdatedAt);
+
+    internal static BranchStorageHistoryRecord ToRecord(this BranchStorageHistory history) =>
+        new()
+        {
+            BranchId = history.Branch.Id,
+            Type = history.Type,
+            Folio = history.Folio,
+            Products = history.Products.Select(l => l.ToRecord()).ToList(),
+        };
+}
+
+internal static class BranchStorageHistoryProductMapper
+{
+    internal static BranchStorageHistoryProduct ToDomain(this BranchStorageHistoryProductRecord record) =>
+        new(record.Product.ToDomain(), record.Quantity);
+
+    internal static BranchStorageHistoryProductRecord ToRecord(this BranchStorageHistoryProduct line) =>
+        new()
+        {
+            ProductId = line.Product.Id,
+            Quantity = line.Quantity,
+        };
+}

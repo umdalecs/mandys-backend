@@ -19,27 +19,29 @@ public class BranchStorageHandler : ICarterModule
             .WithTags("BranchStorage")
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
-                Roles.OpChief,
-                Roles.BranchChief,
-                Roles.WarehouseChief,
-                Roles.CentralWarehouseChief));
+                Roles.OpChief));
 
         storageRoutes.MapGet("", GetBranchStorage);
         storageRoutes.MapGet("/{productId:int}", GetBranchStorageByProduct);
         storageRoutes.MapPut("/{productId:int}", UpdateBranchStorage);
+        storageRoutes.MapPost("/in", CreateBranchStorageIn);
+        storageRoutes.MapPost("/out", CreateBranchStorageOut);
+        storageRoutes.MapGet("/history", GetBranchStorageHistory);
+        storageRoutes.MapGet("/history/{historyId:int}", GetBranchStorageHistoryById);
 
         var ownStorageRoutes = app.MapGroup("/storage")
             .WithTags("BranchStorage")
             .RequireAuthorization(policy => policy.RequireRole(
-                Roles.Administrator,
-                Roles.OpChief,
-                Roles.BranchChief,
                 Roles.WarehouseChief,
                 Roles.CentralWarehouseChief));
 
         ownStorageRoutes.MapGet("", GetOwnBranchStorage);
         ownStorageRoutes.MapGet("/{productId:int}", GetOwnBranchStorageByProduct);
         ownStorageRoutes.MapPut("/{productId:int}", UpdateOwnBranchStorage);
+        ownStorageRoutes.MapPost("/in", CreateOwnBranchStorageIn);
+        ownStorageRoutes.MapPost("/out", CreateOwnBranchStorageOut);
+        ownStorageRoutes.MapGet("/history", GetOwnBranchStorageHistory);
+        ownStorageRoutes.MapGet("/history/{historyId:int}", GetOwnBranchStorageHistoryById);
     }
 
     private static async Task<IResult> GetBranchStorage(
@@ -89,6 +91,79 @@ public class BranchStorageHandler : ICarterModule
             RequestValidation.ThrowIfInvalid(validator.Validate(request));
 
             return Results.Ok(await branchStorageService.UpdateMinimumStockAsync(branchId, productId, request));
+        }
+        catch (ServiceException ex)
+        {
+            return MapBranchStorageError(ex);
+        }
+    }
+
+    private static async Task<IResult> CreateBranchStorageIn(
+        int branchId,
+        [FromBody] CreateStorageInRequest request,
+        IValidator<CreateStorageInRequest> validator,
+        IBranchStorageService branchStorageService)
+    {
+        try
+        {
+            RequestValidation.ThrowIfInvalid(await validator.ValidateAsync(request));
+
+            var created = await branchStorageService.CreateInMovementAsync(branchId, request);
+            return Results.Created($"/branches/{branchId}/storage/history/{created.Id}", created);
+        }
+        catch (ServiceException ex)
+        {
+            return MapBranchStorageError(ex);
+        }
+    }
+
+    private static async Task<IResult> CreateBranchStorageOut(
+        int branchId,
+        [FromBody] CreateStorageOutRequest request,
+        IValidator<CreateStorageOutRequest> validator,
+        IBranchStorageService branchStorageService)
+    {
+        try
+        {
+            RequestValidation.ThrowIfInvalid(await validator.ValidateAsync(request));
+
+            var created = await branchStorageService.CreateOutMovementAsync(branchId, request);
+            return Results.Created($"/branches/{branchId}/storage/history/{created.Id}", created);
+        }
+        catch (ServiceException ex)
+        {
+            return MapBranchStorageError(ex);
+        }
+    }
+
+    private static async Task<IResult> GetBranchStorageHistory(
+        int branchId,
+        IBranchStorageService branchStorageService,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? search = null,
+        [FromQuery] string? type = null,
+        [FromQuery] string? orderBy = null)
+    {
+        try
+        {
+            return Results.Ok(await branchStorageService.GetBranchStorageHistoryAsync(
+                branchId, page, pageSize, search, type, orderBy));
+        }
+        catch (ServiceException ex)
+        {
+            return MapBranchStorageError(ex);
+        }
+    }
+
+    private static async Task<IResult> GetBranchStorageHistoryById(
+        int branchId,
+        int historyId,
+        IBranchStorageService branchStorageService)
+    {
+        try
+        {
+            return Results.Ok(await branchStorageService.GetBranchStorageHistoryByIdAsync(branchId, historyId));
         }
         catch (ServiceException ex)
         {
@@ -146,6 +221,83 @@ public class BranchStorageHandler : ICarterModule
             RequestValidation.ThrowIfInvalid(validator.Validate(request));
 
             return Results.Ok(await branchStorageService.UpdateMinimumStockAsync(branchId, productId, request));
+        }
+        catch (ServiceException ex)
+        {
+            return MapBranchStorageError(ex);
+        }
+    }
+
+    private static async Task<IResult> CreateOwnBranchStorageIn(
+        ClaimsPrincipal claimsPrincipal,
+        [FromBody] CreateStorageInRequest request,
+        IValidator<CreateStorageInRequest> validator,
+        IBranchStorageService branchStorageService)
+    {
+        try
+        {
+            var branchId = RequireBranchId(claimsPrincipal);
+            RequestValidation.ThrowIfInvalid(await validator.ValidateAsync(request));
+
+            var created = await branchStorageService.CreateInMovementAsync(branchId, request);
+            return Results.Created($"/storage/history/{created.Id}", created);
+        }
+        catch (ServiceException ex)
+        {
+            return MapBranchStorageError(ex);
+        }
+    }
+
+    private static async Task<IResult> CreateOwnBranchStorageOut(
+        ClaimsPrincipal claimsPrincipal,
+        [FromBody] CreateStorageOutRequest request,
+        IValidator<CreateStorageOutRequest> validator,
+        IBranchStorageService branchStorageService)
+    {
+        try
+        {
+            var branchId = RequireBranchId(claimsPrincipal);
+            RequestValidation.ThrowIfInvalid(await validator.ValidateAsync(request));
+
+            var created = await branchStorageService.CreateOutMovementAsync(branchId, request);
+            return Results.Created($"/storage/history/{created.Id}", created);
+        }
+        catch (ServiceException ex)
+        {
+            return MapBranchStorageError(ex);
+        }
+    }
+
+    private static async Task<IResult> GetOwnBranchStorageHistory(
+        ClaimsPrincipal claimsPrincipal,
+        IBranchStorageService branchStorageService,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? search = null,
+        [FromQuery] string? type = null,
+        [FromQuery] string? orderBy = null)
+    {
+        try
+        {
+            var branchId = RequireBranchId(claimsPrincipal);
+            return Results.Ok(await branchStorageService.GetBranchStorageHistoryAsync(
+                branchId, page, pageSize, search, type, orderBy));
+        }
+        catch (ServiceException ex)
+        {
+            return MapBranchStorageError(ex);
+        }
+    }
+
+    private static async Task<IResult> GetOwnBranchStorageHistoryById(
+        int historyId,
+        ClaimsPrincipal claimsPrincipal,
+        IBranchStorageService branchStorageService)
+    {
+        try
+        {
+            var branchId = RequireBranchId(claimsPrincipal);
+            return Results.Ok(await branchStorageService.GetBranchStorageHistoryByIdAsync(branchId, historyId));
         }
         catch (ServiceException ex)
         {
