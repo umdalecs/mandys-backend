@@ -46,10 +46,10 @@ public class ComboService(
         var dishLines = await ValidateDishLinesAsync(request.Dishes);
         var productLines = await ValidateProductLinesAsync(request.Products);
 
-        var dishesCost = dishLines.Sum(x =>x.Dish.Price * x.Quantity);
-        var productsCost = productLines.Sum(x =>x.Product.CostPrice * x.Quantity);
+        var dishesCost = dishLines.Sum(x => x.Dish.Price * x.Quantity);
+        var productsCost = productLines.Sum(x => x.Product.CostPrice * x.Quantity) ?? 0;
 
-        if (dishesCost + productsCost < request.Price)
+        if (request.Price < (dishesCost + productsCost))
         {
             throw ServiceException.BadRequest($"El precio de venta del combo no puede ser menor que su costo de producción");
         }
@@ -83,10 +83,10 @@ public class ComboService(
         var dishLines = request.Dishes is null ? null : await ValidateDishLinesAsync(request.Dishes);
         var productLines = request.Products is null ? null : await ValidateProductLinesAsync(request.Products);
 
-        var dishesCost = dishLines?.Sum(x =>x.Dish.Price * x.Quantity) ?? 0;
-        var productsCost = productLines?.Sum(x =>x.Product.CostPrice * x.Quantity) ?? 0;
+        var dishesCost = dishLines?.Sum(x => x.Dish.Price * x.Quantity) ?? 0;
+        var productsCost = productLines?.Sum(x => x.Product.CostPrice * x.Quantity) ?? 0;
 
-        if (dishesCost + productsCost < request.Price)
+        if (request.Price < dishesCost + productsCost)
         {
             throw ServiceException.BadRequest($"El precio de venta del combo no puede ser menor que su costo de producción");
         }
@@ -112,7 +112,7 @@ public class ComboService(
 
         var key = $"combos/{combo.Id}";
 
-        var fileUrl = await storageService.UploadAsync(file, key,contentType);
+        var fileUrl = await storageService.UploadAsync(file, key, contentType);
 
         combo.ImageUrl = fileUrl;
 

@@ -41,9 +41,9 @@ public class DishService(IDishRepository dishes, IProductRepository products, IS
 
         var recipe = await ValidateRecipeAsync(request.Recipe);
 
-        var productionCost = recipe.Sum(x =>x.Product.CostPrice * x.Quantity);
+        var productionCost = recipe.Sum(x => x.Product.CostPrice * x.Quantity);
 
-        if (productionCost < request.Price)
+        if (request.Price < productionCost)
         {
             throw ServiceException.BadRequest($"El precio de venta del platillo no puede ser menor que su costo de producción");
         }
@@ -75,9 +75,9 @@ public class DishService(IDishRepository dishes, IProductRepository products, IS
 
         var recipe = request.Recipe is null ? null : await ValidateRecipeAsync(request.Recipe);
 
-        var productionCost = recipe?.Sum(x =>x.Product.CostPrice * x.Quantity) ?? 0;
+        var productionCost = recipe?.Sum(x => x.Product.CostPrice * x.Quantity) ?? 0;
 
-        if (productionCost < request.Price)
+        if (request.Price < productionCost)
         {
             throw ServiceException.BadRequest($"El precio de venta del platillo no puede ser menor que su costo de producción");
         }
@@ -102,7 +102,7 @@ public class DishService(IDishRepository dishes, IProductRepository products, IS
 
         var key = $"dishes/{dish.Id}";
 
-        var fileUrl = await storageService.UploadAsync(file, key,contentType);
+        var fileUrl = await storageService.UploadAsync(file, key, contentType);
 
         dish.ImageUrl = fileUrl;
 

@@ -297,7 +297,7 @@ public static class SeedData
         new(
             1,
             "Hamburguesa clásica",
-            85m,
+            20000m,
             [
                 new(61, 1m),
                 new(36, 0.15m),
@@ -313,7 +313,7 @@ public static class SeedData
         new(
             2,
             "Hamburguesa doble",
-            125m,
+            20000m,
             [
                 new(62, 1m),
                 new(36, 0.3m),
@@ -328,7 +328,7 @@ public static class SeedData
         new(
             3,
             "Hamburguesa de pollo",
-            92m,
+            20000m,
             [
                 new(64, 1m),
                 new(43, 0.18m),
@@ -341,7 +341,7 @@ public static class SeedData
         new(
             4,
             "Taco al pastor",
-            48m,
+            20000m,
             [
                 new(69, 2m),
                 new(38, 0.15m),
@@ -355,7 +355,7 @@ public static class SeedData
         new(
             5,
             "Taco de bistec",
-            52m,
+            20000m,
             [
                 new(69, 2m),
                 new(39, 0.12m),
@@ -368,7 +368,7 @@ public static class SeedData
         new(
             6,
             "Burrito de carne",
-            98m,
+            20000m,
             [
                 new(68, 1m),
                 new(36, 0.18m),
@@ -384,7 +384,7 @@ public static class SeedData
         new(
             7,
             "Quesadilla de pollo",
-            78m,
+            20000m,
             [
                 new(68, 2m),
                 new(42, 0.15m),
@@ -397,7 +397,7 @@ public static class SeedData
         new(
             8,
             "Ensalada César",
-            95m,
+            20000m,
             [
                 new(22, 0.08m),
                 new(23, 0.06m),
@@ -412,7 +412,7 @@ public static class SeedData
         new(
             9,
             "Churros con cajeta",
-            65m,
+            200005m,
             [
                 new(163, 0.1m),
                 new(132, 0.05m),
@@ -423,7 +423,7 @@ public static class SeedData
         new(
             10,
             "Sopa de tortilla",
-            55m,
+            20000m,
             [
                 new(1, 0.2m),
                 new(69, 2m),
@@ -440,61 +440,61 @@ public static class SeedData
     [
         new(
             "Combo Hamburguesa clásica",
-            129m,
+            20000000m,
             [new(1, 1m)],
             [new(201, 1m), new(210, 1m)]
         ),
         new(
             "Combo Hamburguesa doble",
-            169m,
+            20000000m,
             [new(2, 1m)],
             [new(202, 1m), new(210, 1m)]
         ),
         new(
             "Combo Hamburguesa de pollo",
-            139m,
+            200000000m,
             [new(3, 1m)],
             [new(203, 1m), new(210, 1m)]
         ),
         new(
             "Combo Tacos al pastor",
-            119m,
+            200000000m,
             [new(4, 2m)],
             [new(201, 1m)]
         ),
         new(
             "Combo Tacos de bistec",
-            125m,
+            200000000m,
             [new(5, 2m)],
             [new(202, 1m)]
         ),
         new(
             "Combo Burrito",
-            145m,
+            20000000m,
             [new(6, 1m)],
             [new(204, 1m), new(211, 1m)]
         ),
         new(
             "Combo Quesadillas",
-            125m,
+            20000000m,
             [new(7, 2m)],
             [new(205, 1m)]
         ),
         new(
             "Combo Ensalada",
-            119m,
+            20000000m,
             [new(8, 1m)],
             [new(203, 1m)]
         ),
         new(
             "Combo Postre",
-            119m,
+            200000000m,
             [new(9, 1m)],
             [new(209, 1m), new(215, 1m)]
         ),
         new(
             "Combo Familiar",
-            349m,
+            2000000000m,
             [new(1, 2m), new(3, 2m)],
             [new(201, 4m), new(210, 2m)]
         )

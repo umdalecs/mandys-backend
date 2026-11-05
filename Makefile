@@ -7,9 +7,9 @@ MIGRATIONS_DIR := Mandys.Infrastructure/Migrations
 
 .PHONY: run-api seed run-database stop-database run-storage stop-storage migrations-fresh migrations-clean migrations-init
 
-run: run-database seed run-storage run-pgadmin run-api
+run: run-database run-storage run-api
 
-stop: stop-database stop-storage stop-pgadmin
+stop: stop-database stop-storage
 
 run-api:
 	dotnet run --project $(API_PROJECT) --launch-profile $(API_LAUNCH_PROFILE)
