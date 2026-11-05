@@ -165,6 +165,37 @@ namespace Mandys.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "branch_storages",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    branch_id = table.Column<int>(type: "integer", nullable: false),
+                    product_id = table.Column<int>(type: "integer", nullable: false),
+                    minimum_stock = table.Column<decimal>(type: "numeric", nullable: false),
+                    current_stock = table.Column<decimal>(type: "numeric", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_branch_storages", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_branch_storages_branches_branch_id",
+                        column: x => x.branch_id,
+                        principalTable: "branches",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_branch_storages_products_product_id",
+                        column: x => x.product_id,
+                        principalTable: "products",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "combo_products",
                 columns: table => new
                 {
@@ -255,6 +286,21 @@ namespace Mandys.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "ix_branch_storages_branch_id",
+                table: "branch_storages",
+                column: "branch_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_branch_storages_branch_id_product_id",
+                table: "branch_storages",
+                columns: new[] { "branch_id", "product_id" });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_branch_storages_product_id",
+                table: "branch_storages",
+                column: "product_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_combo_dishes_combo_id",
                 table: "combo_dishes",
                 column: "combo_id");
@@ -316,6 +362,9 @@ namespace Mandys.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "branch_storages");
+
             migrationBuilder.DropTable(
                 name: "combo_dishes");
 

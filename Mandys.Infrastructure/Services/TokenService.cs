@@ -32,6 +32,11 @@ public class TokenService(IOptions<JwtOptions> jwtOptions) : ITokenService
             new Claim(ClaimTypes.Email, user.Email)
         };
 
+        if (user.BranchId.HasValue)
+        {
+            claims.Add(new("branchId", user.BranchId.Value.ToString()));
+        }
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),

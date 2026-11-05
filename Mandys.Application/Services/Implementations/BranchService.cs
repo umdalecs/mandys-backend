@@ -4,7 +4,7 @@ using Mandys.Domain;
 
 namespace Mandys.Application.Services.Implementations;
 
-public class BranchService(IBranchRepository branches) : IBranchService
+public class BranchService(IBranchRepository branches, IBranchStorageRepository branchStorages) : IBranchService
 {
     public async Task<PagedBranchesResponse> GetBranchesAsync(int page, int pageSize, string? search, string? orderBy)
     {
@@ -37,6 +37,8 @@ public class BranchService(IBranchRepository branches) : IBranchService
             request.Name.Trim(),
             request.Address.Trim(),
             request.WarehouseOnly));
+
+        await branchStorages.InitializeForBranchAsync(created.Id);
 
         return created.ToResponse();
     }

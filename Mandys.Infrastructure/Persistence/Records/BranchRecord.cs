@@ -18,4 +18,5 @@ public class BranchRecord : Record
     [Required]
     public bool WarehouseOnly { get; set; } = false;
     public ICollection<UserRecord> Users { get; set; } = [];
+    public ICollection<BranchStorageRecord> BranchStorages { get; set; } = [];
 }

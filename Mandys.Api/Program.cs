@@ -14,6 +14,7 @@ builder.ConfigureStorage();
 builder.ConfigureAuth();
 builder.ConfigureUsers();
 builder.ConfigureBranches();
+builder.ConfigureBranchStorage();
 builder.ConfigureProducts();
 builder.ConfigureDishes();
 builder.ConfigureCombos();

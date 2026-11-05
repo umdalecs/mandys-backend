@@ -16,4 +16,10 @@ public static class ClaimsPrincipalExtensions
         return principal.FindFirst(ClaimTypes.Role)?.Value
                ?? principal.FindFirst("role")?.Value;
     }
+
+    public static int? GetBranchId(this ClaimsPrincipal principal)
+    {
+        var idStr = principal.FindFirst("branchId")?.Value;
+        return int.TryParse(idStr, out var id) ? id : null;
+    }
 }

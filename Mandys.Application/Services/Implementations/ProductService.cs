@@ -4,7 +4,10 @@ using Mandys.Domain;
 
 namespace Mandys.Application.Services.Implementations;
 
-public class ProductService(IProductRepository products, IStorageService storageService) : IProductService
+public class ProductService(
+    IProductRepository products,
+    IBranchStorageRepository branchStorages,
+    IStorageService storageService) : IProductService
 {
     public async Task<PagedProductsResponse> GetProductsAsync(int page, int pageSize, string? search, string? orderBy, bool? isSupply)
     {
@@ -45,6 +48,8 @@ public class ProductService(IProductRepository products, IStorageService storage
             request.IsSupply,
             request.SalePrice,
             MeasureUnits.Normalize(request.MeasureUnit)));
+
+        await branchStorages.InitializeForProductAsync(created.Id);
 
         return created.ToResponse();
     }
@@ -110,10 +115,18 @@ public class ProductService(IProductRepository products, IStorageService storage
 
     public async Task DeleteProductAsync(int id)
     {
+        if (await branchStorages.HasStockForProductAsync(id))
+        {
+            throw ServiceException.Conflict(
+                "No se puede eliminar el producto porque tiene al menos 1 de stock actual en una o más sucursales.");
+        }
+
         var removed = await products.RemoveAsync(id);
         if (!removed)
         {
             throw ServiceException.NotFound($"No se encontró el producto con ID '{id}'.");
         }
+
+        await branchStorages.RemoveByProductAsync(id);
     }
 }

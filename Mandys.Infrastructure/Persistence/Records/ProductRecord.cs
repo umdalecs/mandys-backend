@@ -24,4 +24,5 @@ public class ProductRecord : Record
     public string? ImageUrl { get; set; }
     public ICollection<DishProductRecord> DishProducts { get; set; } = new List<DishProductRecord>();
     public ICollection<ComboProductRecord> ComboProducts { get; set; } = new List<ComboProductRecord>();
+    public ICollection<BranchStorageRecord> BranchStorages { get; set; } = new List<BranchStorageRecord>();
 }

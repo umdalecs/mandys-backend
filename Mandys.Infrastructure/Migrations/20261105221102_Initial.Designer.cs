@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Mandys.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261029025805_Initial")]
+    [Migration("20261105221102_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -66,6 +66,58 @@ namespace Mandys.Infrastructure.Migrations
                         .HasName("pk_branches");
 
                     b.ToTable("branches", (string)null);
+                });
+
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.BranchStorageRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BranchId")
+                        .HasColumnType("integer")
+                        .HasColumnName("branch_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<decimal>("CurrentStock")
+                        .HasColumnType("numeric")
+                        .HasColumnName("current_stock");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<decimal>("MinimumStock")
+                        .HasColumnType("numeric")
+                        .HasColumnName("minimum_stock");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer")
+                        .HasColumnName("product_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_branch_storages");
+
+                    b.HasIndex("BranchId")
+                        .HasDatabaseName("ix_branch_storages_branch_id");
+
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("ix_branch_storages_product_id");
+
+                    b.HasIndex("BranchId", "ProductId")
+                        .HasDatabaseName("ix_branch_storages_branch_id_product_id");
+
+                    b.ToTable("branch_storages", (string)null);
                 });
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.ComboDishRecord", b =>
@@ -516,6 +568,27 @@ namespace Mandys.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.BranchStorageRecord", b =>
+                {
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.BranchRecord", "Branch")
+                        .WithMany("BranchStorages")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_branch_storages_branches_branch_id");
+
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.ProductRecord", "Product")
+                        .WithMany("BranchStorages")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_branch_storages_products_product_id");
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.ComboDishRecord", b =>
                 {
                     b.HasOne("Mandys.Infrastructure.Persistence.Records.ComboRecord", "Combo")
@@ -602,6 +675,8 @@ namespace Mandys.Infrastructure.Migrations
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.BranchRecord", b =>
                 {
+                    b.Navigation("BranchStorages");
+
                     b.Navigation("Users");
                 });
 
@@ -621,6 +696,8 @@ namespace Mandys.Infrastructure.Migrations
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.ProductRecord", b =>
                 {
+                    b.Navigation("BranchStorages");
+
                     b.Navigation("ComboProducts");
 
                     b.Navigation("DishProducts");

@@ -15,6 +15,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ComboRecord> Combos { get; set; }
     public DbSet<ComboDishRecord> ComboDishes { get; set; }
     public DbSet<ComboProductRecord> ComboProducts { get; set; }
+    public DbSet<BranchStorageRecord> BranchStorages { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<LogRecord> Logs { get; set; }
 
@@ -133,6 +134,23 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<ProductRecord>(entity =>
         {
             entity.HasIndex(p => p.Description).IsUnique();
+        });
+
+        modelBuilder.Entity<BranchStorageRecord>(entity =>
+        {
+            entity.HasOne(bs => bs.Branch)
+                .WithMany(b => b.BranchStorages)
+                .HasForeignKey(bs => bs.BranchId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(bs => bs.Product)
+                .WithMany(p => p.BranchStorages)
+                .HasForeignKey(bs => bs.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(bs => bs.BranchId);
+            entity.HasIndex(bs => bs.ProductId);
+            entity.HasIndex(bs => new { bs.BranchId, bs.ProductId });
         });
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
