@@ -1,501 +1,436 @@
+using Mandys.Application.DTOs;
 using Mandys.Domain;
 
 namespace Mandys.Seeding;
 
-public sealed record BranchSeed(
-    int Id,
-    string Name,
-    string Address,
-    bool WarehouseOnly
-);
-
-public sealed record UserSeed(
-    string Email,
-    string FirstName,
-    string FatherLastName,
-    string Role,
-    int? BranchId = null,
-    string? MotherLastName = null
-);
-
-public sealed record ProductSeed(
-    int Id,
-    string Description,
-    bool IsSupply,
-    string MeasureUnit,
-    decimal? SalePrice = null
-);
-
-public sealed record DishRecipeLineSeed(
-    int ProductId,
-    decimal Quantity
-);
-
-public sealed record DishSeed(
-    int Id,
-    string Name,
-    decimal Price,
-    IReadOnlyList<DishRecipeLineSeed> Recipe
-);
-
-public sealed record ComboDishLineSeed(
-    int DishId,
-    decimal Quantity
-);
-
-public sealed record ComboProductLineSeed(
-    int ProductId,
-    decimal Quantity
-);
-
-public sealed record ComboSeed(
-    string Name,
-    decimal Price,
-    IReadOnlyList<ComboDishLineSeed> Dishes,
-    IReadOnlyList<ComboProductLineSeed> Products
-);
-
+/// <summary>
+/// Catalog seed rows expressed as the API request DTOs. Cross references
+/// (BranchId, ProductId, DishId) use 1-based positions in these lists and
+/// are resolved to live API ids by <see cref="Seeders"/> at seed time.
+/// </summary>
 public static class SeedData
 {
-    public static readonly IReadOnlyList<BranchSeed> Branches =
+    public const string UserPassword = "mandyspos";
+
+    public static readonly IReadOnlyList<CreateBranchRequest> Branches =
     [
-        new(1, "Sucursal Culiacán Centro", "Av. Río Presa 1200, Centro, Culiacán", true),
-        new(2, "Sucursal Cañadas", "Sierra Madre Oriental 2222", false)
+        new("Sucursal Culiacán Centro", "Av. Álvaro Obregón 1200, Centro, Culiacán", true),
+        new("Sucursal Cañadas", "Blvd. Virreyes 2222, Las Cañadas, Culiacán", false)
     ];
 
-    public static readonly IReadOnlyList<UserSeed> Users =
+    public static readonly IReadOnlyList<CreateUserRequest> Users =
     [
-        new("almacen.central@mandyspos.com", "Encargado", "Almacén Central", Roles.CentralWarehouseChief, 1),
-        new("almacen@mandyspos.com", "Encargado", "Almacén", Roles.WarehouseChief, 2),
-        new("caja@mandyspos.com", "Cajero", "Sucursal", Roles.Cashier, 2),
-        new("cocina@mandyspos.com", "Jefe", "Cocina", Roles.KitchenChief, 2),
-        new("sucursal@mandyspos.com", "Gerente", "Sucursal", Roles.BranchChief, 2)
+        new("Carlos", "Mendoza", "almacen.central@mandyspos.com", UserPassword, "López", Roles.CentralWarehouseChief, 1),
+        new("Sofía", "Ramírez", "almacen@mandyspos.com", UserPassword, "Castro", Roles.WarehouseChief, 2),
+        new("Luis", "Hernández", "caja@mandyspos.com", UserPassword, "Gómez", Roles.Cashier, 2),
+        new("Elena", "Torres", "cocina@mandyspos.com", UserPassword, "Ruiz", Roles.KitchenChief, 2),
+        new("Miguel", "Valenzuela", "sucursal@mandyspos.com", UserPassword, "Soto", Roles.BranchChief, 2)
     ];
 
-    public static readonly IReadOnlyList<ProductSeed> Products =
+    // 75 supplies (1..75) + 15 sellable products (76..90) = 90 products total
+    public static readonly IReadOnlyList<CreateProductRequest> Products =
     [
-        new(1, "Jitomate saladet", true, MeasureUnits.Grams),
-        new(2, "Jitomate cherry", true, MeasureUnits.Grams),
-        new(3, "Lechuga romana", true, MeasureUnits.Units),
-        new(4, "Lechuga iceberg", true, MeasureUnits.Units),
-        new(5, "Cebolla blanca", true, MeasureUnits.Grams),
-        new(6, "Cebolla morada", true, MeasureUnits.Grams),
-        new(7, "Cebolla cambray", true, MeasureUnits.Grams),
-        new(8, "Papa blanca para freír", true, MeasureUnits.Grams),
-        new(9, "Pepino", true, MeasureUnits.Grams),
-        new(10, "Chile jalapeño", true, MeasureUnits.Grams),
-        new(11, "Aguacate hass", true, MeasureUnits.Grams),
-        new(12, "Limón sin semilla", true, MeasureUnits.Grams),
-        new(13, "Cilantro fresco", true, MeasureUnits.Grams),
-        new(14, "Zanahoria", true, MeasureUnits.Grams),
-        new(15, "Champiñón blanco", true, MeasureUnits.Grams),
-        new(16, "Pimiento morrón verde", true, MeasureUnits.Grams),
-        new(17, "Pimiento morrón rojo", true, MeasureUnits.Grams),
-        new(18, "Apio", true, MeasureUnits.Grams),
-        new(19, "Ajo fresco", true, MeasureUnits.Grams),
-        new(20, "Elote amarillo", true, MeasureUnits.Units),
-        new(21, "Calabacita", true, MeasureUnits.Grams),
-        new(22, "Espinaca baby", true, MeasureUnits.Grams),
-        new(23, "Col blanca", true, MeasureUnits.Grams),
-        new(24, "Rábano", true, MeasureUnits.Grams),
-        new(25, "Nopal limpio", true, MeasureUnits.Grams),
-        new(26, "Piña miel", true, MeasureUnits.Grams),
-        new(27, "Mango ataulfo", true, MeasureUnits.Grams),
-        new(28, "Fresa", true, MeasureUnits.Grams),
-        new(29, "Plátano tabasco", true, MeasureUnits.Grams),
-        new(30, "Manzana roja", true, MeasureUnits.Grams),
-        new(31, "Naranja para jugo", true, MeasureUnits.Grams),
-        new(32, "Perejil fresco", true, MeasureUnits.Grams),
-        new(33, "Epazote fresco", true, MeasureUnits.Grams),
-        new(34, "Chayote", true, MeasureUnits.Grams),
-        new(35, "Betabel", true, MeasureUnits.Grams),
-        new(36, "Carne molida de res 80/20", true, MeasureUnits.Grams),
-        new(37, "Carne molida de res 90/10", true, MeasureUnits.Grams),
-        new(38, "Arrachera marinada", true, MeasureUnits.Grams),
-        new(39, "Milanesa de res", true, MeasureUnits.Grams),
-        new(40, "Pechuga de pollo sin hueso", true, MeasureUnits.Grams),
-        new(41, "Muslo de pollo sin hueso", true, MeasureUnits.Grams),
-        new(42, "Tiras de pollo", true, MeasureUnits.Grams),
-        new(43, "Milanesa de pollo", true, MeasureUnits.Grams),
-        new(44, "Tocino ahumado", true, MeasureUnits.Grams),
-        new(45, "Jamón de pavo", true, MeasureUnits.Grams),
-        new(46, "Chuleta ahumada", true, MeasureUnits.Grams),
-        new(47, "Salchicha para asar", true, MeasureUnits.Grams),
-        new(48, "Longaniza", true, MeasureUnits.Grams),
-        new(49, "Pepperoni", true, MeasureUnits.Grams),
-        new(50, "Huevo fresco", true, MeasureUnits.Grams),
-        new(51, "Huevo líquido pasteurizado", true, MeasureUnits.Milliliters),
-        new(52, "Filete de pescado empanizado", true, MeasureUnits.Grams),
-        new(53, "Camarón mediano sin cáscara", true, MeasureUnits.Grams),
-        new(54, "Atún enlatado", true, MeasureUnits.Units),
-        new(55, "Costilla de cerdo", true, MeasureUnits.Grams),
-        new(56, "Pulled pork", true, MeasureUnits.Grams),
-        new(57, "Salami", true, MeasureUnits.Grams),
-        new(58, "Chorizo argentino", true, MeasureUnits.Grams),
-        new(59, "Pavo molido", true, MeasureUnits.Grams),
-        new(60, "Lomo de cerdo", true, MeasureUnits.Grams),
-        new(61, "Pan para hamburguesa con ajonjolí", true, MeasureUnits.Units),
-        new(62, "Pan brioche para hamburguesa", true, MeasureUnits.Units),
-        new(63, "Pan integral para hamburguesa", true, MeasureUnits.Units),
-        new(64, "Pan de papa para hamburguesa", true, MeasureUnits.Units),
-        new(65, "Pan para hot dog", true, MeasureUnits.Units),
-        new(66, "Pan telera", true, MeasureUnits.Units),
-        new(67, "Pan pita", true, MeasureUnits.Units),
-        new(68, "Tortilla de harina", true, MeasureUnits.Units),
-        new(69, "Tortilla de maíz", true, MeasureUnits.Units),
-        new(70, "Totopos de maíz", true, MeasureUnits.Grams),
-        new(71, "Pan molido para empanizar", true, MeasureUnits.Grams),
-        new(72, "Crotones sazonados", true, MeasureUnits.Grams),
-        new(73, "Queso americano en rebanadas", true, MeasureUnits.Grams),
-        new(74, "Queso cheddar rallado", true, MeasureUnits.Grams),
-        new(75, "Queso mozzarella rallado", true, MeasureUnits.Grams),
-        new(76, "Queso gouda en rebanadas", true, MeasureUnits.Grams),
-        new(77, "Queso asadero", true, MeasureUnits.Grams),
-        new(78, "Queso cotija rallado", true, MeasureUnits.Grams),
-        new(79, "Queso crema", true, MeasureUnits.Grams),
-        new(80, "Mantequilla sin sal", true, MeasureUnits.Grams),
-        new(81, "Crema ácida", true, MeasureUnits.Milliliters),
-        new(82, "Leche entera", true, MeasureUnits.Milliliters),
-        new(83, "Leche deslactosada", true, MeasureUnits.Milliliters),
-        new(84, "Yogur natural", true, MeasureUnits.Milliliters),
-        new(85, "Mayonesa", true, MeasureUnits.Milliliters),
-        new(86, "Mayonesa chipotle", true, MeasureUnits.Milliliters),
-        new(87, "Catsup", true, MeasureUnits.Milliliters),
-        new(88, "Mostaza amarilla", true, MeasureUnits.Milliliters),
-        new(89, "Mostaza dijon", true, MeasureUnits.Milliliters),
-        new(90, "Salsa BBQ", true, MeasureUnits.Milliliters),
-        new(91, "Salsa BBQ picante", true, MeasureUnits.Milliliters),
-        new(92, "Aderezo ranch", true, MeasureUnits.Milliliters),
-        new(93, "Aderezo césar", true, MeasureUnits.Milliliters),
-        new(94, "Aderezo mil islas", true, MeasureUnits.Milliliters),
-        new(95, "Salsa de chipotle", true, MeasureUnits.Milliliters),
-        new(96, "Salsa inglesa", true, MeasureUnits.Milliliters),
-        new(97, "Salsa de soya", true, MeasureUnits.Milliliters),
-        new(98, "Salsa verde envasada", true, MeasureUnits.Milliliters),
-        new(99, "Salsa roja de árbol envasada", true, MeasureUnits.Milliliters),
-        new(100, "Salsa de habanero envasada", true, MeasureUnits.Milliliters),
-        new(101, "Salsa teriyaki", true, MeasureUnits.Milliliters),
-        new(102, "Salsa agridulce", true, MeasureUnits.Milliliters),
-        new(103, "Alioli de ajo", true, MeasureUnits.Milliliters),
-        new(104, "Salsa de tamarindo", true, MeasureUnits.Milliliters),
-        new(105, "Sal refinada", true, MeasureUnits.Grams),
-        new(106, "Sal de mar", true, MeasureUnits.Grams),
-        new(107, "Pimienta negra molida", true, MeasureUnits.Grams),
-        new(108, "Paprika", true, MeasureUnits.Grams),
-        new(109, "Ajo en polvo", true, MeasureUnits.Grams),
-        new(110, "Cebolla en polvo", true, MeasureUnits.Grams),
-        new(111, "Orégano seco", true, MeasureUnits.Grams),
-        new(112, "Comino molido", true, MeasureUnits.Grams),
-        new(113, "Hoja de laurel", true, MeasureUnits.Grams),
-        new(114, "Tomillo seco", true, MeasureUnits.Grams),
-        new(115, "Romero seco", true, MeasureUnits.Grams),
-        new(116, "Albahaca seca", true, MeasureUnits.Grams),
-        new(117, "Perejil seco", true, MeasureUnits.Grams),
-        new(118, "Chile de árbol seco", true, MeasureUnits.Grams),
-        new(119, "Chile chipotle seco", true, MeasureUnits.Grams),
-        new(120, "Consomé de pollo en polvo", true, MeasureUnits.Grams),
-        new(121, "Sazonador tipo tajín", true, MeasureUnits.Grams),
-        new(122, "Azúcar estándar", true, MeasureUnits.Grams),
-        new(123, "Azúcar mascabado", true, MeasureUnits.Grams),
-        new(124, "Miel de abeja", true, MeasureUnits.Milliliters),
-        new(125, "Aceite vegetal", true, MeasureUnits.Milliliters),
-        new(126, "Aceite de oliva extra virgen", true, MeasureUnits.Milliliters),
-        new(127, "Aceite en aerosol", true, MeasureUnits.Units),
-        new(128, "Vinagre blanco", true, MeasureUnits.Milliliters),
-        new(129, "Vinagre de manzana", true, MeasureUnits.Milliliters),
-        new(130, "Vinagre balsámico", true, MeasureUnits.Milliliters),
-        new(131, "Jugo de limón embotellado", true, MeasureUnits.Milliliters),
-        new(132, "Manteca vegetal", true, MeasureUnits.Grams),
-        new(133, "Refresco de cola en lata", true, MeasureUnits.Units),
-        new(134, "Refresco de naranja en lata", true, MeasureUnits.Units),
-        new(135, "Refresco de limón en lata", true, MeasureUnits.Units),
-        new(136, "Refresco de manzana en lata", true, MeasureUnits.Units),
-        new(137, "Agua embotellada 600ml", true, MeasureUnits.Units),
-        new(138, "Agua mineral 600ml", true, MeasureUnits.Units),
-        new(139, "Jugo de naranja envasado", true, MeasureUnits.Milliliters),
-        new(140, "Café molido americano", true, MeasureUnits.Grams),
-        new(141, "Café descafeinado molido", true, MeasureUnits.Grams),
-        new(142, "Té negro en bolsitas", true, MeasureUnits.Units),
-        new(143, "Té verde en bolsitas", true, MeasureUnits.Units),
-        new(144, "Chocolate en polvo", true, MeasureUnits.Grams),
-        new(145, "Jarabe de vainilla", true, MeasureUnits.Milliliters),
-        new(146, "Jarabe de caramelo", true, MeasureUnits.Milliliters),
-        new(147, "Crema para café en polvo", true, MeasureUnits.Grams),
-        new(148, "Mermelada de fresa", true, MeasureUnits.Grams),
-        new(149, "Papas corte recto congeladas", true, MeasureUnits.Grams),
-        new(150, "Papas gajo congeladas", true, MeasureUnits.Grams),
-        new(151, "Aros de cebolla congelados", true, MeasureUnits.Grams),
-        new(152, "Nuggets de pollo congelados", true, MeasureUnits.Grams),
-        new(153, "Palitos de queso mozzarella congelados", true, MeasureUnits.Grams),
-        new(154, "Medallón de res congelado", true, MeasureUnits.Units),
-        new(155, "Filete de pollo empanizado congelado", true, MeasureUnits.Units),
-        new(156, "Elote amarillo congelado", true, MeasureUnits.Grams),
-        new(157, "Mezcla de verduras congeladas", true, MeasureUnits.Grams),
-        new(158, "Pulpa de mango congelada", true, MeasureUnits.Grams),
-        new(159, "Fresa congelada", true, MeasureUnits.Grams),
-        new(160, "Helado de vainilla", true, MeasureUnits.Milliliters),
-        new(161, "Hielo en bolsa 5Gramos", true, MeasureUnits.Units),
-        new(162, "Masa de pizza congelada", true, MeasureUnits.Units),
-        new(163, "Harina de trigo", true, MeasureUnits.Grams),
-        new(164, "Fécula de maíz", true, MeasureUnits.Grams),
-        new(165, "Arroz blanco", true, MeasureUnits.Grams),
-        new(166, "Frijoles refritos en lata", true, MeasureUnits.Units),
-        new(167, "Elote enlatado", true, MeasureUnits.Units),
-        new(168, "Champiñones enlatados", true, MeasureUnits.Units),
-        new(169, "Chiles jalapeños enlatados", true, MeasureUnits.Units),
-        new(170, "Aceitunas negras enlatadas", true, MeasureUnits.Units),
-        new(171, "Pepinillos en rodajas", true, MeasureUnits.Milliliters),
-        new(172, "Puré de tomate envasado", true, MeasureUnits.Milliliters),
-        new(173, "Cacahuate tostado", true, MeasureUnits.Grams),
-        new(174, "Ajonjolí", true, MeasureUnits.Grams),
-        new(175, "Cajeta quemada", true, MeasureUnits.Milliliters),
-        new(176, "Chamoy envasado", true, MeasureUnits.Milliliters),
-        new(177, "Vasos de cartón 12oz", true, MeasureUnits.Units),
-        new(178, "Vasos de cartón 16oz", true, MeasureUnits.Units),
-        new(179, "Tapas para vaso", true, MeasureUnits.Units),
-        new(180, "Popotes de papel", true, MeasureUnits.Units),
-        new(181, "Charolas de cartón", true, MeasureUnits.Units),
-        new(182, "Cajas para hamburguesa", true, MeasureUnits.Units),
-        new(183, "Envolturas de papel encerado", true, MeasureUnits.Units),
-        new(184, "Bolsas de papel para llevar", true, MeasureUnits.Units),
-        new(185, "Servilletas 500 piezas", true, MeasureUnits.Units),
-        new(186, "Toallas de papel en rollo", true, MeasureUnits.Units),
-        new(187, "Guantes desechables", true, MeasureUnits.Units),
-        new(188, "Papel aluminio en rollo", true, MeasureUnits.Units),
-        new(189, "Película plástica adherente", true, MeasureUnits.Units),
-        new(190, "Jabón líquido para manos", true, MeasureUnits.Milliliters),
-        new(191, "Queso parmesano rallado", true, MeasureUnits.Grams),
-        new(192, "Salsa sriracha", true, MeasureUnits.Milliliters),
-        new(193, "Aderezo de mostaza y miel", true, MeasureUnits.Milliliters),
-        new(194, "Jugo de manzana envasado", true, MeasureUnits.Milliliters),
-        new(195, "Agua tónica en lata", true, MeasureUnits.Units),
-        new(196, "Té de manzanilla en bolsitas", true, MeasureUnits.Units),
-        new(197, "Champiñón portobello", true, MeasureUnits.Grams),
-        new(198, "Cebolla perla", true, MeasureUnits.Grams),
-        new(199, "Manteca de cerdo", true, MeasureUnits.Grams),
-        new(200, "Queso oaxaca", true, MeasureUnits.Grams),
-        new(201, "Refresco de cola 600 ml", false, MeasureUnits.Units, 35m),
-        new(202, "Refresco de naranja 600 ml", false, MeasureUnits.Units, 35m),
-        new(203, "Limonada de limón natural 500 ml", false, MeasureUnits.Units, 38m),
-        new(204, "Té de manzanilla 500 ml", false, MeasureUnits.Units, 32m),
-        new(205, "Jugo de naranja natural 450 ml", false, MeasureUnits.Units, 48m),
-        new(206, "Batido de fresa 450 ml", false, MeasureUnits.Units, 52m),
-        new(207, "Malteada de vainilla 500 ml", false, MeasureUnits.Units, 78m),
-        new(208, "Espresso", false, MeasureUnits.Units, 28m),
-        new(209, "Capuchino", false, MeasureUnits.Units, 45m),
-        new(210, "Porción de papas fritas", false, MeasureUnits.Units, 45m),
-        new(211, "Nachos con queso", false, MeasureUnits.Units, 69m),
-        new(212, "Alitas de pollo Buffalo", false, MeasureUnits.Units, 89m),
-        new(213, "Bowl de pollo César", false, MeasureUnits.Units, 118m),
-        new(214, "Flan de caramelo", false, MeasureUnits.Units, 42m),
-        new(215, "Pastel de chocolate", false, MeasureUnits.Units, 48m)
+        // 1..20: Verduras y frescos (insumos)
+        new("Jitomate saladet", true, MeasureUnits.Grams),                  // 1
+        new("Jitomate cherry", true, MeasureUnits.Grams),                   // 2
+        new("Lechuga romana", true, MeasureUnits.Units),                    // 3
+        new("Lechuga iceberg", true, MeasureUnits.Units),                   // 4
+        new("Cebolla blanca", true, MeasureUnits.Grams),                    // 5
+        new("Cebolla morada", true, MeasureUnits.Grams),                    // 6
+        new("Cebolla cambray", true, MeasureUnits.Grams),                   // 7
+        new("Papa blanca para freír", true, MeasureUnits.Grams),            // 8
+        new("Pepino", true, MeasureUnits.Grams),                            // 9
+        new("Chile jalapeño", true, MeasureUnits.Grams),                    // 10
+        new("Aguacate hass", true, MeasureUnits.Grams),                     // 11
+        new("Limón sin semilla", true, MeasureUnits.Grams),                 // 12
+        new("Cilantro fresco", true, MeasureUnits.Grams),                   // 13
+        new("Zanahoria", true, MeasureUnits.Grams),                         // 14
+        new("Champiñón blanco", true, MeasureUnits.Grams),                  // 15
+        new("Pimiento morrón", true, MeasureUnits.Grams),                   // 16
+        new("Ajo fresco", true, MeasureUnits.Grams),                        // 17
+        new("Espinaca baby", true, MeasureUnits.Grams),                     // 18
+        new("Col blanca", true, MeasureUnits.Grams),                        // 19
+        new("Perejil fresco", true, MeasureUnits.Grams),                    // 20
+
+        // 21..35: Carnes y proteínas (insumos)
+        new("Carne molida de res 80/20", true, MeasureUnits.Grams),         // 21
+        new("Arrachera marinada", true, MeasureUnits.Grams),                // 22
+        new("Milanesa de res", true, MeasureUnits.Grams),                   // 23
+        new("Pechuga de pollo sin hueso", true, MeasureUnits.Grams),        // 24
+        new("Tiras de pollo", true, MeasureUnits.Grams),                    // 25
+        new("Milanesa de pollo", true, MeasureUnits.Grams),                 // 26
+        new("Tocino ahumado", true, MeasureUnits.Grams),                    // 27
+        new("Jamón de pavo", true, MeasureUnits.Grams),                     // 28
+        new("Salchicha para asar", true, MeasureUnits.Grams),               // 29
+        new("Chorizo de cerdo", true, MeasureUnits.Grams),                  // 30
+        new("Pepperoni", true, MeasureUnits.Grams),                         // 31
+        new("Huevo fresco", true, MeasureUnits.Units),                      // 32
+        new("Medallón de res congelado", true, MeasureUnits.Units),         // 33
+        new("Filete de pollo empanizado", true, MeasureUnits.Units),        // 34
+        new("Nuggets de pollo congelados", true, MeasureUnits.Grams),       // 35
+
+        // 36..45: Panadería y tortillas (insumos)
+        new("Pan para hamburguesa con ajonjolí", true, MeasureUnits.Units), // 36
+        new("Pan brioche para hamburguesa", true, MeasureUnits.Units),      // 37
+        new("Pan de papa para hamburguesa", true, MeasureUnits.Units),      // 38
+        new("Pan para hot dog", true, MeasureUnits.Units),                  // 39
+        new("Tortilla de harina", true, MeasureUnits.Units),                // 40
+        new("Tortilla de maíz", true, MeasureUnits.Units),                  // 41
+        new("Totopos de maíz", true, MeasureUnits.Grams),                   // 42
+        new("Crotones sazonados", true, MeasureUnits.Grams),                // 43
+        new("Harina de trigo", true, MeasureUnits.Grams),                   // 44
+        new("Pan molido para empanizar", true, MeasureUnits.Grams),         // 45
+
+        // 46..55: Lácteos y quesos (insumos)
+        new("Queso americano en rebanadas", true, MeasureUnits.Grams),      // 46
+        new("Queso cheddar rallado", true, MeasureUnits.Grams),             // 47
+        new("Queso mozzarella rallado", true, MeasureUnits.Grams),          // 48
+        new("Queso asadero", true, MeasureUnits.Grams),                     // 49
+        new("Queso cotija rallado", true, MeasureUnits.Grams),              // 50
+        new("Queso parmesano rallado", true, MeasureUnits.Grams),           // 51
+        new("Mantequilla sin sal", true, MeasureUnits.Grams),               // 52
+        new("Crema ácida", true, MeasureUnits.Milliliters),                 // 53
+        new("Leche entera", true, MeasureUnits.Milliliters),                // 54
+        new("Helado de vainilla", true, MeasureUnits.Milliliters),          // 55
+
+        // 56..75: Salsas, aderezos, abarrotes y empaques (insumos)
+        new("Mayonesa", true, MeasureUnits.Milliliters),                    // 56
+        new("Mayonesa chipotle", true, MeasureUnits.Milliliters),           // 57
+        new("Catsup", true, MeasureUnits.Milliliters),                      // 58
+        new("Mostaza amarilla", true, MeasureUnits.Milliliters),            // 59
+        new("Salsa BBQ", true, MeasureUnits.Milliliters),                   // 60
+        new("Salsa BBQ picante", true, MeasureUnits.Milliliters),           // 61
+        new("Aderezo ranch", true, MeasureUnits.Milliliters),               // 62
+        new("Aderezo césar", true, MeasureUnits.Milliliters),               // 63
+        new("Pepinillos en rodajas", true, MeasureUnits.Grams),             // 64
+        new("Puré de tomate envasado", true, MeasureUnits.Milliliters),     // 65
+        new("Aceite vegetal", true, MeasureUnits.Milliliters),              // 66
+        new("Manteca vegetal", true, MeasureUnits.Grams),                   // 67
+        new("Sal refinada", true, MeasureUnits.Grams),                      // 68
+        new("Pimienta negra molida", true, MeasureUnits.Grams),             // 69
+        new("Azúcar estándar", true, MeasureUnits.Grams),                   // 70
+        new("Cajeta quemada", true, MeasureUnits.Milliliters),              // 71
+        new("Papas corte recto congeladas", true, MeasureUnits.Grams),      // 72
+        new("Frijoles refritos", true, MeasureUnits.Grams),                 // 73
+        new("Cajas para hamburguesa", true, MeasureUnits.Units),            // 74
+        new("Bolsas de papel para llevar", true, MeasureUnits.Units),       // 75
+
+        // 76..90: Productos de venta directa (IsSupply = false)
+        new("Refresco de cola 600 ml", false, MeasureUnits.Units, 35m),            // 76
+        new("Refresco de naranja 600 ml", false, MeasureUnits.Units, 35m),         // 77
+        new("Limonada natural 500 ml", false, MeasureUnits.Units, 38m),            // 78
+        new("Té helado de durazno 500 ml", false, MeasureUnits.Units, 32m),        // 79
+        new("Jugo de naranja natural 450 ml", false, MeasureUnits.Units, 48m),     // 80
+        new("Agua natural embotellada 600 ml", false, MeasureUnits.Units, 25m),    // 81
+        new("Malteada de vainilla 500 ml", false, MeasureUnits.Units, 78m),        // 82
+        new("Malteada de chocolate 500 ml", false, MeasureUnits.Units, 78m),       // 83
+        new("Café americano 355 ml", false, MeasureUnits.Units, 35m),              // 84
+        new("Capuchino 355 ml", false, MeasureUnits.Units, 45m),                   // 85
+        new("Porción de papas a la francesa", false, MeasureUnits.Units, 45m),     // 86
+        new("Orden de aros de cebolla", false, MeasureUnits.Units, 55m),           // 87
+        new("Nachos con queso", false, MeasureUnits.Units, 69m),                   // 88
+        new("Flan napolitano", false, MeasureUnits.Units, 42m),                    // 89
+        new("Rebanada de pastel de chocolate", false, MeasureUnits.Units, 48m)     // 90
     ];
 
-    public static readonly IReadOnlyList<DishSeed> Dishes =
+    public static readonly IReadOnlyList<CreateDishRequest> Dishes =
     [
         new(
-            1,
             "Hamburguesa clásica",
-            20000m,
+            95m,
             [
-                new(61, 1m),
-                new(36, 0.15m),
-                new(73, 0.04m),
-                new(4, 2m),
-                new(1, 0.05m),
-                new(5, 0.03m),
-                new(87, 0.02m),
-                new(88, 0.01m),
-                new(171, 0.02m)
+                new(36, 1m),   // Pan para hamburguesa con ajonjolí (1 unidad)
+                new(21, 150m), // Carne molida de res 80/20 (150 g)
+                new(46, 30m),  // Queso americano en rebanadas (30 g)
+                new(4, 1m),    // Lechuga iceberg (1 unidad)
+                new(1, 40m),   // Jitomate saladet (40 g)
+                new(5, 25m),   // Cebolla blanca (25 g)
+                new(58, 15m),  // Catsup (15 ml)
+                new(59, 10m),  // Mostaza amarilla (10 ml)
+                new(64, 15m)   // Pepinillos en rodajas (15 g)
             ]
         ),
         new(
-            2,
-            "Hamburguesa doble",
-            20000m,
+            "Hamburguesa doble con tocino",
+            145m,
             [
-                new(62, 1m),
-                new(36, 0.3m),
-                new(75, 0.06m),
-                new(73, 0.04m),
-                new(1, 0.08m),
-                new(5, 0.04m),
-                new(44, 0.05m),
-                new(90, 0.03m)
+                new(37, 1m),   // Pan brioche para hamburguesa (1 unidad)
+                new(21, 300m), // Carne molida de res 80/20 (300 g)
+                new(48, 45m),  // Queso mozzarella rallado (45 g)
+                new(46, 30m),  // Queso americano en rebanadas (30 g)
+                new(27, 40m),  // Tocino ahumado (40 g)
+                new(1, 50m),   // Jitomate saladet (50 g)
+                new(5, 30m),   // Cebolla blanca (30 g)
+                new(60, 25m)   // Salsa BBQ (25 ml)
             ]
         ),
         new(
-            3,
-            "Hamburguesa de pollo",
-            20000m,
+            "Hamburguesa crispy de pollo",
+            110m,
             [
-                new(64, 1m),
-                new(43, 0.18m),
-                new(78, 0.03m),
-                new(3, 2m),
-                new(9, 0.04m),
-                new(86, 0.02m)
+                new(38, 1m),   // Pan de papa para hamburguesa (1 unidad)
+                new(26, 160m), // Milanesa de pollo (160 g)
+                new(47, 30m),  // Queso cheddar rallado (30 g)
+                new(3, 1m),    // Lechuga romana (1 unidad)
+                new(9, 25m),   // Pepino (25 g)
+                new(57, 20m)   // Mayonesa chipotle (20 ml)
             ]
         ),
         new(
-            4,
-            "Taco al pastor",
-            20000m,
+            "Orden de tacos de arrachera",
+            115m,
             [
-                new(69, 2m),
-                new(38, 0.15m),
-                new(10, 0.02m),
-                new(13, 0.05m),
-                new(2, 0.05m),
-                new(6, 0.03m),
-                new(19, 0.01m)
+                new(41, 3m),   // Tortilla de maíz (3 unidades)
+                new(22, 180m), // Arrachera marinada (180 g)
+                new(11, 50m),  // Aguacate hass (50 g)
+                new(13, 15m),  // Cilantro fresco (15 g)
+                new(6, 25m),   // Cebolla morada (25 g)
+                new(12, 20m)   // Limón sin semilla (20 g)
             ]
         ),
         new(
-            5,
-            "Taco de bistec",
-            20000m,
+            "Orden de tacos de bistec",
+            98m,
             [
-                new(69, 2m),
-                new(39, 0.12m),
-                new(7, 0.08m),
-                new(32, 0.03m),
-                new(105, 0.002m),
-                new(107, 0.001m)
+                new(41, 3m),   // Tortilla de maíz (3 unidades)
+                new(23, 160m), // Milanesa de res (160 g)
+                new(7, 40m),   // Cebolla cambray (40 g)
+                new(13, 15m),  // Cilantro fresco (15 g)
+                new(68, 2m),   // Sal refinada (2 g)
+                new(69, 1m)    // Pimienta negra molida (1 g)
             ]
         ),
         new(
-            6,
-            "Burrito de carne",
-            20000m,
+            "Burrito norteño de carne",
+            118m,
             [
-                new(68, 1m),
-                new(36, 0.18m),
-                new(80, 0.01m),
-                new(172, 0.08m),
-                new(22, 0.03m),
-                new(14, 0.03m),
-                new(82, 0.05m),
-                new(77, 0.04m),
-                new(91, 0.02m)
+                new(40, 1m),   // Tortilla de harina (1 unidad)
+                new(22, 160m), // Arrachera marinada (160 g)
+                new(73, 80m),  // Frijoles refritos (80 g)
+                new(49, 45m),  // Queso asadero (45 g)
+                new(11, 40m),  // Aguacate hass (40 g)
+                new(53, 25m),  // Crema ácida (25 ml)
+                new(61, 15m)   // Salsa BBQ picante (15 ml)
             ]
         ),
         new(
-            7,
-            "Quesadilla de pollo",
-            20000m,
+            "Quesadillas de pollo",
+            88m,
             [
-                new(68, 2m),
-                new(42, 0.15m),
-                new(73, 0.08m),
-                new(17, 0.04m),
-                new(92, 0.03m),
-                new(125, 0.01m)
+                new(40, 2m),   // Tortilla de harina (2 unidades)
+                new(25, 140m), // Tiras de pollo (140 g)
+                new(49, 60m),  // Queso asadero (60 g)
+                new(16, 30m),  // Pimiento morrón (30 g)
+                new(62, 25m)   // Aderezo ranch (25 ml)
             ]
         ),
         new(
-            8,
-            "Ensalada César",
-            20000m,
+            "Ensalada César con pollo",
+            105m,
             [
-                new(22, 0.08m),
-                new(23, 0.06m),
-                new(74, 0.04m),
-                new(93, 0.05m),
-                new(171, 0.01m),
-                new(71, 0.03m),
-                new(105, 0.002m),
-                new(107, 0.001m)
+                new(3, 1m),    // Lechuga romana (1 unidad)
+                new(24, 150m), // Pechuga de pollo sin hueso (150 g)
+                new(51, 25m),  // Queso parmesano rallado (25 g)
+                new(43, 35m),  // Crotones sazonados (35 g)
+                new(63, 40m),  // Aderezo césar (40 ml)
+                new(68, 2m),   // Sal refinada (2 g)
+                new(69, 1m)    // Pimienta negra molida (1 g)
             ]
         ),
         new(
-            9,
             "Churros con cajeta",
-            200005m,
+            68m,
             [
-                new(163, 0.1m),
-                new(132, 0.05m),
-                new(105, 0.002m),
-                new(175, 0.08m)
+                new(44, 100m), // Harina de trigo (100 g)
+                new(67, 40m),  // Manteca vegetal (40 g)
+                new(70, 20m),  // Azúcar estándar (20 g)
+                new(71, 45m)   // Cajeta quemada (45 ml)
             ]
         ),
         new(
-            10,
             "Sopa de tortilla",
-            20000m,
+            72m,
             [
-                new(1, 0.2m),
-                new(69, 2m),
-                new(5, 0.06m),
-                new(19, 0.01m),
-                new(125, 0.02m),
-                new(80, 0.01m),
-                new(32, 0.02m)
+                new(42, 80m),  // Totopos de maíz (80 g)
+                new(65, 150m), // Puré de tomate envasado (150 ml)
+                new(49, 35m),  // Queso asadero (35 g)
+                new(11, 35m),  // Aguacate hass (35 g)
+                new(53, 20m),  // Crema ácida (20 ml)
+                new(5, 20m)    // Cebolla blanca (20 g)
             ]
         )
     ];
 
-    public static readonly IReadOnlyList<ComboSeed> Combos =
+    public static readonly IReadOnlyList<CreateComboRequest> Combos =
     [
         new(
             "Combo Hamburguesa clásica",
-            20000000m,
+            149m,
             [new(1, 1m)],
-            [new(201, 1m), new(210, 1m)]
+            [new(76, 1m), new(86, 1m)]
         ),
         new(
             "Combo Hamburguesa doble",
-            20000000m,
+            199m,
             [new(2, 1m)],
-            [new(202, 1m), new(210, 1m)]
+            [new(77, 1m), new(86, 1m)]
         ),
         new(
             "Combo Hamburguesa de pollo",
-            200000000m,
+            165m,
             [new(3, 1m)],
-            [new(203, 1m), new(210, 1m)]
+            [new(78, 1m), new(86, 1m)]
         ),
         new(
-            "Combo Tacos al pastor",
-            200000000m,
-            [new(4, 2m)],
-            [new(201, 1m)]
+            "Combo Tacos de arrachera",
+            159m,
+            [new(4, 1m)],
+            [new(76, 1m), new(88, 1m)]
         ),
         new(
             "Combo Tacos de bistec",
-            200000000m,
-            [new(5, 2m)],
-            [new(202, 1m)]
+            139m,
+            [new(5, 1m)],
+            [new(77, 1m)]
         ),
         new(
-            "Combo Burrito",
-            20000000m,
+            "Combo Burrito norteño",
+            175m,
             [new(6, 1m)],
-            [new(204, 1m), new(211, 1m)]
+            [new(79, 1m), new(88, 1m)]
         ),
         new(
             "Combo Quesadillas",
-            20000000m,
-            [new(7, 2m)],
-            [new(205, 1m)]
+            135m,
+            [new(7, 1m)],
+            [new(80, 1m)]
         ),
         new(
-            "Combo Ensalada",
-            20000000m,
+            "Combo Ensalada César",
+            139m,
             [new(8, 1m)],
-            [new(203, 1m)]
+            [new(81, 1m)]
         ),
         new(
-            "Combo Postre",
-            200000000m,
+            "Combo Postre y Café",
+            129m,
             [new(9, 1m)],
-            [new(209, 1m), new(215, 1m)]
+            [new(85, 1m), new(90, 1m)]
         ),
         new(
             "Combo Familiar",
-            2000000000m,
+            549m,
             [new(1, 2m), new(3, 2m)],
-            [new(201, 4m), new(210, 2m)]
+            [new(76, 4m), new(86, 2m)]
         )
     ];
+
+    public static readonly IReadOnlyDictionary<int, IReadOnlyList<CreateStorageInRequest>> StorageIns =
+        new Dictionary<int, IReadOnlyList<CreateStorageInRequest>>
+        {
+            // Sucursal 1: Sucursal Culiacán Centro (Almacén Central)
+            [1] =
+            [
+                new(
+                    "ENT-CEN-001",
+                    [
+                        new(1, 25000m, 0.03m),  // Jitomate saladet (25 kg @ $0.03/g = $30/kg)
+                        new(3, 120m, 18m),      // Lechuga romana (120 unidades @ $18/unidad)
+                        new(4, 120m, 16m),      // Lechuga iceberg (120 unidades @ $16/unidad)
+                        new(5, 20000m, 0.025m), // Cebolla blanca (20 kg @ $0.025/g = $25/kg)
+                        new(11, 15000m, 0.07m), // Aguacate hass (15 kg @ $0.07/g = $70/kg)
+                        new(21, 50000m, 0.16m), // Carne molida de res 80/20 (50 kg @ $0.16/g = $160/kg)
+                        new(22, 35000m, 0.22m), // Arrachera marinada (35 kg @ $0.22/g = $220/kg)
+                        new(26, 30000m, 0.13m), // Milanesa de pollo (30 kg @ $0.13/g = $130/kg)
+                        new(27, 12000m, 0.19m)  // Tocino ahumado (12 kg @ $0.19/g = $190/kg)
+                    ]
+                ),
+                new(
+                    "ENT-CEN-002",
+                    [
+                        new(36, 300m, 5.50m),   // Pan para hamburguesa con ajonjolí (300 unidades @ $5.50)
+                        new(37, 200m, 7.50m),   // Pan brioche para hamburguesa (200 unidades @ $7.50)
+                        new(38, 200m, 6.50m),   // Pan de papa para hamburguesa (200 unidades @ $6.50)
+                        new(40, 400m, 3.00m),   // Tortilla de harina (400 unidades @ $3.00)
+                        new(41, 600m, 1.20m),   // Tortilla de maíz (600 unidades @ $1.20)
+                        new(46, 15000m, 0.14m), // Queso americano en rebanadas (15 kg @ $0.14/g)
+                        new(48, 15000m, 0.15m), // Queso mozzarella rallado (15 kg @ $0.15/g)
+                        new(58, 10000m, 0.04m), // Catsup (10 L @ $0.04/ml)
+                        new(76, 240m, 16m),     // Refresco de cola 600 ml (240 unidades @ $16)
+                        new(86, 180m, 18m)      // Porción de papas a la francesa (180 unidades @ $18)
+                    ]
+                )
+            ],
+
+            // Sucursal 2: Sucursal Cañadas
+            [2] =
+            [
+                new(
+                    "ENT-CAN-001",
+                    [
+                        new(1, 10000m, 0.03m),  // Jitomate saladet (10 kg @ $0.03/g)
+                        new(3, 50m, 18m),       // Lechuga romana (50 unidades @ $18/unidad)
+                        new(4, 60m, 16m),       // Lechuga iceberg (60 unidades @ $16/unidad)
+                        new(5, 8000m, 0.025m),  // Cebolla blanca (8 kg @ $0.025/g)
+                        new(11, 6000m, 0.07m),  // Aguacate hass (6 kg @ $0.07/g)
+                        new(21, 20000m, 0.16m), // Carne molida de res 80/20 (20 kg @ $0.16/g)
+                        new(22, 15000m, 0.22m), // Arrachera marinada (15 kg @ $0.22/g)
+                        new(26, 12000m, 0.13m), // Milanesa de pollo (12 kg @ $0.13/g)
+                        new(27, 5000m, 0.19m)   // Tocino ahumado (5 kg @ $0.19/g)
+                    ]
+                ),
+                new(
+                    "ENT-CAN-002",
+                    [
+                        new(36, 120m, 5.50m),   // Pan para hamburguesa con ajonjolí (120 unidades @ $5.50)
+                        new(37, 80m, 7.50m),    // Pan brioche para hamburguesa (80 unidades @ $7.50)
+                        new(38, 80m, 6.50m),    // Pan de papa para hamburguesa (80 unidades @ $6.50)
+                        new(40, 150m, 3.00m),   // Tortilla de harina (150 unidades @ $3.00)
+                        new(41, 250m, 1.20m),   // Tortilla de maíz (250 unidades @ $1.20)
+                        new(46, 6000m, 0.14m),  // Queso americano en rebanadas (6 kg @ $0.14/g)
+                        new(48, 6000m, 0.15m),  // Queso mozzarella rallado (6 kg @ $0.15/g)
+                        new(58, 4000m, 0.04m),  // Catsup (4 L @ $0.04/ml)
+                        new(76, 100m, 16m),     // Refresco de cola 600 ml (100 unidades @ $16)
+                        new(86, 80m, 18m)       // Porción de papas a la francesa (80 unidades @ $18)
+                    ]
+                )
+            ]
+        };
+
+    public static readonly IReadOnlyDictionary<int, IReadOnlyList<CreateStorageOutRequest>> StorageOuts =
+        new Dictionary<int, IReadOnlyList<CreateStorageOutRequest>>
+        {
+            // Sucursal 1: Sucursal Culiacán Centro (traspaso a sucursales / merma)
+            [1] =
+            [
+                new(
+                    [
+                        new(21, 10000m), // Carne molida de res 80/20 (10 kg)
+                        new(22, 8000m),  // Arrachera marinada (8 kg)
+                        new(36, 80m),    // Pan para hamburguesa con ajonjolí (80 unidades)
+                        new(46, 3000m),  // Queso americano en rebanadas (3 kg)
+                        new(76, 60m)     // Refresco de cola 600 ml (60 unidades)
+                    ],
+                    "SAL-CEN-001"
+                )
+            ],
+
+            // Sucursal 2: Sucursal Cañadas (consumo de cocina y ventas)
+            [2] =
+            [
+                new(
+                    [
+                        new(1, 2500m),   // Jitomate saladet (2.5 kg)
+                        new(4, 15m),     // Lechuga iceberg (15 unidades)
+                        new(21, 6000m),  // Carne molida de res 80/20 (6 kg)
+                        new(36, 40m),    // Pan para hamburguesa con ajonjolí (40 unidades)
+                        new(46, 1200m),  // Queso americano en rebanadas (1.2 kg)
+                        new(58, 600m),   // Catsup (600 ml)
+                        new(76, 30m),    // Refresco de cola 600 ml (30 unidades)
+                        new(86, 25m)     // Porción de papas a la francesa (25 unidades)
+                    ],
+                    "SAL-CAN-001"
+                )
+            ]
+        };
 }

@@ -46,6 +46,11 @@ public class Product
         MeasureUnit = GuardMeasureUnit(measureUnit, isSupply, nameof(measureUnit));
     }
 
+    public void UpdateCostPrice(decimal costPrice)
+    {
+        CostPrice = GuardPrice(costPrice, nameof(costPrice));
+    }
+
     private static string GuardNotEmpty(string value, string name) =>
         string.IsNullOrWhiteSpace(value)
             ? throw new ArgumentException($"{name} is required.", name)

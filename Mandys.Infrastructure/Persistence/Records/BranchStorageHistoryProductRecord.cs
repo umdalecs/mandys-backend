@@ -16,4 +16,5 @@ public class BranchStorageHistoryProductRecord : Record
     public ProductRecord Product { get; set; } = null!;
     [Required]
     public decimal Quantity { get; set; }
+    public decimal? CostPrice { get; set; }
 }

@@ -15,9 +15,40 @@ public class UpdateBranchStorageRequestValidator : AbstractValidator<UpdateBranc
     }
 }
 
-public class StorageMovementProductLineValidator : AbstractValidator<CreateStorageMovementProductLineRequest>
+public class StorageInProductLineValidator : AbstractValidator<CreateStorageInProductLineRequest>
 {
-    public StorageMovementProductLineValidator(IProductRepository products)
+    public StorageInProductLineValidator(IProductRepository products)
+    {
+        RuleFor(x => x.ProductId)
+            .GreaterThan(0)
+            .WithMessage("Los IDs de productos en el movimiento deben ser positivos.");
+
+        RuleFor(x => x.Quantity)
+            .GreaterThan(0)
+            .WithMessage("Las cantidades en el movimiento deben ser positivas.");
+
+        RuleFor(x => x.CostPrice)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("El costo de compra no puede ser negativo.");
+
+        RuleFor(x => x)
+            .MustAsync(async (line, _) =>
+            {
+                if (line.ProductId <= 0 || decimal.IsInteger(line.Quantity))
+                {
+                    return true;
+                }
+
+                var product = await products.GetByIdAsync(line.ProductId);
+                return product is null || MeasureUnits.IsValidQuantity(product.MeasureUnit, line.Quantity);
+            })
+            .WithMessage($"Las cantidades para productos con unidad de medida '{MeasureUnits.Units}' deben ser números enteros.");
+    }
+}
+
+public class StorageOutProductLineValidator : AbstractValidator<CreateStorageOutProductLineRequest>
+{
+    public StorageOutProductLineValidator(IProductRepository products)
     {
         RuleFor(x => x.ProductId)
             .GreaterThan(0)
@@ -55,7 +86,7 @@ public class CreateStorageInRequestValidator : AbstractValidator<CreateStorageIn
             .NotEmpty()
             .WithMessage("El movimiento debe incluir al menos un producto.");
 
-        RuleForEach(x => x.Products).SetValidator(new StorageMovementProductLineValidator(products));
+        RuleForEach(x => x.Products).SetValidator(new StorageInProductLineValidator(products));
 
         RuleFor(x => x.Products)
             .Must(lines => lines!.GroupBy(l => l.ProductId).All(g => g.Count() == 1))
@@ -78,7 +109,7 @@ public class CreateStorageOutRequestValidator : AbstractValidator<CreateStorageO
             .NotEmpty()
             .WithMessage("El movimiento debe incluir al menos un producto.");
 
-        RuleForEach(x => x.Products).SetValidator(new StorageMovementProductLineValidator(products));
+        RuleForEach(x => x.Products).SetValidator(new StorageOutProductLineValidator(products));
 
         RuleFor(x => x.Products)
             .Must(lines => lines!.GroupBy(l => l.ProductId).All(g => g.Count() == 1))

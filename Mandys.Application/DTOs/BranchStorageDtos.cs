@@ -4,6 +4,7 @@ namespace Mandys.Application.DTOs;
 
 public record BranchStorageResponse(
     int Id,
+    int BranchId,
     ProductResponse Product,
     decimal MinimumStock,
     decimal CurrentStock
@@ -23,29 +24,37 @@ public record PagedBranchStorageResponse(
 
 public record BranchStorageHistoryProductLineResponse(
     ProductResponse Product,
-    decimal Quantity
+    decimal Quantity,
+    decimal? CostPrice
 );
 
 public record BranchStorageHistoryResponse(
     int Id,
+    int BranchId,
     string Type,
     string? Folio,
     IReadOnlyList<BranchStorageHistoryProductLineResponse> Products,
     DateTime CreatedAt
 );
 
-public record CreateStorageMovementProductLineRequest(
+public record CreateStorageInProductLineRequest(
+    int ProductId,
+    decimal Quantity,
+    decimal CostPrice
+);
+
+public record CreateStorageOutProductLineRequest(
     int ProductId,
     decimal Quantity
 );
 
 public record CreateStorageInRequest(
     string Folio,
-    IReadOnlyList<CreateStorageMovementProductLineRequest> Products
+    IReadOnlyList<CreateStorageInProductLineRequest> Products
 );
 
 public record CreateStorageOutRequest(
-    IReadOnlyList<CreateStorageMovementProductLineRequest> Products,
+    IReadOnlyList<CreateStorageOutProductLineRequest> Products,
     string? Folio = null
 );
 
@@ -62,6 +71,7 @@ public static class BranchStorageDtoMapper
     public static BranchStorageResponse ToResponse(this BranchStorage storage) =>
         new(
             storage.Id,
+            storage.Branch.Id,
             storage.Product.ToResponse(),
             storage.MinimumStock,
             storage.CurrentStock
@@ -70,10 +80,14 @@ public static class BranchStorageDtoMapper
     public static BranchStorageHistoryResponse ToResponse(this BranchStorageHistory history) =>
         new(
             history.Id,
+            history.Branch.Id,
             history.Type,
             history.Folio,
             history.Products
-                .Select(l => new BranchStorageHistoryProductLineResponse(l.Product.ToResponse(), l.Quantity))
+                .Select(l => new BranchStorageHistoryProductLineResponse(
+                    l.Product.ToResponse(),
+                    l.Quantity,
+                    l.CostPrice))
                 .ToList(),
             history.CreatedAt
         );

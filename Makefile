@@ -15,7 +15,7 @@ run-api:
 	dotnet run --project $(API_PROJECT) --launch-profile $(API_LAUNCH_PROFILE)
 
 seed:
-	dotnet run --project $(SEED_PROJECT) -- $(ARGS)
+	dotnet run --project $(SEED_PROJECT)
 
 restart-database: stop-database run-database
 

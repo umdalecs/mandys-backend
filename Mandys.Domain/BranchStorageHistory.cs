@@ -61,6 +61,11 @@ public class BranchStorageHistory
             throw new ArgumentException("At least one product line is required.", nameof(products));
         }
 
+        if (normalizedType == StorageMovementTypes.In && productList.Any(p => !p.CostPrice.HasValue))
+        {
+            throw new ArgumentException("CostPrice is required for all products in 'in' movements.", nameof(products));
+        }
+
         Id = id;
         Branch = branch;
         Type = normalizedType;
@@ -75,8 +80,9 @@ public class BranchStorageHistoryProduct
 {
     public Product Product { get; private set; }
     public decimal Quantity { get; private set; }
+    public decimal? CostPrice { get; private set; }
 
-    public BranchStorageHistoryProduct(Product product, decimal quantity)
+    public BranchStorageHistoryProduct(Product product, decimal quantity, decimal? costPrice = null)
     {
         ArgumentNullException.ThrowIfNull(product);
 
@@ -97,7 +103,13 @@ public class BranchStorageHistoryProduct
                 nameof(quantity));
         }
 
+        if (costPrice.HasValue && costPrice.Value < 0)
+        {
+            throw new ArgumentException("CostPrice must be non-negative.", nameof(costPrice));
+        }
+
         Product = product;
         Quantity = quantity;
+        CostPrice = costPrice;
     }
 }

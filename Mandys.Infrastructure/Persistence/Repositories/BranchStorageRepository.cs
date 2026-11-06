@@ -219,6 +219,22 @@ public class BranchStorageRepository(ApplicationDbContext db) : IBranchStorageRe
         var historyRecord = history.ToRecord();
         db.BranchStorageHistories.Add(historyRecord);
 
+        if (history.Type == StorageMovementTypes.In)
+        {
+            var productIds = history.Products.Select(p => p.Product.Id).ToList();
+            var trackedProducts = await db.Products
+                .Where(p => productIds.Contains(p.Id))
+                .ToDictionaryAsync(p => p.Id);
+
+            foreach (var line in history.Products)
+            {
+                if (trackedProducts.TryGetValue(line.Product.Id, out var productRecord) && line.CostPrice.HasValue)
+                {
+                    productRecord.CostPrice = line.CostPrice.Value;
+                }
+            }
+        }
+
         await db.SaveChangesAsync();
         await transaction.CommitAsync();
 

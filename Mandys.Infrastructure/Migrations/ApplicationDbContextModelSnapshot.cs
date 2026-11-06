@@ -78,6 +78,10 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("branch_storage_history_id");
 
+                    b.Property<decimal?>("CostPrice")
+                        .HasColumnType("numeric")
+                        .HasColumnName("cost_price");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
