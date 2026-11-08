@@ -7,7 +7,8 @@ public record BranchStorageResponse(
     int BranchId,
     ProductResponse Product,
     decimal MinimumStock,
-    decimal CurrentStock
+    decimal CurrentStock,
+    DateTime LastUpdated
 );
 
 public record UpdateBranchStorageRequest(
@@ -34,7 +35,7 @@ public record BranchStorageHistoryResponse(
     string Type,
     string? Folio,
     IReadOnlyList<BranchStorageHistoryProductLineResponse> Products,
-    DateTime CreatedAt
+    DateTime Date
 );
 
 public record CreateStorageInProductLineRequest(
@@ -74,7 +75,8 @@ public static class BranchStorageDtoMapper
             storage.Branch.Id,
             storage.Product.ToResponse(),
             storage.MinimumStock,
-            storage.CurrentStock
+            storage.CurrentStock,
+            storage.UpdatedAt
         );
 
     public static BranchStorageHistoryResponse ToResponse(this BranchStorageHistory history) =>
