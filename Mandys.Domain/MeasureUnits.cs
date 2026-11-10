@@ -2,8 +2,8 @@ namespace Mandys.Domain;
 
 public static class MeasureUnits
 {
-    public const string Grams = "Gramos";
-    public const string Milliliters = "Mililitros";
+    public const string Grams = "Kilogramos";
+    public const string Milliliters = "Litros";
     public const string Units = "Unidades";
 
     public static readonly IReadOnlyList<string> All = [Grams, Milliliters, Units];
