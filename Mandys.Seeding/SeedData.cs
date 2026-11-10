@@ -326,7 +326,7 @@ public static class SeedData
             // Sucursal 1: Sucursal Culiacán Centro (Almacén Central)
             [1] =
             [
-                new(
+                new CreateStorageInRequest(
                     "ENT-CEN-001",
                     "Distribuidora Agropecuaria de Sinaloa",
                     [
@@ -366,31 +366,31 @@ public static class SeedData
                     "ENT-CAN-001",
                     "Distribuidora Agropecuaria de Sinaloa",
                     [
-                        new(1, 10000m, 0.03m),  // Jitomate saladet (10 kg @ $0.03/g)
-                        new(3, 50m, 18m),       // Lechuga romana (50 unidades @ $18/unidad)
-                        new(4, 60m, 16m),       // Lechuga iceberg (60 unidades @ $16/unidad)
-                        new(5, 8000m, 0.025m),  // Cebolla blanca (8 kg @ $0.025/g)
-                        new(11, 6000m, 0.07m),  // Aguacate hass (6 kg @ $0.07/g)
-                        new(21, 20000m, 0.16m), // Carne molida de res 80/20 (20 kg @ $0.16/g)
-                        new(22, 15000m, 0.22m), // Arrachera marinada (15 kg @ $0.22/g)
-                        new(26, 12000m, 0.13m), // Milanesa de pollo (12 kg @ $0.13/g)
-                        new(27, 5000m, 0.19m)   // Tocino ahumado (5 kg @ $0.19/g)
+                        new(1, 10000m),  // Jitomate saladet (10 kg)
+                        new(3, 50m),     // Lechuga romana (50 unidades)
+                        new(4, 60m),     // Lechuga iceberg (60 unidades)
+                        new(5, 8000m),   // Cebolla blanca (8 kg)
+                        new(11, 6000m),  // Aguacate hass (6 kg)
+                        new(21, 20000m), // Carne molida de res 80/20 (20 kg)
+                        new(22, 15000m), // Arrachera marinada (15 kg)
+                        new(26, 12000m), // Milanesa de pollo (12 kg)
+                        new(27, 5000m)   // Tocino ahumado (5 kg)
                     ]
                 ),
                 new(
                     "ENT-CAN-002",
                     "Comercializadora de Alimentos del Noroeste",
                     [
-                        new(36, 120m, 5.50m),   // Pan para hamburguesa con ajonjolí (120 unidades @ $5.50)
-                        new(37, 80m, 7.50m),    // Pan brioche para hamburguesa (80 unidades @ $7.50)
-                        new(38, 80m, 6.50m),    // Pan de papa para hamburguesa (80 unidades @ $6.50)
-                        new(40, 150m, 3.00m),   // Tortilla de harina (150 unidades @ $3.00)
-                        new(41, 250m, 1.20m),   // Tortilla de maíz (250 unidades @ $1.20)
-                        new(46, 6000m, 0.14m),  // Queso americano en rebanadas (6 kg @ $0.14/g)
-                        new(48, 6000m, 0.15m),  // Queso mozzarella rallado (6 kg @ $0.15/g)
-                        new(58, 4000m, 0.04m),  // Catsup (4 L @ $0.04/ml)
-                        new(76, 100m, 16m),     // Refresco de cola 600 ml (100 unidades @ $16)
-                        new(86, 80m, 18m)       // Porción de papas a la francesa (80 unidades @ $18)
+                        new(36, 120m),   // Pan para hamburguesa con ajonjolí (120 unidades)
+                        new(37, 80m),    // Pan brioche para hamburguesa (80 unidades)
+                        new(38, 80m),    // Pan de papa para hamburguesa (80 unidades)
+                        new(40, 150m),   // Tortilla de harina (150 unidades)
+                        new(41, 250m),   // Tortilla de maíz (250 unidades)
+                        new(46, 6000m),  // Queso americano en rebanadas (6 kg)
+                        new(48, 6000m),  // Queso mozzarella rallado (6 kg)
+                        new(58, 4000m),  // Catsup (4 L)
+                        new(76, 100m),   // Refresco de cola 600 ml (100 unidades)
+                        new(86, 80m)     // Porción de papas a la francesa (80 unidades)
                     ]
                 )
             ]

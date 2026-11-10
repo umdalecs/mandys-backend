@@ -82,7 +82,7 @@ public class BranchStorageService(
     }
 
     public async Task<BranchStorageHistoryResponse> CreateInMovementAsync(
-        int branchId, CreateStorageInRequest request)
+        int branchId, CreateStorageInRequest request, string? userRole = null)
     {
         var branch = await branches.GetByIdAsync(branchId);
         if (branch is null)
@@ -101,6 +101,20 @@ public class BranchStorageService(
         if (request.Products is null || request.Products.Count == 0)
         {
             throw ServiceException.BadRequest("El movimiento debe incluir al menos un producto.");
+        }
+
+        var isCentralWarehouseChief = string.Equals(
+            userRole, Roles.CentralWarehouseChief, StringComparison.OrdinalIgnoreCase);
+        var isBranchWarehouseChief = string.Equals(
+            userRole, Roles.WarehouseChief, StringComparison.OrdinalIgnoreCase);
+
+        var requiresCostPrice = isCentralWarehouseChief || (!isBranchWarehouseChief && branch.WarehouseOnly);
+        var applyCostPrice = requiresCostPrice;
+
+        if (requiresCostPrice && request.Products.Any(p => !p.CostPrice.HasValue))
+        {
+            throw ServiceException.BadRequest(
+                "El costo de compra es obligatorio para todos los productos en entradas de almacén central.");
         }
 
         var productIds = request.Products.Select(l => l.ProductId).Distinct().ToList();
@@ -131,10 +145,16 @@ public class BranchStorageService(
             }
 
             storage.AddStock(line.Quantity);
-            storage.Product.UpdateCostPrice(line.CostPrice);
+
+            decimal? recordedCostPrice = null;
+            if (applyCostPrice && line.CostPrice.HasValue)
+            {
+                storage.Product.UpdateCostPrice(line.CostPrice.Value);
+                recordedCostPrice = line.CostPrice.Value;
+            }
 
             updatedStorages.Add(storage);
-            historyLines.Add(new BranchStorageHistoryProduct(storage.Product, line.Quantity, line.CostPrice));
+            historyLines.Add(new BranchStorageHistoryProduct(storage.Product, line.Quantity, recordedCostPrice));
         }
 
         var history = new BranchStorageHistory(

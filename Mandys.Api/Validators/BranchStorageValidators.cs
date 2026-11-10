@@ -33,7 +33,8 @@ public class StorageInProductLineValidator : AbstractValidator<CreateStorageInPr
             .GreaterThan(0)
             .WithMessage("El costo de compra tiene que ser mayor a 0.")
             .LessThanOrEqualTo(10_000)
-            .WithMessage("El costo de compra no puede ser mayor a 10,000.");
+            .WithMessage("El costo de compra no puede ser mayor a 10,000.")
+            .When(x => x.CostPrice.HasValue);
 
         RuleFor(x => x)
             .MustAsync(async (line, _) =>

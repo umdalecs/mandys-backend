@@ -87,11 +87,6 @@ public class BranchStorageHistory
             throw new ArgumentException("At least one product line is required.", nameof(products));
         }
 
-        if (normalizedType == StorageMovementTypes.In && productList.Any(p => !p.CostPrice.HasValue))
-        {
-            throw new ArgumentException("CostPrice is required for all products in 'in' movements.", nameof(products));
-        }
-
         Id = id;
         Branch = branch;
         Type = normalizedType;

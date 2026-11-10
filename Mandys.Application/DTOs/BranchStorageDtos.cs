@@ -43,7 +43,7 @@ public record BranchStorageHistoryResponse(
 public record CreateStorageInProductLineRequest(
     int ProductId,
     decimal Quantity,
-    decimal CostPrice
+    decimal? CostPrice = null
 );
 
 public record CreateStorageOutProductLineRequest(

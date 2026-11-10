@@ -10,7 +10,7 @@ public interface IBranchStorageService
     Task<BranchStorageResponse> UpdateMinimumStockAsync(
         int branchId, int productId, UpdateBranchStorageRequest request);
     Task<BranchStorageHistoryResponse> CreateInMovementAsync(
-        int branchId, CreateStorageInRequest request);
+        int branchId, CreateStorageInRequest request, string? userRole = null);
     Task<BranchStorageHistoryResponse> CreateOutMovementAsync(
         int branchId, CreateStorageOutRequest request);
     Task<PagedBranchStorageHistoryResponse> GetBranchStorageHistoryAsync(

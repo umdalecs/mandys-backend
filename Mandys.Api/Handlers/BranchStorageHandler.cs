@@ -100,6 +100,7 @@ public class BranchStorageHandler : ICarterModule
 
     private static async Task<IResult> CreateBranchStorageIn(
         int branchId,
+        ClaimsPrincipal claimsPrincipal,
         [FromBody] CreateStorageInRequest request,
         IValidator<CreateStorageInRequest> validator,
         IBranchStorageService branchStorageService)
@@ -108,7 +109,8 @@ public class BranchStorageHandler : ICarterModule
         {
             RequestValidation.ThrowIfInvalid(await validator.ValidateAsync(request));
 
-            var created = await branchStorageService.CreateInMovementAsync(branchId, request);
+            var created = await branchStorageService.CreateInMovementAsync(
+                branchId, request, claimsPrincipal.GetUserRole());
             return Results.Created($"/branches/{branchId}/storage/history/{created.Id}", created);
         }
         catch (ServiceException ex)
@@ -239,7 +241,8 @@ public class BranchStorageHandler : ICarterModule
             var branchId = RequireBranchId(claimsPrincipal);
             RequestValidation.ThrowIfInvalid(await validator.ValidateAsync(request));
 
-            var created = await branchStorageService.CreateInMovementAsync(branchId, request);
+            var created = await branchStorageService.CreateInMovementAsync(
+                branchId, request, claimsPrincipal.GetUserRole());
             return Results.Created($"/storage/history/{created.Id}", created);
         }
         catch (ServiceException ex)

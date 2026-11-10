@@ -219,7 +219,8 @@ public static class Seeders
                 $"/branches/{branchId}/storage/history", cancellationToken);
             var existingByReason = existingHistory
                 .Where(h => !string.IsNullOrWhiteSpace(h.Reason))
-                .ToDictionary(h => h.Reason!, h => h.Id, StringComparer.OrdinalIgnoreCase);
+                .GroupBy(h => h.Reason!, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(g => g.Key, g => g.First().Id, StringComparer.OrdinalIgnoreCase);
 
             foreach (var row in outRequests)
             {
