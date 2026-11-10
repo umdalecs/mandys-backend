@@ -2,11 +2,11 @@ namespace Mandys.Domain;
 
 public static class MeasureUnits
 {
-    public const string Grams = "Kilogramos";
-    public const string Milliliters = "Litros";
+    public const string Kilograms = "Kilogramos";
+    public const string Liters = "Litros";
     public const string Units = "Unidades";
 
-    public static readonly IReadOnlyList<string> All = [Grams, Milliliters, Units];
+    public static readonly IReadOnlyList<string> All = [Kilograms, Liters, Units];
 
     public static bool IsValid(string? unit) =>
         !string.IsNullOrWhiteSpace(unit) && All.Contains(unit.Trim(), StringComparer.OrdinalIgnoreCase);
@@ -14,8 +14,8 @@ public static class MeasureUnits
     public static string Normalize(string unit)
     {
         var trimmed = unit.Trim();
-        if (string.Equals(trimmed, Grams, StringComparison.OrdinalIgnoreCase)) return Grams;
-        if (string.Equals(trimmed, Milliliters, StringComparison.OrdinalIgnoreCase)) return Milliliters;
+        if (string.Equals(trimmed, Kilograms, StringComparison.OrdinalIgnoreCase)) return Kilograms;
+        if (string.Equals(trimmed, Liters, StringComparison.OrdinalIgnoreCase)) return Liters;
         if (string.Equals(trimmed, Units, StringComparison.OrdinalIgnoreCase)) return Units;
         return trimmed;
     }

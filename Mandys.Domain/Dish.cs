@@ -10,6 +10,10 @@ public class Dish
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
 
+    public decimal CostPrice {
+        get => Recipe.Sum(x => x.Product.CostPrice * x.Quantity) ?? 0;
+    }
+
     public Dish(
         int id,
         string name,

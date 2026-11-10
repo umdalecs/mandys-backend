@@ -46,7 +46,7 @@ public class ComboService(
         var dishLines = await ValidateDishLinesAsync(request.Dishes);
         var productLines = await ValidateProductLinesAsync(request.Products);
 
-        var dishesCost = dishLines.Sum(x => x.Dish.Price * x.Quantity);
+        var dishesCost = dishLines.Sum(x => x.Dish.CostPrice * x.Quantity);
         var productsCost = productLines.Sum(x => x.Product.CostPrice * x.Quantity) ?? 0;
 
         if (request.Price < (dishesCost + productsCost))
@@ -83,7 +83,7 @@ public class ComboService(
         var dishLines = request.Dishes is null ? null : await ValidateDishLinesAsync(request.Dishes);
         var productLines = request.Products is null ? null : await ValidateProductLinesAsync(request.Products);
 
-        var dishesCost = dishLines?.Sum(x => x.Dish.Price * x.Quantity) ?? 0;
+        var dishesCost = dishLines?.Sum(x => x.Dish.CostPrice * x.Quantity) ?? 0;
         var productsCost = productLines?.Sum(x => x.Product.CostPrice * x.Quantity) ?? 0;
 
         if (request.Price < dishesCost + productsCost)
