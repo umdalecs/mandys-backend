@@ -91,6 +91,7 @@ public class BranchStorageService(
         }
 
         var normalizedFolio = request.Folio.Trim();
+        var normalizedSupplierName = request.SupplierName.Trim();
         if (await branchStorages.ExistsHistoryByFolioAsync(branchId, normalizedFolio))
         {
             throw ServiceException.Conflict(
@@ -141,6 +142,8 @@ public class BranchStorageService(
             branch,
             StorageMovementTypes.In,
             normalizedFolio,
+            normalizedSupplierName,
+            null,
             historyLines);
 
         var created = await branchStorages.ApplyMovementAsync(history, updatedStorages);
@@ -157,13 +160,7 @@ public class BranchStorageService(
             throw ServiceException.NotFound($"No se encontró la sucursal con ID '{branchId}'.");
         }
 
-        var normalizedFolio = string.IsNullOrWhiteSpace(request.Folio) ? null : request.Folio.Trim();
-        if (normalizedFolio is not null &&
-            await branchStorages.ExistsHistoryByFolioAsync(branchId, normalizedFolio))
-        {
-            throw ServiceException.Conflict(
-                $"Ya existe un movimiento con el folio '{normalizedFolio}' en esta sucursal.");
-        }
+        var normalizedReason = request.Reason.Trim();
 
         if (request.Products is null || request.Products.Count == 0)
         {
@@ -213,7 +210,9 @@ public class BranchStorageService(
             0,
             branch,
             StorageMovementTypes.Out,
-            normalizedFolio,
+            null,
+            null,
+            normalizedReason,
             historyLines);
 
         var created = await branchStorages.ApplyMovementAsync(history, updatedStorages);

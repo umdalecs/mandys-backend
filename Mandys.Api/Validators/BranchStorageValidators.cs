@@ -86,6 +86,11 @@ public class CreateStorageInRequestValidator : AbstractValidator<CreateStorageIn
             .MaximumLength(50)
             .WithMessage("El folio es obligatorio y no puede superar los 50 caracteres.");
 
+        RuleFor(x => x.SupplierName)
+            .NotEmpty()
+            .MaximumLength(150)
+            .WithMessage("El nombre del proveedor es obligatorio y no puede superar los 150 caracteres.");
+
         RuleFor(x => x.Products)
             .NotEmpty()
             .WithMessage("El movimiento debe incluir al menos un producto.");
@@ -103,11 +108,10 @@ public class CreateStorageOutRequestValidator : AbstractValidator<CreateStorageO
 {
     public CreateStorageOutRequestValidator(IProductRepository products)
     {
-        RuleFor(x => x.Folio)
+        RuleFor(x => x.Reason)
             .NotEmpty()
-            .MaximumLength(50)
-            .When(x => x.Folio is not null)
-            .WithMessage("El folio no puede estar vacío y no puede superar los 50 caracteres.");
+            .MaximumLength(255)
+            .WithMessage("El motivo de salida es obligatorio y no puede superar los 255 caracteres.");
 
         RuleFor(x => x.Products)
             .NotEmpty()

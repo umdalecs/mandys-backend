@@ -243,6 +243,8 @@ public class BranchStorageRepository(ApplicationDbContext db) : IBranchStorageRe
             history.Branch,
             history.Type,
             history.Folio,
+            history.SupplierName,
+            history.Reason,
             history.Products,
             historyRecord.CreatedAt,
             historyRecord.UpdatedAt);
@@ -275,6 +277,8 @@ public class BranchStorageRepository(ApplicationDbContext db) : IBranchStorageRe
             var term = search.Trim().ToLower();
             query = query.Where(bsh =>
                 (bsh.Folio != null && bsh.Folio.ToLower().Contains(term)) ||
+                (bsh.SupplierName != null && bsh.SupplierName.ToLower().Contains(term)) ||
+                (bsh.Reason != null && bsh.Reason.ToLower().Contains(term)) ||
                 bsh.Products.Any(l => l.Product.Description.ToLower().Contains(term)));
         }
 

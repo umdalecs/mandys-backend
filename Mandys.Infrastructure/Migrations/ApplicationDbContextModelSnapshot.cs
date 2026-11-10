@@ -140,6 +140,16 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("folio");
 
+                    b.Property<string>("Reason")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("reason");
+
+                    b.Property<string>("SupplierName")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)")
+                        .HasColumnName("supplier_name");
+
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(10)

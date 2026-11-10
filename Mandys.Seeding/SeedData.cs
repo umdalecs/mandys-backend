@@ -3,11 +3,6 @@ using Mandys.Domain;
 
 namespace Mandys.Seeding;
 
-/// <summary>
-/// Catalog seed rows expressed as the API request DTOs. Cross references
-/// (BranchId, ProductId, DishId) use 1-based positions in these lists and
-/// are resolved to live API ids by <see cref="Seeders"/> at seed time.
-/// </summary>
 public static class SeedData
 {
     public const string UserPassword = "mandyspos";
@@ -333,6 +328,7 @@ public static class SeedData
             [
                 new(
                     "ENT-CEN-001",
+                    "Distribuidora Agropecuaria de Sinaloa",
                     [
                         new(1, 25000m, 0.03m),  // Jitomate saladet (25 kg @ $0.03/g = $30/kg)
                         new(3, 120m, 18m),      // Lechuga romana (120 unidades @ $18/unidad)
@@ -347,6 +343,7 @@ public static class SeedData
                 ),
                 new(
                     "ENT-CEN-002",
+                    "Comercializadora de Alimentos del Noroeste",
                     [
                         new(36, 300m, 5.50m),   // Pan para hamburguesa con ajonjolí (300 unidades @ $5.50)
                         new(37, 200m, 7.50m),   // Pan brioche para hamburguesa (200 unidades @ $7.50)
@@ -367,6 +364,7 @@ public static class SeedData
             [
                 new(
                     "ENT-CAN-001",
+                    "Distribuidora Agropecuaria de Sinaloa",
                     [
                         new(1, 10000m, 0.03m),  // Jitomate saladet (10 kg @ $0.03/g)
                         new(3, 50m, 18m),       // Lechuga romana (50 unidades @ $18/unidad)
@@ -381,6 +379,7 @@ public static class SeedData
                 ),
                 new(
                     "ENT-CAN-002",
+                    "Comercializadora de Alimentos del Noroeste",
                     [
                         new(36, 120m, 5.50m),   // Pan para hamburguesa con ajonjolí (120 unidades @ $5.50)
                         new(37, 80m, 7.50m),    // Pan brioche para hamburguesa (80 unidades @ $7.50)
@@ -400,25 +399,24 @@ public static class SeedData
     public static readonly IReadOnlyDictionary<int, IReadOnlyList<CreateStorageOutRequest>> StorageOuts =
         new Dictionary<int, IReadOnlyList<CreateStorageOutRequest>>
         {
-            // Sucursal 1: Sucursal Culiacán Centro (traspaso a sucursales / merma)
             [1] =
             [
                 new(
+                    "TRASPASO",
                     [
                         new(21, 10000m), // Carne molida de res 80/20 (10 kg)
                         new(22, 8000m),  // Arrachera marinada (8 kg)
                         new(36, 80m),    // Pan para hamburguesa con ajonjolí (80 unidades)
                         new(46, 3000m),  // Queso americano en rebanadas (3 kg)
                         new(76, 60m)     // Refresco de cola 600 ml (60 unidades)
-                    ],
-                    "SAL-CEN-001"
+                    ]
                 )
             ],
 
-            // Sucursal 2: Sucursal Cañadas (consumo de cocina y ventas)
             [2] =
             [
                 new(
+                    "MERMA",
                     [
                         new(1, 2500m),   // Jitomate saladet (2.5 kg)
                         new(4, 15m),     // Lechuga iceberg (15 unidades)
@@ -428,8 +426,7 @@ public static class SeedData
                         new(58, 600m),   // Catsup (600 ml)
                         new(76, 30m),    // Refresco de cola 600 ml (30 unidades)
                         new(86, 25m)     // Porción de papas a la francesa (25 unidades)
-                    ],
-                    "SAL-CAN-001"
+                    ]
                 )
             ]
         };

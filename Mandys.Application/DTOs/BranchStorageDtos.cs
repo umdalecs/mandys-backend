@@ -34,6 +34,8 @@ public record BranchStorageHistoryResponse(
     int BranchId,
     string Type,
     string? Folio,
+    string? SupplierName,
+    string? Reason,
     IReadOnlyList<BranchStorageHistoryProductLineResponse> Products,
     DateTime Date
 );
@@ -51,12 +53,13 @@ public record CreateStorageOutProductLineRequest(
 
 public record CreateStorageInRequest(
     string Folio,
+    string SupplierName,
     IReadOnlyList<CreateStorageInProductLineRequest> Products
 );
 
 public record CreateStorageOutRequest(
-    IReadOnlyList<CreateStorageOutProductLineRequest> Products,
-    string? Folio = null
+    string Reason,
+    IReadOnlyList<CreateStorageOutProductLineRequest> Products
 );
 
 public record PagedBranchStorageHistoryResponse(
@@ -85,6 +88,8 @@ public static class BranchStorageDtoMapper
             history.Branch.Id,
             history.Type,
             history.Folio,
+            history.SupplierName,
+            history.Reason,
             history.Products
                 .Select(l => new BranchStorageHistoryProductLineResponse(
                     l.Product.ToResponse(),

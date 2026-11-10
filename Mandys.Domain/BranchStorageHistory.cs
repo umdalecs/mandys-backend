@@ -21,6 +21,8 @@ public class BranchStorageHistory
     public Branch Branch { get; private set; }
     public string Type { get; private set; }
     public string? Folio { get; private set; }
+    public string? SupplierName { get; private set; }
+    public string? Reason { get; private set; }
     public IReadOnlyList<BranchStorageHistoryProduct> Products { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
@@ -30,6 +32,8 @@ public class BranchStorageHistory
         Branch branch,
         string type,
         string? folio,
+        string? supplierName,
+        string? reason,
         IEnumerable<BranchStorageHistoryProduct> products,
         DateTime? createdAt = null,
         DateTime? updatedAt = null)
@@ -49,10 +53,32 @@ public class BranchStorageHistory
 
         var normalizedType = StorageMovementTypes.Normalize(type);
         var normalizedFolio = string.IsNullOrWhiteSpace(folio) ? null : folio.Trim();
+        var normalizedSupplierName = string.IsNullOrWhiteSpace(supplierName) ? null : supplierName.Trim();
+        var normalizedReason = string.IsNullOrWhiteSpace(reason) ? null : reason.Trim();
 
-        if (normalizedType == StorageMovementTypes.In && normalizedFolio is null)
+        if (normalizedType == StorageMovementTypes.In)
         {
-            throw new ArgumentException("Folio is required for 'in' movements.", nameof(folio));
+            if (normalizedFolio is null)
+            {
+                throw new ArgumentException("Folio is required for 'in' movements.", nameof(folio));
+            }
+
+            if (normalizedSupplierName is null)
+            {
+                throw new ArgumentException("SupplierName is required for 'in' movements.", nameof(supplierName));
+            }
+
+            normalizedReason = null;
+        }
+        else if (normalizedType == StorageMovementTypes.Out)
+        {
+            if (normalizedReason is null)
+            {
+                throw new ArgumentException("Reason is required for 'out' movements.", nameof(reason));
+            }
+
+            normalizedFolio = null;
+            normalizedSupplierName = null;
         }
 
         var productList = products.ToList();
@@ -70,6 +96,8 @@ public class BranchStorageHistory
         Branch = branch;
         Type = normalizedType;
         Folio = normalizedFolio;
+        SupplierName = normalizedSupplierName;
+        Reason = normalizedReason;
         Products = productList;
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;

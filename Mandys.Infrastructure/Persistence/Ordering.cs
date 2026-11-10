@@ -71,6 +71,7 @@ internal enum BranchStorageSortField
     Description,
     MinimumStock,
     CurrentStock,
+    LastUpdated,
     CreatedAt,
     UpdatedAt,
 }
@@ -81,6 +82,9 @@ internal enum BranchStorageHistorySortField
     Id,
     Type,
     Folio,
+    SupplierName,
+    Reason,
+    Date,
     CreatedAt,
     UpdatedAt,
 }
@@ -188,6 +192,7 @@ internal static class SortSelectors
             BranchStorageSortField.Description => bs => bs.Product.Description,
             BranchStorageSortField.MinimumStock => bs => bs.MinimumStock,
             BranchStorageSortField.CurrentStock => bs => bs.CurrentStock,
+            BranchStorageSortField.LastUpdated => bs => bs.UpdatedAt,
             BranchStorageSortField.CreatedAt => bs => bs.CreatedAt,
             BranchStorageSortField.UpdatedAt => bs => bs.UpdatedAt,
             _ => bs => bs.Id,
@@ -198,6 +203,9 @@ internal static class SortSelectors
         {
             BranchStorageHistorySortField.Type => bsh => bsh.Type,
             BranchStorageHistorySortField.Folio => bsh => bsh.Folio ?? string.Empty,
+            BranchStorageHistorySortField.SupplierName => bsh => bsh.SupplierName ?? string.Empty,
+            BranchStorageHistorySortField.Reason => bsh => bsh.Reason ?? string.Empty,
+            BranchStorageHistorySortField.Date => bsh => bsh.CreatedAt,
             BranchStorageHistorySortField.CreatedAt => bsh => bsh.CreatedAt,
             BranchStorageHistorySortField.UpdatedAt => bsh => bsh.UpdatedAt,
             _ => bsh => bsh.Id,

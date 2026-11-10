@@ -217,13 +217,13 @@ public static class Seeders
             var branchId = ResolveId(ctx.Branches, branchSeedId, "branch");
             var existingHistory = await api.ListAllAsync<BranchStorageHistoryResponse>(
                 $"/branches/{branchId}/storage/history", cancellationToken);
-            var existingByFolio = existingHistory
-                .Where(h => !string.IsNullOrWhiteSpace(h.Folio))
-                .ToDictionary(h => h.Folio!, h => h.Id, StringComparer.OrdinalIgnoreCase);
+            var existingByReason = existingHistory
+                .Where(h => !string.IsNullOrWhiteSpace(h.Reason))
+                .ToDictionary(h => h.Reason!, h => h.Id, StringComparer.OrdinalIgnoreCase);
 
             foreach (var row in outRequests)
             {
-                if (row.Folio is not null && existingByFolio.TryGetValue(row.Folio, out var existingId))
+                if (existingByReason.TryGetValue(row.Reason, out var existingId))
                 {
                     skippedIds.Add(existingId);
                     continue;
@@ -238,11 +238,7 @@ public static class Seeders
 
                 var createdMovement = await api.PostAsync<CreateStorageOutRequest, BranchStorageHistoryResponse>(
                     $"/branches/{branchId}/storage/out", request, cancellationToken);
-                if (row.Folio is not null)
-                {
-                    existingByFolio[row.Folio] = createdMovement.Id;
-                }
-
+                existingByReason[row.Reason] = createdMovement.Id;
                 createdIds.Add(createdMovement.Id);
             }
         }

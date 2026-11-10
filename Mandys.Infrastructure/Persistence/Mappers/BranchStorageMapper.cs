@@ -33,6 +33,8 @@ internal static class BranchStorageHistoryMapper
             record.Branch.ToDomain(),
             record.Type,
             record.Folio,
+            record.SupplierName,
+            record.Reason,
             record.Products.Select(l => l.ToDomain()),
             record.CreatedAt,
             record.UpdatedAt);
@@ -43,6 +45,8 @@ internal static class BranchStorageHistoryMapper
             BranchId = history.Branch.Id,
             Type = history.Type,
             Folio = history.Folio,
+            SupplierName = history.SupplierName,
+            Reason = history.Reason,
             Products = history.Products.Select(l => l.ToRecord()).ToList(),
         };
 }

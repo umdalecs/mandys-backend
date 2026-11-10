@@ -16,5 +16,9 @@ public class BranchStorageHistoryRecord : Record
     public string Type { get; set; } = string.Empty;
     [MaxLength(50)]
     public string? Folio { get; set; }
+    [MaxLength(150)]
+    public string? SupplierName { get; set; }
+    [MaxLength(255)]
+    public string? Reason { get; set; }
     public ICollection<BranchStorageHistoryProductRecord> Products { get; set; } = new List<BranchStorageHistoryProductRecord>();
 }
