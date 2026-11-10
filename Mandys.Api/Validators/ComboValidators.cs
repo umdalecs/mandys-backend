@@ -9,11 +9,11 @@ public class ComboDishLineValidator : AbstractValidator<CreateComboDishLineReque
     {
         RuleFor(x => x.DishId)
             .GreaterThan(0)
-            .WithMessage("Los IDs de platillos en el combo deben ser positivos.");
+            .WithMessage("Los IDs de platillos en el combo deben ser mayores a 0.");
 
         RuleFor(x => x.Quantity)
             .GreaterThan(0)
-            .WithMessage("Las cantidades de platillos en el combo deben ser positivas.")
+            .WithMessage("Las cantidades de platillos en el combo deben ser mayores a 0.")
             .Must(decimal.IsInteger)
             .WithMessage("Las cantidades de platillos en el combo deben ser números enteros.");
     }
@@ -25,11 +25,11 @@ public class ComboProductLineValidator : AbstractValidator<CreateComboProductLin
     {
         RuleFor(x => x.ProductId)
             .GreaterThan(0)
-            .WithMessage("Los IDs de productos en el combo deben ser positivos.");
+            .WithMessage("Los IDs de productos en el combo deben ser mayores a 0.");
 
         RuleFor(x => x.Quantity)
             .GreaterThan(0)
-            .WithMessage("Las cantidades de productos en el combo deben ser positivas.")
+            .WithMessage("Las cantidades de productos en el combo deben ser mayores a 0.")
             .Must(decimal.IsInteger)
             .WithMessage("Las cantidades de productos en el combo deben ser números enteros.");
     }
@@ -45,8 +45,10 @@ public class CreateComboRequestValidator : AbstractValidator<CreateComboRequest>
             .WithMessage("El nombre es obligatorio y no puede superar los 50 caracteres.");
 
         RuleFor(x => x.Price)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("El precio no puede ser negativo.");
+            .GreaterThan(0)
+            .WithMessage("El precio tiene que ser mayor a 0.")
+            .LessThanOrEqualTo(10_000)
+            .WithMessage("El precio no puede ser mayor a 10,000.");
 
         RuleForEach(x => x.Dishes).SetValidator(new ComboDishLineValidator());
 
@@ -75,9 +77,11 @@ public class UpdateComboRequestValidator : AbstractValidator<UpdateComboRequest>
             .WithMessage("El nombre no puede estar vacío y no puede superar los 50 caracteres.");
 
         RuleFor(x => x.Price)
-            .GreaterThanOrEqualTo(0)
-            .When(x => x.Price.HasValue)
-            .WithMessage("El precio no puede ser negativo.");
+            .GreaterThan(0)
+            .WithMessage("El precio tiene que ser mayor a 0.")
+            .LessThanOrEqualTo(10_000)
+            .WithMessage("El precio no puede ser mayor a 10,000.")
+            .When(x => x.Price.HasValue);
 
         RuleForEach(x => x.Dishes).SetValidator(new ComboDishLineValidator());
 

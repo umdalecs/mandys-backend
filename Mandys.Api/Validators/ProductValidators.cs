@@ -14,8 +14,11 @@ public class CreateProductRequestValidator : AbstractValidator<CreateProductRequ
             .WithMessage("La descripción es obligatoria y no puede superar los 50 caracteres.");
 
         RuleFor(x => x.SalePrice)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("El precio de venta no puede ser negativo.");
+            .GreaterThan(0)
+            .WithMessage("El precio de venta tiene que ser mayor a 0.")
+            .LessThanOrEqualTo(10_000)
+            .WithMessage("El precio de venta no puede ser mayor a 10,000.")
+            .When(x => x.SalePrice.HasValue);
 
         RuleFor(x => x.MeasureUnit)
             .NotEmpty()
@@ -38,9 +41,11 @@ public class UpdateProductRequestValidator : AbstractValidator<UpdateProductRequ
             .WithMessage("La descripción no puede estar vacía y no puede superar los 50 caracteres.");
 
         RuleFor(x => x.SalePrice)
-            .GreaterThanOrEqualTo(0)
-            .When(x => x.SalePrice.HasValue)
-            .WithMessage("El precio de venta no puede ser negativo.");
+            .GreaterThan(0)
+            .WithMessage("El precio de venta tiene que ser mayor a 0.")
+            .LessThanOrEqualTo(10_000)
+            .WithMessage("El precio de venta no puede ser mayor a 10,000.")
+            .When(x => x.SalePrice.HasValue);
 
         RuleFor(x => x.MeasureUnit)
             .NotEmpty()

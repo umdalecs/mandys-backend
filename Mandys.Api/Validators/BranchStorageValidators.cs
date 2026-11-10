@@ -10,8 +10,10 @@ public class UpdateBranchStorageRequestValidator : AbstractValidator<UpdateBranc
     public UpdateBranchStorageRequestValidator()
     {
         RuleFor(x => x.MinimumStock)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("El stock mínimo no puede ser negativo.");
+            .GreaterThan(0)
+            .WithMessage("El stock mínimo tiene que ser mayor a 0.")
+            .LessThanOrEqualTo(10_000)
+            .WithMessage("El stock mínimo no puede ser mayor a 10,000.");
     }
 }
 
@@ -21,15 +23,17 @@ public class StorageInProductLineValidator : AbstractValidator<CreateStorageInPr
     {
         RuleFor(x => x.ProductId)
             .GreaterThan(0)
-            .WithMessage("Los IDs de productos en el movimiento deben ser positivos.");
+            .WithMessage("Los IDs de productos en el movimiento deben ser mayores a 0.");
 
         RuleFor(x => x.Quantity)
             .GreaterThan(0)
-            .WithMessage("Las cantidades en el movimiento deben ser positivas.");
+            .WithMessage("Las cantidades en el movimiento deben ser mayores a 0.");
 
         RuleFor(x => x.CostPrice)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("El costo de compra no puede ser negativo.");
+            .GreaterThan(0)
+            .WithMessage("El costo de compra tiene que ser mayor a 0.")
+            .LessThanOrEqualTo(10_000)
+            .WithMessage("El costo de compra no puede ser mayor a 10,000.");
 
         RuleFor(x => x)
             .MustAsync(async (line, _) =>
@@ -52,11 +56,11 @@ public class StorageOutProductLineValidator : AbstractValidator<CreateStorageOut
     {
         RuleFor(x => x.ProductId)
             .GreaterThan(0)
-            .WithMessage("Los IDs de productos en el movimiento deben ser positivos.");
+            .WithMessage("Los IDs de productos en el movimiento deben ser mayores a 0.");
 
         RuleFor(x => x.Quantity)
             .GreaterThan(0)
-            .WithMessage("Las cantidades en el movimiento deben ser positivas.");
+            .WithMessage("Las cantidades en el movimiento deben ser mayores a 0.");
 
         RuleFor(x => x)
             .MustAsync(async (line, _) =>

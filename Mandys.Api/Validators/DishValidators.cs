@@ -11,11 +11,11 @@ public class DishRecipeLineValidator : AbstractValidator<CreateDishRecipeLineReq
     {
         RuleFor(x => x.ProductId)
             .GreaterThan(0)
-            .WithMessage("Los IDs de productos en la receta deben ser positivos.");
+            .WithMessage("Los IDs de productos en la receta deben ser mayores a 0.");
 
         RuleFor(x => x.Quantity)
             .GreaterThan(0)
-            .WithMessage("Las cantidades en la receta deben ser positivas.");
+            .WithMessage("Las cantidades en la receta deben ser mayores a 0.");
 
         RuleFor(x => x)
             .MustAsync(async (line, _) =>
@@ -42,8 +42,10 @@ public class CreateDishRequestValidator : AbstractValidator<CreateDishRequest>
             .WithMessage("El nombre es obligatorio y no puede superar los 50 caracteres.");
 
         RuleFor(x => x.Price)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("El precio no puede ser negativo.");
+            .GreaterThan(0)
+            .WithMessage("El precio tiene que ser mayor a 0.")
+            .LessThanOrEqualTo(10_000)
+            .WithMessage("El precio no puede ser mayor a 10,000.");
 
         RuleForEach(x => x.Recipe).SetValidator(new DishRecipeLineValidator(products));
 
@@ -65,9 +67,11 @@ public class UpdateDishRequestValidator : AbstractValidator<UpdateDishRequest>
             .WithMessage("El nombre no puede estar vacío y no puede superar los 50 caracteres.");
 
         RuleFor(x => x.Price)
-            .GreaterThanOrEqualTo(0)
-            .When(x => x.Price.HasValue)
-            .WithMessage("El precio no puede ser negativo.");
+            .GreaterThan(0)
+            .WithMessage("El precio tiene que ser mayor a 0.")
+            .LessThanOrEqualTo(10_000)
+            .WithMessage("El precio no puede ser mayor a 10,000.")
+            .When(x => x.Price.HasValue);
 
         RuleForEach(x => x.Recipe).SetValidator(new DishRecipeLineValidator(products));
 
