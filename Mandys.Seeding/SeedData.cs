@@ -330,7 +330,7 @@ public static class SeedData
                     "ENT-CEN-001",
                     "Distribuidora Agropecuaria de Sinaloa",
                     [
-                        new(1, 25000m, 30m),  // Jitomate saladet (25 kg @ $0.03/g = $30/kg)
+                        new(1, 25m, 30m),  // Jitomate saladet (25 kg @ $30/kg)
                         new(3, 120m, 18m),      // Lechuga romana (120 unidades @ $18/unidad)
                         new(4, 120m, 16m),      // Lechuga iceberg (120 unidades @ $16/unidad)
                         new(5, 20m, 25m), // Cebolla blanca (20 kg @ $0.025/g = $25/kg)
@@ -355,6 +355,95 @@ public static class SeedData
                         new(58, 10m, 40m), // Catsup (10 L @ $0.04/ml)
                         new(76, 240m, 16m),     // Refresco de cola 600 ml (240 unidades @ $16)
                         new(86, 180m, 18m)      // Porción de papas a la francesa (180 unidades @ $18)
+                    ]
+                ),
+                new(
+                    "ENT-CEN-003",
+                    "Distribuidora Agropecuaria de Sinaloa",
+                    [
+                        new(2, 8m, 55m),        // Jitomate cherry (8 kg @ $55/kg)
+                        new(6, 10m, 30m),       // Cebolla morada (10 kg @ $30/kg)
+                        new(7, 6m, 40m),        // Cebolla cambray (6 kg @ $40/kg)
+                        new(8, 40m, 22m),       // Papa blanca para freír (40 kg @ $22/kg)
+                        new(9, 10m, 20m),       // Pepino (10 kg @ $20/kg)
+                        new(10, 6m, 35m),       // Chile jalapeño (6 kg @ $35/kg)
+                        new(12, 12m, 28m),      // Limón sin semilla (12 kg @ $28/kg)
+                        new(13, 3m, 45m),       // Cilantro fresco (3 kg @ $45/kg)
+                        new(14, 8m, 18m),       // Zanahoria (8 kg @ $18/kg)
+                        new(15, 5m, 80m),       // Champiñón blanco (5 kg @ $80/kg)
+                        new(16, 6m, 60m),       // Pimiento morrón (6 kg @ $60/kg)
+                        new(17, 2m, 90m),       // Ajo fresco (2 kg @ $90/kg)
+                        new(18, 3m, 120m),      // Espinaca baby (3 kg @ $120/kg)
+                        new(19, 6m, 15m),       // Col blanca (6 kg @ $15/kg)
+                        new(20, 2m, 50m),       // Perejil fresco (2 kg @ $50/kg)
+                        new(23, 25m, 175m),     // Milanesa de res (25 kg @ $175/kg)
+                        new(24, 30m, 115m),     // Pechuga de pollo sin hueso (30 kg @ $115/kg)
+                        new(25, 25m, 120m),     // Tiras de pollo (25 kg @ $120/kg)
+                        new(28, 8m, 110m),      // Jamón de pavo (8 kg @ $110/kg)
+                        new(29, 10m, 95m),      // Salchicha para asar (10 kg @ $95/kg)
+                        new(30, 8m, 105m),      // Chorizo de cerdo (8 kg @ $105/kg)
+                        new(31, 5m, 210m),      // Pepperoni (5 kg @ $210/kg)
+                        new(32, 360m, 3m),      // Huevo fresco (360 unidades @ $3)
+                        new(33, 200m, 18m),     // Medallón de res congelado (200 unidades @ $18)
+                        new(34, 150m, 15m),     // Filete de pollo empanizado (150 unidades @ $15)
+                        new(35, 20m, 125m)      // Nuggets de pollo congelados (20 kg @ $125/kg)
+                    ]
+                ),
+                new(
+                    "ENT-CEN-004",
+                    "Comercializadora de Alimentos del Noroeste",
+                    [
+                        new(39, 200m, 4.50m),   // Pan para hot dog (200 unidades @ $4.50)
+                        new(42, 15m, 60m),      // Totopos de maíz (15 kg @ $60/kg)
+                        new(43, 5m, 85m),       // Crotones sazonados (5 kg @ $85/kg)
+                        new(44, 25m, 18m),      // Harina de trigo (25 kg @ $18/kg)
+                        new(45, 10m, 30m),      // Pan molido para empanizar (10 kg @ $30/kg)
+                        new(47, 12m, 155m),     // Queso cheddar rallado (12 kg @ $155/kg)
+                        new(49, 15m, 135m),     // Queso asadero (15 kg @ $135/kg)
+                        new(50, 5m, 160m),      // Queso cotija rallado (5 kg @ $160/kg)
+                        new(51, 5m, 280m),      // Queso parmesano rallado (5 kg @ $280/kg)
+                        new(52, 8m, 170m),      // Mantequilla sin sal (8 kg @ $170/kg)
+                        new(53, 12m, 55m),      // Crema ácida (12 L @ $55/L)
+                        new(54, 30m, 26m),      // Leche entera (30 L @ $26/L)
+                        new(55, 20m, 70m),      // Helado de vainilla (20 L @ $70/L)
+                        new(56, 12m, 45m),      // Mayonesa (12 L @ $45/L)
+                        new(57, 8m, 60m),       // Mayonesa chipotle (8 L @ $60/L)
+                        new(59, 6m, 38m),       // Mostaza amarilla (6 L @ $38/L)
+                        new(60, 8m, 50m),       // Salsa BBQ (8 L @ $50/L)
+                        new(61, 5m, 55m),       // Salsa BBQ picante (5 L @ $55/L)
+                        new(62, 8m, 65m),       // Aderezo ranch (8 L @ $65/L)
+                        new(63, 6m, 70m),       // Aderezo césar (6 L @ $70/L)
+                        new(64, 6m, 48m),       // Pepinillos en rodajas (6 kg @ $48/kg)
+                        new(65, 15m, 22m),      // Puré de tomate envasado (15 L @ $22/L)
+                        new(66, 60m, 35m),      // Aceite vegetal (60 L @ $35/L)
+                        new(67, 15m, 40m),      // Manteca vegetal (15 kg @ $40/kg)
+                        new(68, 10m, 12m),      // Sal refinada (10 kg @ $12/kg)
+                        new(69, 2m, 180m),      // Pimienta negra molida (2 kg @ $180/kg)
+                        new(70, 15m, 25m),      // Azúcar estándar (15 kg @ $25/kg)
+                        new(71, 8m, 75m),       // Cajeta quemada (8 L @ $75/L)
+                        new(72, 60m, 45m),      // Papas corte recto congeladas (60 kg @ $45/kg)
+                        new(73, 20m, 32m),      // Frijoles refritos (20 kg @ $32/kg)
+                        new(74, 500m, 2.50m),   // Cajas para hamburguesa (500 unidades @ $2.50)
+                        new(75, 500m, 1.20m)    // Bolsas de papel para llevar (500 unidades @ $1.20)
+                    ]
+                ),
+                new(
+                    "ENT-CEN-005",
+                    "Bebidas y Postres del Pacífico",
+                    [
+                        new(77, 240m, 16m),     // Refresco de naranja 600 ml (240 unidades @ $16)
+                        new(78, 120m, 12m),     // Limonada natural 500 ml (120 unidades @ $12)
+                        new(79, 120m, 13m),     // Té helado de durazno 500 ml (120 unidades @ $13)
+                        new(80, 100m, 20m),     // Jugo de naranja natural 450 ml (100 unidades @ $20)
+                        new(81, 240m, 7m),      // Agua natural embotellada 600 ml (240 unidades @ $7)
+                        new(82, 80m, 30m),      // Malteada de vainilla 500 ml (80 unidades @ $30)
+                        new(83, 80m, 32m),      // Malteada de chocolate 500 ml (80 unidades @ $32)
+                        new(84, 150m, 9m),      // Café americano 355 ml (150 unidades @ $9)
+                        new(85, 120m, 14m),     // Capuchino 355 ml (120 unidades @ $14)
+                        new(87, 120m, 20m),     // Orden de aros de cebolla (120 unidades @ $20)
+                        new(88, 120m, 25m),     // Nachos con queso (120 unidades @ $25)
+                        new(89, 60m, 15m),      // Flan napolitano (60 unidades @ $15)
+                        new(90, 60m, 18m)       // Rebanada de pastel de chocolate (60 unidades @ $18)
                     ]
                 )
             ],
@@ -391,6 +480,95 @@ public static class SeedData
                         new(58, 4m),  // Catsup (4 L)
                         new(76, 100m),   // Refresco de cola 600 ml (100 unidades)
                         new(86, 80m)     // Porción de papas a la francesa (80 unidades)
+                    ]
+                ),
+                new(
+                    "ENT-CAN-003",
+                    "Distribuidora Agropecuaria de Sinaloa",
+                    [
+                        new(2, 3m),      // Jitomate cherry (3 kg)
+                        new(6, 4m),      // Cebolla morada (4 kg)
+                        new(7, 2.5m),    // Cebolla cambray (2.5 kg)
+                        new(8, 15m),     // Papa blanca para freír (15 kg)
+                        new(9, 4m),      // Pepino (4 kg)
+                        new(10, 2.5m),   // Chile jalapeño (2.5 kg)
+                        new(12, 5m),     // Limón sin semilla (5 kg)
+                        new(13, 1.2m),   // Cilantro fresco (1.2 kg)
+                        new(14, 3m),     // Zanahoria (3 kg)
+                        new(15, 2m),     // Champiñón blanco (2 kg)
+                        new(16, 2.5m),   // Pimiento morrón (2.5 kg)
+                        new(17, .8m),    // Ajo fresco (800 g)
+                        new(18, 1.2m),   // Espinaca baby (1.2 kg)
+                        new(19, 2.5m),   // Col blanca (2.5 kg)
+                        new(20, .8m),    // Perejil fresco (800 g)
+                        new(23, 10m),    // Milanesa de res (10 kg)
+                        new(24, 12m),    // Pechuga de pollo sin hueso (12 kg)
+                        new(25, 10m),    // Tiras de pollo (10 kg)
+                        new(28, 3m),     // Jamón de pavo (3 kg)
+                        new(29, 4m),     // Salchicha para asar (4 kg)
+                        new(30, 3m),     // Chorizo de cerdo (3 kg)
+                        new(31, 2m),     // Pepperoni (2 kg)
+                        new(32, 150m),   // Huevo fresco (150 unidades)
+                        new(33, 80m),    // Medallón de res congelado (80 unidades)
+                        new(34, 60m),    // Filete de pollo empanizado (60 unidades)
+                        new(35, 8m)      // Nuggets de pollo congelados (8 kg)
+                    ]
+                ),
+                new(
+                    "ENT-CAN-004",
+                    "Comercializadora de Alimentos del Noroeste",
+                    [
+                        new(39, 80m),    // Pan para hot dog (80 unidades)
+                        new(42, 6m),     // Totopos de maíz (6 kg)
+                        new(43, 2m),     // Crotones sazonados (2 kg)
+                        new(44, 10m),    // Harina de trigo (10 kg)
+                        new(45, 4m),     // Pan molido para empanizar (4 kg)
+                        new(47, 5m),     // Queso cheddar rallado (5 kg)
+                        new(49, 6m),     // Queso asadero (6 kg)
+                        new(50, 2m),     // Queso cotija rallado (2 kg)
+                        new(51, 2m),     // Queso parmesano rallado (2 kg)
+                        new(52, 3m),     // Mantequilla sin sal (3 kg)
+                        new(53, 5m),     // Crema ácida (5 L)
+                        new(54, 12m),    // Leche entera (12 L)
+                        new(55, 8m),     // Helado de vainilla (8 L)
+                        new(56, 5m),     // Mayonesa (5 L)
+                        new(57, 3m),     // Mayonesa chipotle (3 L)
+                        new(59, 2.5m),   // Mostaza amarilla (2.5 L)
+                        new(60, 3m),     // Salsa BBQ (3 L)
+                        new(61, 2m),     // Salsa BBQ picante (2 L)
+                        new(62, 3m),     // Aderezo ranch (3 L)
+                        new(63, 2.5m),   // Aderezo césar (2.5 L)
+                        new(64, 2.5m),   // Pepinillos en rodajas (2.5 kg)
+                        new(65, 6m),     // Puré de tomate envasado (6 L)
+                        new(66, 25m),    // Aceite vegetal (25 L)
+                        new(67, 6m),     // Manteca vegetal (6 kg)
+                        new(68, 4m),     // Sal refinada (4 kg)
+                        new(69, .8m),    // Pimienta negra molida (800 g)
+                        new(70, 6m),     // Azúcar estándar (6 kg)
+                        new(71, 3m),     // Cajeta quemada (3 L)
+                        new(72, 25m),    // Papas corte recto congeladas (25 kg)
+                        new(73, 8m),     // Frijoles refritos (8 kg)
+                        new(74, 200m),   // Cajas para hamburguesa (200 unidades)
+                        new(75, 200m)    // Bolsas de papel para llevar (200 unidades)
+                    ]
+                ),
+                new(
+                    "ENT-CAN-005",
+                    "Bebidas y Postres del Pacífico",
+                    [
+                        new(77, 100m),   // Refresco de naranja 600 ml (100 unidades)
+                        new(78, 50m),    // Limonada natural 500 ml (50 unidades)
+                        new(79, 50m),    // Té helado de durazno 500 ml (50 unidades)
+                        new(80, 40m),    // Jugo de naranja natural 450 ml (40 unidades)
+                        new(81, 100m),   // Agua natural embotellada 600 ml (100 unidades)
+                        new(82, 30m),    // Malteada de vainilla 500 ml (30 unidades)
+                        new(83, 30m),    // Malteada de chocolate 500 ml (30 unidades)
+                        new(84, 60m),    // Café americano 355 ml (60 unidades)
+                        new(85, 50m),    // Capuchino 355 ml (50 unidades)
+                        new(87, 50m),    // Orden de aros de cebolla (50 unidades)
+                        new(88, 50m),    // Nachos con queso (50 unidades)
+                        new(89, 25m),    // Flan napolitano (25 unidades)
+                        new(90, 25m)     // Rebanada de pastel de chocolate (25 unidades)
                     ]
                 )
             ]
