@@ -15,6 +15,7 @@ public class CreateProductRequestValidator : AbstractValidator<CreateProductRequ
 
         RuleFor(x => x.SalePrice)
             .GreaterThan(0)
+            .When(x => x.SalePrice.HasValue)
             .WithMessage("El precio de venta tiene que ser mayor a 0.")
             .LessThanOrEqualTo(10_000)
             .WithMessage("El precio de venta no puede ser mayor a 10,000.")
