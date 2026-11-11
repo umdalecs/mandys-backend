@@ -16,16 +16,22 @@ public class BranchStorageHandler : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         var storageRoutes = app.MapGroup("/branches/{branchId:int}/storage")
-            .WithTags("BranchStorage")
-            .RequireAuthorization(policy => policy.RequireRole(
-                Roles.Administrator,
-                Roles.OpChief));
+            .WithTags("BranchStorage");
 
         storageRoutes.MapGet("", GetBranchStorage);
         storageRoutes.MapGet("/{productId:int}", GetBranchStorageByProduct);
-        storageRoutes.MapPut("/{productId:int}", UpdateBranchStorage);
-        storageRoutes.MapPost("/in", CreateBranchStorageIn);
-        storageRoutes.MapPost("/out", CreateBranchStorageOut);
+        storageRoutes.MapPut("/{productId:int}", UpdateBranchStorage)
+            .RequireAuthorization(policy => policy.RequireRole(
+                Roles.Administrator,
+                Roles.OpChief));
+        storageRoutes.MapPost("/in", CreateBranchStorageIn)
+            .RequireAuthorization(policy => policy.RequireRole(
+                Roles.Administrator,
+                Roles.OpChief));
+        storageRoutes.MapPost("/out", CreateBranchStorageOut)
+            .RequireAuthorization(policy => policy.RequireRole(
+                Roles.Administrator,
+                Roles.OpChief));
         storageRoutes.MapGet("/history", GetBranchStorageHistory);
         storageRoutes.MapGet("/history/{historyId:int}", GetBranchStorageHistoryById);
 

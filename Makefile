@@ -1,6 +1,7 @@
 API_PROJECT := Mandys.Api
 API_LAUNCH_PROFILE := http
 SEED_PROJECT := Mandys.Seeding
+BASE_URL ?= http://localhost:8080
 
 EF_ARGS := --project Mandys.Infrastructure --startup-project Mandys.Api
 MIGRATIONS_DIR := Mandys.Infrastructure/Migrations
@@ -15,7 +16,7 @@ run-api:
 	dotnet run --project $(API_PROJECT) --launch-profile $(API_LAUNCH_PROFILE)
 
 seed:
-	dotnet run --project $(SEED_PROJECT)
+	dotnet run --project $(SEED_PROJECT) -- $(BASE_URL)
 
 restart-database: stop-database run-database
 
