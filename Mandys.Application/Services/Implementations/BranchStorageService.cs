@@ -146,11 +146,15 @@ public class BranchStorageService(
 
             storage.AddStock(line.Quantity);
 
-            decimal? recordedCostPrice = null;
+            decimal recordedCostPrice = 0;
             if (applyCostPrice && line.CostPrice.HasValue)
             {
                 storage.Product.UpdateCostPrice(line.CostPrice.Value);
                 recordedCostPrice = line.CostPrice.Value;
+            }
+            else if (!applyCostPrice)
+            {
+                recordedCostPrice = storage.Product.CostPrice ?? 0;
             }
 
             updatedStorages.Add(storage);
@@ -223,7 +227,7 @@ public class BranchStorageService(
             storage.RemoveStock(line.Quantity);
 
             updatedStorages.Add(storage);
-            historyLines.Add(new BranchStorageHistoryProduct(storage.Product, line.Quantity));
+            historyLines.Add(new BranchStorageHistoryProduct(storage.Product, line.Quantity, storage.Product.CostPrice ?? 0));
         }
 
         var history = new BranchStorageHistory(

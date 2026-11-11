@@ -219,11 +219,15 @@ public class BranchStorageRepository(ApplicationDbContext db) : IBranchStorageRe
         var historyRecord = history.ToRecord();
         db.BranchStorageHistories.Add(historyRecord);
 
-        if (history.Type == StorageMovementTypes.In && history.Products.Any(p => p.CostPrice.HasValue))
+        // Entries may update the product's purchase cost (the service mutates
+        // the domain Product via UpdateCostPrice). Persist whatever cost the
+        // domain product now carries; when the movement didn't change it, the
+        // value is identical and EF won't issue an UPDATE.
+        if (history.Type == StorageMovementTypes.In)
         {
             var productIds = history.Products
-                .Where(p => p.CostPrice.HasValue)
                 .Select(p => p.Product.Id)
+                .Distinct()
                 .ToList();
             var trackedProducts = await db.Products
                 .Where(p => productIds.Contains(p.Id))
@@ -231,9 +235,9 @@ public class BranchStorageRepository(ApplicationDbContext db) : IBranchStorageRe
 
             foreach (var line in history.Products)
             {
-                if (trackedProducts.TryGetValue(line.Product.Id, out var productRecord) && line.CostPrice.HasValue)
+                if (trackedProducts.TryGetValue(line.Product.Id, out var productRecord))
                 {
-                    productRecord.CostPrice = line.CostPrice.Value;
+                    productRecord.CostPrice = line.Product.CostPrice;
                 }
             }
         }

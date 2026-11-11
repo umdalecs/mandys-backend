@@ -34,7 +34,7 @@ if (app.Environment.IsDevelopment())
     // Frontend-dev flow: the lightweight dev container ships no SDK or
     // dotnet-ef, so the api applies pending migrations itself on startup.
     using var scope = app.Services.CreateScope();
-    scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
+    await scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.MigrateAsync();
 
     app.MapOpenApi();
     app.MapScalarApiReference();
@@ -49,4 +49,4 @@ app.UseAuthorization();
 
 app.MapCarter();
 
-app.Run();
+await app.RunAsync();

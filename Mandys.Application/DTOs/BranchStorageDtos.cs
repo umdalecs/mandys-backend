@@ -26,7 +26,7 @@ public record PagedBranchStorageResponse(
 public record BranchStorageHistoryProductLineResponse(
     ProductResponse Product,
     decimal Quantity,
-    decimal? CostPrice
+    decimal CostPrice
 );
 
 public record BranchStorageHistoryResponse(

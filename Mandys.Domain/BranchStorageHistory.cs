@@ -103,9 +103,9 @@ public class BranchStorageHistoryProduct
 {
     public Product Product { get; private set; }
     public decimal Quantity { get; private set; }
-    public decimal? CostPrice { get; private set; }
+    public decimal CostPrice { get; private set; }
 
-    public BranchStorageHistoryProduct(Product product, decimal quantity, decimal? costPrice = null)
+    public BranchStorageHistoryProduct(Product product, decimal quantity, decimal costPrice)
     {
         ArgumentNullException.ThrowIfNull(product);
 
@@ -126,7 +126,7 @@ public class BranchStorageHistoryProduct
                 nameof(quantity));
         }
 
-        if (costPrice.HasValue && costPrice.Value < 0)
+        if (costPrice < 0)
         {
             throw new ArgumentException("CostPrice must be non-negative.", nameof(costPrice));
         }

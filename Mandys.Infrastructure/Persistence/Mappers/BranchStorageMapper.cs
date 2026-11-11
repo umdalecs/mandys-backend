@@ -54,7 +54,7 @@ internal static class BranchStorageHistoryMapper
 internal static class BranchStorageHistoryProductMapper
 {
     internal static BranchStorageHistoryProduct ToDomain(this BranchStorageHistoryProductRecord record) =>
-        new(record.Product.ToDomain(), record.Quantity, record.CostPrice);
+        new(record.Product.ToDomain(), record.Quantity, record.CostPrice ?? 0);
 
     internal static BranchStorageHistoryProductRecord ToRecord(this BranchStorageHistoryProduct line) =>
         new()
