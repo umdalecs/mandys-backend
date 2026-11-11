@@ -18,6 +18,7 @@ builder.ConfigureBranchStorage();
 builder.ConfigureProducts();
 builder.ConfigureDishes();
 builder.ConfigureCombos();
+builder.ConfigureMenu();
 builder.ConfigureLogs();
 
 const string FrontendCorsPolicy = "Frontend";
@@ -34,7 +35,7 @@ if (app.Environment.IsDevelopment())
     // Frontend-dev flow: the lightweight dev container ships no SDK or
     // dotnet-ef, so the api applies pending migrations itself on startup.
     using var scope = app.Services.CreateScope();
-    await scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.MigrateAsync();
+    scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
 
     app.MapOpenApi();
     app.MapScalarApiReference();

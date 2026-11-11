@@ -90,6 +90,18 @@ internal enum BranchStorageHistorySortField
 }
 
 /// <summary>
+/// Whitelisted sortable fields for the customer-facing menu endpoints. Named
+/// after the menu DTO fields (<c>name</c>, <c>price</c>) and deliberately
+/// excluding internal data such as cost prices.
+/// </summary>
+internal enum MenuSortField
+{
+    Id,
+    Name,
+    Price,
+}
+
+/// <summary>
 /// Parses a comma-separated Django-style ordering (<c>name,-price</c>).
 /// Matching is case-insensitive and ignores underscores, so both
 /// <c>salePrice</c> and <c>sale_price</c> resolve. Unknown fields are
@@ -209,6 +221,30 @@ internal static class SortSelectors
             BranchStorageHistorySortField.CreatedAt => bsh => bsh.CreatedAt,
             BranchStorageHistorySortField.UpdatedAt => bsh => bsh.UpdatedAt,
             _ => bsh => bsh.Id,
+        };
+
+    internal static Expression<Func<ProductRecord, object>> ProductSelector(this MenuSortField field) =>
+        field switch
+        {
+            MenuSortField.Name => p => p.Description,
+            MenuSortField.Price => p => p.SalePrice ?? 0,
+            _ => p => p.Id,
+        };
+
+    internal static Expression<Func<DishRecord, object>> DishSelector(this MenuSortField field) =>
+        field switch
+        {
+            MenuSortField.Name => d => d.Name,
+            MenuSortField.Price => d => d.Price,
+            _ => d => d.Id,
+        };
+
+    internal static Expression<Func<ComboRecord, object>> ComboSelector(this MenuSortField field) =>
+        field switch
+        {
+            MenuSortField.Name => c => c.Name,
+            MenuSortField.Price => c => c.Price,
+            _ => c => c.Id,
         };
 }
 
