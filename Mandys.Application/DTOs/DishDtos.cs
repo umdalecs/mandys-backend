@@ -11,6 +11,7 @@ public record DishResponse(
     int Id,
     string Name,
     decimal Price,
+    decimal CostPrice,
     IReadOnlyList<DishRecipeLineResponse> Recipe,
     string? ImageUrl
 );
@@ -47,6 +48,7 @@ public static class DishMapper
             dish.Id,
             dish.Name,
             dish.Price,
+            dish.CostPrice,
             dish.Recipe.Select(l => new DishRecipeLineResponse(l.Product.ToResponse(), l.Quantity)).ToList(),
             dish.ImageUrl
         );

@@ -11,6 +11,10 @@ public class Combo
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
 
+    public decimal CostPrice =>
+        Dishes.Sum(d => d.Dish.CostPrice * d.Quantity) +
+        (Products.Sum(p => p.Product.CostPrice * p.Quantity) ?? 0);
+
     public Combo(
         int id,
         string name,

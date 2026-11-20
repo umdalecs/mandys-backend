@@ -46,20 +46,19 @@ public class ComboService(
         var dishLines = await ValidateDishLinesAsync(request.Dishes);
         var productLines = await ValidateProductLinesAsync(request.Products);
 
-        var dishesCost = dishLines.Sum(x => x.Dish.CostPrice * x.Quantity);
-        var productsCost = productLines.Sum(x => x.Product.CostPrice * x.Quantity) ?? 0;
-
-        if (request.Price < (dishesCost + productsCost))
-        {
-            throw ServiceException.BadRequest($"El precio de venta del combo no puede ser menor que su costo de producción");
-        }
-
-        var created = await combos.AddAsync(new Combo(
+        var combo = new Combo(
             0,
             name,
             request.Price,
             dishLines,
-            productLines));
+            productLines);
+
+        if (combo.Price < combo.CostPrice)
+        {
+            throw ServiceException.BadRequest($"El precio de venta del combo no puede ser menor que su costo de producción");
+        }
+
+        var created = await combos.AddAsync(combo);
 
         return created.ToResponse();
     }
@@ -83,19 +82,16 @@ public class ComboService(
         var dishLines = request.Dishes is null ? null : await ValidateDishLinesAsync(request.Dishes);
         var productLines = request.Products is null ? null : await ValidateProductLinesAsync(request.Products);
 
-        var dishesCost = dishLines?.Sum(x => x.Dish.CostPrice * x.Quantity) ?? 0;
-        var productsCost = productLines?.Sum(x => x.Product.CostPrice * x.Quantity) ?? 0;
-
-        if (request.Price < dishesCost + productsCost)
-        {
-            throw ServiceException.BadRequest($"El precio de venta del combo no puede ser menor que su costo de producción");
-        }
-
         combo.UpdateDetails(
             newName,
             request.Price ?? combo.Price,
             dishLines,
             productLines);
+
+        if (combo.Price < combo.CostPrice)
+        {
+            throw ServiceException.BadRequest($"El precio de venta del combo no puede ser menor que su costo de producción");
+        }
 
         await combos.UpdateAsync(combo);
 
