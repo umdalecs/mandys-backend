@@ -9,7 +9,7 @@ public record ProductResponse(
     decimal? CostPrice,
     decimal? SalePrice,
     string MeasureUnit,
-    string? imageUrl
+    string? ImageUrl
 );
 
 public record CreateProductRequest(
