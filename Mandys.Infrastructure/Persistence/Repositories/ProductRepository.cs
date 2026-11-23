@@ -24,7 +24,7 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
             var term = search.Trim().ToLower();
             query = query.Where(p => p.Description.ToLower().Contains(term));
         }
-        
+
         if (isSupply.HasValue)
         {
             query = query.Where(p =>
@@ -67,6 +67,7 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
         record.CostPrice = product.CostPrice;
         record.SalePrice = product.SalePrice;
         record.MeasureUnit = product.MeasureUnit;
+        record.ImageUrl = product.ImageUrl;
 
         await db.SaveChangesAsync();
     }

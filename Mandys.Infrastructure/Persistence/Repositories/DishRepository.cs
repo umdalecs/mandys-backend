@@ -60,7 +60,8 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
             dish.Price,
             dish.Recipe,
             record.CreatedAt,
-            record.UpdatedAt);
+            record.UpdatedAt,
+            dish.ImageUrl);
     }
 
     public async Task UpdateAsync(Dish dish)
@@ -75,6 +76,7 @@ public class DishRepository(ApplicationDbContext db) : IDishRepository
 
         record.Name = dish.Name;
         record.Price = dish.Price;
+        record.ImageUrl = dish.ImageUrl;
 
         foreach (var line in dish.Recipe)
         {

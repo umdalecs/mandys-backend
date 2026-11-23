@@ -14,7 +14,8 @@ internal static class ProductMapper
             record.MeasureUnit,
             record.CostPrice,
             record.CreatedAt,
-            record.UpdatedAt);
+            record.UpdatedAt,
+            record.ImageUrl);
 
     internal static ProductRecord ToRecord(this Product product) =>
         new()
@@ -24,5 +25,6 @@ internal static class ProductMapper
             CostPrice = product.CostPrice,
             SalePrice = product.SalePrice,
             MeasureUnit = product.MeasureUnit,
+            ImageUrl = product.ImageUrl,
         };
 }

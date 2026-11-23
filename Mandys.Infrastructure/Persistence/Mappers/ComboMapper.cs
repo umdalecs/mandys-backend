@@ -13,13 +13,15 @@ internal static class ComboMapper
             record.ComboDishes.Select(l => l.ToDomain()),
             record.ComboProducts.Select(l => l.ToDomain()),
             record.CreatedAt,
-            record.UpdatedAt);
+            record.UpdatedAt,
+            record.ImageUrl);
 
     internal static ComboRecord ToRecord(this Combo combo) =>
         new()
         {
             Name = combo.Name,
             Price = combo.Price,
+            ImageUrl = combo.ImageUrl,
             ComboDishes = combo.Dishes.Select(l => l.ToRecord()).ToList(),
             ComboProducts = combo.Products.Select(l => l.ToRecord()).ToList(),
         };

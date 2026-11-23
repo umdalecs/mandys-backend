@@ -12,13 +12,15 @@ internal static class DishMapper
             record.Price,
             record.DishProducts.Select(l => l.ToDomain()),
             record.CreatedAt,
-            record.UpdatedAt);
+            record.UpdatedAt,
+            record.ImageUrl);
 
     internal static DishRecord ToRecord(this Dish dish) =>
         new()
         {
             Name = dish.Name,
             Price = dish.Price,
+            ImageUrl = dish.ImageUrl,
             DishProducts = dish.Recipe.Select(l => l.ToRecord()).ToList(),
         };
 }

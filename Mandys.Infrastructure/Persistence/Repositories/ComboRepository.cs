@@ -61,7 +61,7 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
         var record = combo.ToRecord();
         db.Combos.Add(record);
         await db.SaveChangesAsync();
-        
+
         return new Combo(
             record.Id,
             combo.Name,
@@ -69,8 +69,8 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
             combo.Dishes,
             combo.Products,
             record.CreatedAt,
-            record.UpdatedAt
-            );
+            record.UpdatedAt,
+            combo.ImageUrl);
     }
 
     public async Task UpdateAsync(Combo combo)
@@ -86,6 +86,7 @@ public class ComboRepository(ApplicationDbContext db) : IComboRepository
 
         record.Name = combo.Name;
         record.Price = combo.Price;
+        record.ImageUrl = combo.ImageUrl;
 
         foreach (var line in combo.Dishes)
         {
