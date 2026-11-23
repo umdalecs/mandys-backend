@@ -10,7 +10,11 @@ services:
         volumes:
             - database-data:/var/lib/postgresql
         healthcheck:
-            test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-mandys}"]
+            test:
+                [
+                    "CMD-SHELL",
+                    "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-mandys}",
+                ]
             interval: 5s
             timeout: 5s
             retries: 10
@@ -76,6 +80,9 @@ services:
             target: final
         ports:
             - ${API_PORT:-8080}:8080
+        depends_on:
+            database:
+                condition: service_healthy
         environment:
             ASPNETCORE_ENVIRONMENT: Development
             ASPNETCORE_URLS: http://+:8080
