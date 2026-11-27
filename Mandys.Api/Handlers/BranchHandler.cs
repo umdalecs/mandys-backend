@@ -47,29 +47,34 @@ public class BranchHandler : ICarterModule
         [FromQuery] string? orderBy = null,
         [FromQuery] bool? warehouseOnly = null)
     {
-        var userRole = claimsPrincipal.GetUserRole();
-        var canFilterWarehouseOnly =
-            string.Equals(userRole, Roles.Administrator, StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(userRole, Roles.OpChief, StringComparison.OrdinalIgnoreCase);
-
-        bool? effectiveWarehouseOnly = canFilterWarehouseOnly ? warehouseOnly : false;
+        var canViewWarehouseOnly = CanViewWarehouseOnly(claimsPrincipal);
+        bool? effectiveWarehouseOnly = canViewWarehouseOnly ? warehouseOnly : false;
 
         return Results.Ok(await branchService.GetBranchesAsync(
-            page, pageSize, search, orderBy, effectiveWarehouseOnly));
+            page, pageSize, search, orderBy, effectiveWarehouseOnly, canViewWarehouseOnly));
     }
 
     private static async Task<IResult> GetBranchById(
         int id,
+        ClaimsPrincipal claimsPrincipal,
         IBranchService branchService)
     {
         try
         {
-            return Results.Ok(await branchService.GetBranchByIdAsync(id));
+            var canViewWarehouseOnly = CanViewWarehouseOnly(claimsPrincipal);
+            return Results.Ok(await branchService.GetBranchByIdAsync(id, canViewWarehouseOnly));
         }
         catch (ServiceException ex)
         {
             return MapBranchError(ex);
         }
+    }
+
+    private static bool CanViewWarehouseOnly(ClaimsPrincipal claimsPrincipal)
+    {
+        var userRole = claimsPrincipal.GetUserRole();
+        return string.Equals(userRole, Roles.Administrator, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(userRole, Roles.OpChief, StringComparison.OrdinalIgnoreCase);
     }
 
     private static async Task<IResult> CreateBranch(

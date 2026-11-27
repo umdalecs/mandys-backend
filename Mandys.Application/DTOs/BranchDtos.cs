@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Mandys.Domain;
 
 namespace Mandys.Application.DTOs;
@@ -6,7 +7,8 @@ public record BranchResponse(
     int Id,
     string Name,
     string Address,
-    bool WarehouseOnly
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    bool? WarehouseOnly = null
 );
 
 public record CreateBranchRequest(
@@ -31,11 +33,11 @@ public record PagedBranchesResponse(
 
 public static class BranchMapper
 {
-    public static BranchResponse ToResponse(this Branch branch) =>
+    public static BranchResponse ToResponse(this Branch branch, bool includeWarehouseOnly = true) =>
         new(
             branch.Id,
             branch.Name,
             branch.Address,
-            branch.WarehouseOnly
+            includeWarehouseOnly ? branch.WarehouseOnly : null
         );
 }

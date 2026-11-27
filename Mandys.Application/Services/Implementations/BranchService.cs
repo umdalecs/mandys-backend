@@ -7,7 +7,12 @@ namespace Mandys.Application.Services.Implementations;
 public class BranchService(IBranchRepository branches, IBranchStorageRepository branchStorages) : IBranchService
 {
     public async Task<PagedBranchesResponse> GetBranchesAsync(
-        int page, int pageSize, string? search, string? orderBy, bool? warehouseOnly = null)
+        int page,
+        int pageSize,
+        string? search,
+        string? orderBy,
+        bool? warehouseOnly = null,
+        bool includeWarehouseOnlyField = false)
     {
         if (page < 1) page = 1;
         if (pageSize < 1) pageSize = 20;
@@ -17,18 +22,18 @@ public class BranchService(IBranchRepository branches, IBranchStorageRepository 
         var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
         return new PagedBranchesResponse(totalCount, page, pageSize, totalPages,
-            items.Select(b => b.ToResponse()).ToList());
+            items.Select(b => b.ToResponse(includeWarehouseOnlyField)).ToList());
     }
 
-    public async Task<BranchResponse> GetBranchByIdAsync(int id)
+    public async Task<BranchResponse> GetBranchByIdAsync(int id, bool includeWarehouseOnly = false)
     {
         var branch = await branches.GetByIdAsync(id);
-        if (branch is null)
+        if (branch is null || (!includeWarehouseOnly && branch.WarehouseOnly))
         {
             throw ServiceException.NotFound($"No se encontró la sucursal con ID '{id}'.");
         }
 
-        return branch.ToResponse();
+        return branch.ToResponse(includeWarehouseOnly);
     }
 
     public async Task<BranchResponse> CreateBranchAsync(CreateBranchRequest request)
