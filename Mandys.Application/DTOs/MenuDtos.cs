@@ -3,26 +3,30 @@ using Mandys.Domain;
 namespace Mandys.Application.DTOs;
 
 // Customer-facing catalog DTOs. Only expose what a customer needs to browse
-// and order: no cost prices, recipes, supply flags, stock or audit dates.
+// and order: no cost prices, recipes, supply flags, or audit dates.
 
 public record MenuProductResponse(
     int Id,
     string Name,
     decimal Price,
-    string? ImageUrl
+    string? ImageUrl,
+    decimal AvailableQuantity,
+    bool IsAvailable
 );
 
 public record MenuDishResponse(
     int Id,
     string Name,
     decimal Price,
-    string? ImageUrl
+    string? ImageUrl,
+    bool IsAvailable
 );
 
 public record MenuComboItemResponse(
     int Id,
     string Name,
-    decimal Quantity
+    decimal Quantity,
+    bool IsAvailable
 );
 
 public record MenuComboResponse(
@@ -30,6 +34,7 @@ public record MenuComboResponse(
     string Name,
     decimal Price,
     string? ImageUrl,
+    bool IsAvailable,
     IReadOnlyList<MenuComboItemResponse> Dishes,
     IReadOnlyList<MenuComboItemResponse> Products
 );
@@ -60,33 +65,41 @@ public record PagedMenuCombosResponse(
 
 public static class MenuMapper
 {
-    public static MenuProductResponse ToMenuResponse(this Product product) =>
+    public static MenuProductResponse ToMenuResponse(
+        this Product product,
+        decimal availableQuantity) =>
         new(
             product.Id,
             product.Description,
             product.SalePrice ?? 0,
-            product.ImageUrl
+            product.ImageUrl,
+            availableQuantity,
+            availableQuantity >= 1m
         );
 
-    public static MenuDishResponse ToMenuResponse(this Dish dish) =>
+    public static MenuDishResponse ToMenuResponse(
+        this Dish dish,
+        bool isAvailable) =>
         new(
             dish.Id,
             dish.Name,
             dish.Price,
-            dish.ImageUrl
+            dish.ImageUrl,
+            isAvailable
         );
 
-    public static MenuComboResponse ToMenuResponse(this Combo combo) =>
+    public static MenuComboResponse ToMenuResponse(
+        this Combo combo,
+        bool isAvailable,
+        IReadOnlyList<MenuComboItemResponse> dishes,
+        IReadOnlyList<MenuComboItemResponse> products) =>
         new(
             combo.Id,
             combo.Name,
             combo.Price,
             combo.ImageUrl,
-            combo.Dishes
-                .Select(l => new MenuComboItemResponse(l.Dish.Id, l.Dish.Name, l.Quantity))
-                .ToList(),
-            combo.Products
-                .Select(l => new MenuComboItemResponse(l.Product.Id, l.Product.Description, l.Quantity))
-                .ToList()
+            isAvailable,
+            dishes,
+            products
         );
 }

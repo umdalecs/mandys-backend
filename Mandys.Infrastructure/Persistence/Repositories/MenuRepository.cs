@@ -39,9 +39,12 @@ public class MenuRepository(ApplicationDbContext db) : IMenuRepository
     public async Task<(int TotalCount, IReadOnlyList<Dish> Items)> SearchDishesAsync(
         string? search, int page, int pageSize, string? orderBy)
     {
-        // Recipes are intentionally not included: the menu doesn't expose them.
+        // Recipes are loaded to compute branch ingredient availability,
+        // but are never exposed in customer-facing menu DTOs.
         IQueryable<DishRecord> query = db.Dishes
-            .AsNoTracking();
+            .AsNoTracking()
+            .Include(d => d.DishProducts.OrderBy(l => l.Id))
+            .ThenInclude(l => l.Product);
 
         if (!string.IsNullOrWhiteSpace(search))
         {
@@ -71,6 +74,8 @@ public class MenuRepository(ApplicationDbContext db) : IMenuRepository
             .AsNoTracking()
             .Include(c => c.ComboDishes.OrderBy(l => l.Id))
             .ThenInclude(l => l.Dish)
+            .ThenInclude(d => d.DishProducts.OrderBy(l => l.Id))
+            .ThenInclude(l => l.Product)
             .Include(c => c.ComboProducts.OrderBy(l => l.Id))
             .ThenInclude(l => l.Product);
 
