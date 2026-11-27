@@ -20,4 +20,5 @@ public class BranchRecord : Record
     public ICollection<UserRecord> Users { get; set; } = [];
     public ICollection<BranchStorageRecord> BranchStorages { get; set; } = [];
     public ICollection<BranchStorageHistoryRecord> BranchStorageHistories { get; set; } = [];
+    public ICollection<OrderRecord> Orders { get; set; } = [];
 }

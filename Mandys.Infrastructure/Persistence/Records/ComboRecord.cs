@@ -16,4 +16,5 @@ public class ComboRecord : Record
     public string? ImageUrl { get; set; }
     public ICollection<ComboDishRecord> ComboDishes { get; set; } = new List<ComboDishRecord>();
     public ICollection<ComboProductRecord> ComboProducts { get; set; } = new List<ComboProductRecord>();
+    public ICollection<OrderComboRecord> OrderCombos { get; set; } = new List<OrderComboRecord>();
 }

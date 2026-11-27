@@ -101,6 +101,16 @@ internal enum MenuSortField
     Price,
 }
 
+/// <inheritdoc cref="ProductSortField"/>
+internal enum OrderSortField
+{
+    Id,
+    TotalAmount,
+    PaymentMethod,
+    CreatedAt,
+    UpdatedAt,
+}
+
 /// <summary>
 /// Parses a comma-separated Django-style ordering (<c>name,-price</c>).
 /// Matching is case-insensitive and ignores underscores, so both
@@ -245,6 +255,16 @@ internal static class SortSelectors
             MenuSortField.Name => c => c.Name,
             MenuSortField.Price => c => c.Price,
             _ => c => c.Id,
+        };
+
+    internal static Expression<Func<OrderRecord, object>> Selector(this OrderSortField field) =>
+        field switch
+        {
+            OrderSortField.TotalAmount => o => o.TotalAmount,
+            OrderSortField.PaymentMethod => o => o.PaymentMethod,
+            OrderSortField.CreatedAt => o => o.CreatedAt,
+            OrderSortField.UpdatedAt => o => o.UpdatedAt,
+            _ => o => o.Id,
         };
 }
 

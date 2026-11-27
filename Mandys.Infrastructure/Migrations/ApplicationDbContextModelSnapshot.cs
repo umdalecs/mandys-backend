@@ -480,6 +480,212 @@ namespace Mandys.Infrastructure.Migrations
                     b.ToTable("logs", (string)null);
                 });
 
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.OrderComboRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ComboId")
+                        .HasColumnType("integer")
+                        .HasColumnName("combo_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer")
+                        .HasColumnName("order_id");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric")
+                        .HasColumnName("quantity");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric")
+                        .HasColumnName("unit_price");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_order_combos");
+
+                    b.HasIndex("ComboId")
+                        .HasDatabaseName("ix_order_combos_combo_id");
+
+                    b.HasIndex("OrderId")
+                        .HasDatabaseName("ix_order_combos_order_id");
+
+                    b.ToTable("order_combos", (string)null);
+                });
+
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.OrderDishRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<int>("DishId")
+                        .HasColumnType("integer")
+                        .HasColumnName("dish_id");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer")
+                        .HasColumnName("order_id");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric")
+                        .HasColumnName("quantity");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric")
+                        .HasColumnName("unit_price");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_order_dishes");
+
+                    b.HasIndex("DishId")
+                        .HasDatabaseName("ix_order_dishes_dish_id");
+
+                    b.HasIndex("OrderId")
+                        .HasDatabaseName("ix_order_dishes_order_id");
+
+                    b.ToTable("order_dishes", (string)null);
+                });
+
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.OrderProductRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer")
+                        .HasColumnName("order_id");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer")
+                        .HasColumnName("product_id");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric")
+                        .HasColumnName("quantity");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric")
+                        .HasColumnName("unit_price");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_order_products");
+
+                    b.HasIndex("OrderId")
+                        .HasDatabaseName("ix_order_products_order_id");
+
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("ix_order_products_product_id");
+
+                    b.ToTable("order_products", (string)null);
+                });
+
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.OrderRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BranchId")
+                        .HasColumnType("integer")
+                        .HasColumnName("branch_id");
+
+                    b.Property<string>("CardLast4")
+                        .HasMaxLength(4)
+                        .HasColumnType("character varying(4)")
+                        .HasColumnName("card_last4");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("payment_method");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("total_amount");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_orders");
+
+                    b.HasIndex("BranchId")
+                        .HasDatabaseName("ix_orders_branch_id");
+
+                    b.HasIndex("CreatedAt")
+                        .HasDatabaseName("ix_orders_created_at");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_orders_created_by_user_id");
+
+                    b.ToTable("orders", (string)null);
+                });
+
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.ProductRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -800,6 +1006,90 @@ namespace Mandys.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.OrderComboRecord", b =>
+                {
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.ComboRecord", "Combo")
+                        .WithMany("OrderCombos")
+                        .HasForeignKey("ComboId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_combos_combos_combo_id");
+
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.OrderRecord", "Order")
+                        .WithMany("OrderCombos")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_combos_orders_order_id");
+
+                    b.Navigation("Combo");
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.OrderDishRecord", b =>
+                {
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.DishRecord", "Dish")
+                        .WithMany("OrderDishes")
+                        .HasForeignKey("DishId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_dishes_dishes_dish_id");
+
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.OrderRecord", "Order")
+                        .WithMany("OrderDishes")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_dishes_orders_order_id");
+
+                    b.Navigation("Dish");
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.OrderProductRecord", b =>
+                {
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.OrderRecord", "Order")
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_products_orders_order_id");
+
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.ProductRecord", "Product")
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_products_products_product_id");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.OrderRecord", b =>
+                {
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.BranchRecord", "Branch")
+                        .WithMany("Orders")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_orders_branches_branch_id");
+
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.UserRecord", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_orders_users_created_by_user_id");
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("CreatedByUser");
+                });
+
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.RefreshToken", b =>
                 {
                     b.HasOne("Mandys.Infrastructure.Persistence.Records.UserRecord", null)
@@ -827,6 +1117,8 @@ namespace Mandys.Infrastructure.Migrations
 
                     b.Navigation("BranchStorages");
 
+                    b.Navigation("Orders");
+
                     b.Navigation("Users");
                 });
 
@@ -840,6 +1132,8 @@ namespace Mandys.Infrastructure.Migrations
                     b.Navigation("ComboDishes");
 
                     b.Navigation("ComboProducts");
+
+                    b.Navigation("OrderCombos");
                 });
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.DishRecord", b =>
@@ -847,6 +1141,17 @@ namespace Mandys.Infrastructure.Migrations
                     b.Navigation("ComboDishes");
 
                     b.Navigation("DishProducts");
+
+                    b.Navigation("OrderDishes");
+                });
+
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.OrderRecord", b =>
+                {
+                    b.Navigation("OrderCombos");
+
+                    b.Navigation("OrderDishes");
+
+                    b.Navigation("OrderProducts");
                 });
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.ProductRecord", b =>
@@ -858,6 +1163,8 @@ namespace Mandys.Infrastructure.Migrations
                     b.Navigation("ComboProducts");
 
                     b.Navigation("DishProducts");
+
+                    b.Navigation("OrderProducts");
                 });
 #pragma warning restore 612, 618
         }

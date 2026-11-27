@@ -24,14 +24,17 @@ public class BranchStorageHandler : ICarterModule
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
                 Roles.OpChief));
+
         storageRoutes.MapPost("/in", CreateBranchStorageIn)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
                 Roles.OpChief));
+
         storageRoutes.MapPost("/out", CreateBranchStorageOut)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
                 Roles.OpChief));
+
         storageRoutes.MapGet("/history", GetBranchStorageHistory);
         storageRoutes.MapGet("/history/{historyId:int}", GetBranchStorageHistoryById);
 

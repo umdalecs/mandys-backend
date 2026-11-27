@@ -19,6 +19,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<BranchStorageRecord> BranchStorages { get; set; }
     public DbSet<BranchStorageHistoryRecord> BranchStorageHistories { get; set; }
     public DbSet<BranchStorageHistoryProductRecord> BranchStorageHistoryProducts { get; set; }
+    public DbSet<OrderRecord> Orders { get; set; }
+    public DbSet<OrderProductRecord> OrderProducts { get; set; }
+    public DbSet<OrderDishRecord> OrderDishes { get; set; }
+    public DbSet<OrderComboRecord> OrderCombos { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<LogRecord> Logs { get; set; }
 
@@ -193,6 +197,71 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.HasIndex(bshp => bshp.BranchStorageHistoryId);
             entity.HasIndex(bshp => bshp.ProductId);
+        });
+
+        modelBuilder.Entity<OrderRecord>(entity =>
+        {
+            entity.HasOne(o => o.Branch)
+                .WithMany(b => b.Orders)
+                .HasForeignKey(o => o.BranchId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(o => o.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(o => o.CreatedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(o => o.BranchId);
+            entity.HasIndex(o => o.CreatedByUserId);
+            entity.HasIndex(o => o.CreatedAt);
+        });
+
+        modelBuilder.Entity<OrderProductRecord>(entity =>
+        {
+            entity.HasOne(op => op.Order)
+                .WithMany(o => o.OrderProducts)
+                .HasForeignKey(op => op.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(op => op.Product)
+                .WithMany(p => p.OrderProducts)
+                .HasForeignKey(op => op.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(op => op.OrderId);
+            entity.HasIndex(op => op.ProductId);
+        });
+
+        modelBuilder.Entity<OrderDishRecord>(entity =>
+        {
+            entity.HasOne(od => od.Order)
+                .WithMany(o => o.OrderDishes)
+                .HasForeignKey(od => od.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(od => od.Dish)
+                .WithMany(d => d.OrderDishes)
+                .HasForeignKey(od => od.DishId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(od => od.OrderId);
+            entity.HasIndex(od => od.DishId);
+        });
+
+        modelBuilder.Entity<OrderComboRecord>(entity =>
+        {
+            entity.HasOne(oc => oc.Order)
+                .WithMany(o => o.OrderCombos)
+                .HasForeignKey(oc => oc.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(oc => oc.Combo)
+                .WithMany(c => c.OrderCombos)
+                .HasForeignKey(oc => oc.ComboId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(oc => oc.OrderId);
+            entity.HasIndex(oc => oc.ComboId);
         });
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
