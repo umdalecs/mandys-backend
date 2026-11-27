@@ -34,6 +34,17 @@ public record UpdateUserRequest(
     bool ClearBranch = false
 );
 
+public record UpdateProfileRequest(
+    string? FirstName = null,
+    string? FatherLastName = null,
+    string? MotherLastName = null
+);
+
+public record ChangePasswordRequest(
+    string CurrentPassword,
+    string NewPassword
+);
+
 public record PagedUsersResponse(
     int TotalCount,
     int Page,

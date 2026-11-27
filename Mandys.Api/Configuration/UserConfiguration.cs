@@ -17,6 +17,8 @@ public static class UserConfiguration
 
         wab.Services.AddScoped<IValidator<CreateUserRequest>, CreateUserRequestValidator>();
         wab.Services.AddScoped<IValidator<UpdateUserRequest>, UpdateUserRequestValidator>();
+        wab.Services.AddScoped<IValidator<UpdateProfileRequest>, UpdateProfileRequestValidator>();
+        wab.Services.AddScoped<IValidator<ChangePasswordRequest>, ChangePasswordRequestValidator>();
         wab.Services.AddScoped<IValidator<RegisterCustomerRequest>, RegisterCustomerRequestValidator>();
         wab.Services.AddScoped<IValidator<UpdateCustomerRequest>, UpdateCustomerRequestValidator>();
     }

@@ -21,22 +21,22 @@ seed:
 restart-database: stop-database run-database
 
 run-database:
-	docker compose -f docker/compose.yml up database -d
+	docker compose up database -d
 
 stop-database:
-	docker compose -f docker/compose.yml down database -v
+	docker compose down database -v
 
 run-pgadmin:
-	docker compose -f docker/compose.yml up pgadmin -d
+	docker compose up pgadmin -d
 
 stop-pgadmin:
-	docker compose -f docker/compose.yml down pgadmin -v
+	docker compose down pgadmin -v
 
 run-storage:
-	docker compose -f docker/compose.yml up storage storage-init -d
+	docker compose up storage storage-init -d
 
 stop-storage:
-	docker compose -f docker/compose.yml down storage storage-init -v
+	docker compose down storage storage-init -v
 
 fresh-migrations: clean-migrations init-migrations
 

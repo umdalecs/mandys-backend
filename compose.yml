@@ -75,7 +75,7 @@ services:
     api:
         image: mandys-backend
         build:
-            context: ..
+            context: .
             dockerfile: docker/Dockerfile
             target: final
         ports:

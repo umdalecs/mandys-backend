@@ -21,6 +21,12 @@ public class UserHandler : ICarterModule
         userRoutes.MapGet("/me", GetCurrentUser)
             .RequireAuthorization();
 
+        userRoutes.MapPut("/me", UpdateCurrentUserProfile)
+            .RequireAuthorization();
+
+        userRoutes.MapPut("/me/password", ChangeCurrentUserPassword)
+            .RequireAuthorization();
+
         var adminRoutes = userRoutes.MapGroup("")
             .RequireAuthorization(policy => policy.RequireRole(Roles.Administrator));
 
@@ -38,6 +44,46 @@ public class UserHandler : ICarterModule
         try
         {
             return Results.Ok(await userService.GetCurrentUserAsync(claimsPrincipal.GetUserId()));
+        }
+        catch (ServiceException ex)
+        {
+            return MapUserError(ex);
+        }
+    }
+
+    private static async Task<IResult> UpdateCurrentUserProfile(
+        ClaimsPrincipal claimsPrincipal,
+        [FromBody] UpdateProfileRequest request,
+        IValidator<UpdateProfileRequest> validator,
+        IUserService userService)
+    {
+        try
+        {
+            RequestValidation.ThrowIfInvalid(validator.Validate(request));
+
+            return Results.Ok(await userService.UpdateCurrentUserProfileAsync(
+                claimsPrincipal.GetUserId(), request));
+        }
+        catch (ServiceException ex)
+        {
+            return MapUserError(ex);
+        }
+    }
+
+    private static async Task<IResult> ChangeCurrentUserPassword(
+        ClaimsPrincipal claimsPrincipal,
+        [FromBody] ChangePasswordRequest request,
+        IValidator<ChangePasswordRequest> validator,
+        IUserService userService)
+    {
+        try
+        {
+            RequestValidation.ThrowIfInvalid(validator.Validate(request));
+
+            await userService.ChangeCurrentUserPasswordAsync(
+                claimsPrincipal.GetUserId(), request);
+
+            return Results.NoContent();
         }
         catch (ServiceException ex)
         {

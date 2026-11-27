@@ -24,6 +24,63 @@ public class UserService(
 
         return user.ToResponse();
     }
+
+    public async Task<UserResponse> UpdateCurrentUserProfileAsync(int? currentUserId, UpdateProfileRequest request)
+    {
+        if (currentUserId is null)
+        {
+            throw ServiceException.Unauthorized();
+        }
+
+        var user = await users.GetByIdAsync(currentUserId.Value);
+        if (user is null)
+        {
+            throw ServiceException.NotFound("Usuario no encontrado.");
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.FirstName) ||
+            !string.IsNullOrWhiteSpace(request.FatherLastName) ||
+            request.MotherLastName is not null)
+        {
+            user.UpdateProfile(
+                string.IsNullOrWhiteSpace(request.FirstName) ? user.FirstName : request.FirstName.Trim(),
+                string.IsNullOrWhiteSpace(request.FatherLastName) ? user.FatherLastName : request.FatherLastName.Trim(),
+                request.MotherLastName is null ? user.MotherLastName : request.MotherLastName.Trim());
+
+            await users.UpdateAsync(user);
+        }
+
+        return user.ToResponse();
+    }
+
+    public async Task ChangeCurrentUserPasswordAsync(int? currentUserId, ChangePasswordRequest request)
+    {
+        if (currentUserId is null)
+        {
+            throw ServiceException.Unauthorized();
+        }
+
+        var user = await users.GetByIdAsync(currentUserId.Value);
+        if (user is null)
+        {
+            throw ServiceException.NotFound("Usuario no encontrado.");
+        }
+
+        if (!passwordHasher.Verify(user.PasswordHash, request.CurrentPassword))
+        {
+            throw ServiceException.BadRequest("La contraseña actual es incorrecta.");
+        }
+
+        if (request.CurrentPassword == request.NewPassword)
+        {
+            throw ServiceException.BadRequest("La nueva contraseña debe ser diferente a la actual.");
+        }
+
+        user.SetPasswordHash(passwordHasher.Hash(request.NewPassword));
+        await users.UpdateAsync(user);
+        await refreshTokens.RevokeAllAsync(user.ID);
+    }
+
     public async Task<PagedUsersResponse> GetUsersAsync(int page, int pageSize, string? search, string? role)
     {
         if (page < 1) page = 1;

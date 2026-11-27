@@ -91,3 +91,42 @@ public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
             .WithMessage("El ID de sucursal debe ser un número positivo.");
     }
 }
+
+public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequest>
+{
+    public UpdateProfileRequestValidator()
+    {
+        RuleFor(x => x.FirstName)
+            .NotEmpty()
+            .MaximumLength(50)
+            .When(x => x.FirstName is not null)
+            .WithMessage("El nombre no puede estar vacío y no puede superar los 50 caracteres.");
+
+        RuleFor(x => x.FatherLastName)
+            .NotEmpty()
+            .MaximumLength(50)
+            .When(x => x.FatherLastName is not null)
+            .WithMessage("El apellido paterno no puede estar vacío y no puede superar los 50 caracteres.");
+
+        RuleFor(x => x.MotherLastName)
+            .MaximumLength(50)
+            .When(x => x.MotherLastName is not null)
+            .WithMessage("El apellido materno no puede superar los 50 caracteres.");
+    }
+}
+
+public class ChangePasswordRequestValidator : AbstractValidator<ChangePasswordRequest>
+{
+    public ChangePasswordRequestValidator()
+    {
+        RuleFor(x => x.CurrentPassword)
+            .NotEmpty()
+            .WithMessage("La contraseña actual es obligatoria.");
+
+        RuleFor(x => x.NewPassword)
+            .NotEmpty()
+            .WithMessage("La nueva contraseña es obligatoria.")
+            .NotEqual(x => x.CurrentPassword)
+            .WithMessage("La nueva contraseña debe ser diferente a la actual.");
+    }
+}

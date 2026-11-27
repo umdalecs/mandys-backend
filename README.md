@@ -22,10 +22,10 @@ The solution (`Mandys.slnx`) follows Clean Architecture across four layers plus 
 ### Setup
 
 ```bash
-cp docker/.env.example docker/.env
+cp .env.example .env
 ```
 
-`docker/.env` is optional (every variable has a working default) and gitignored. It holds database credentials (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `DB_PORT`), S3 storage settings (`S3_*`), pgAdmin settings (`PGADMIN_*`), and API settings (`API_PORT`, `DB_HOST`).
+`.env` is optional (every variable has a working default) and gitignored. It holds database credentials (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `DB_PORT`), S3 storage settings (`S3_*`), pgAdmin settings (`PGADMIN_*`), and API settings (`API_PORT`, `DB_HOST`).
 
 ### Run the application
 
@@ -34,7 +34,7 @@ cp docker/.env.example docker/.env
 Start PostgreSQL, RustFS (S3 storage + bucket init), pgAdmin, and the API container:
 
 ```bash
-docker compose -f docker/compose.yml up -d
+docker compose up -d
 ```
 
 The API applies pending migrations itself on startup in `Development` (creates tables + seeds default users), so no SDK or `dotnet-ef` is needed. There is no hot reload in the container: after pulling backend changes, re-run with `--build`.
@@ -67,23 +67,23 @@ API docs (`Development` only):
 ### Delete everything
 
 ```bash
-docker compose -f docker/compose.yml down -v
+docker compose down -v
 ```
 
 (Add `-v` only when you want to wipe the database and storage volumes.)
 
 ### Object Storage (RustFS S3)
 
-Product, dish, and combo images are stored in an S3-compatible bucket (`mandys` by default). In development, `docker/compose.yml` runs **RustFS** and automatically initializes a public-read bucket via `storage-init`:
+Product, dish, and combo images are stored in an S3-compatible bucket (`mandys` by default). In development, `compose.yml` runs **RustFS** and automatically initializes a public-read bucket via `storage-init`:
 
 - S3 API endpoint: `http://localhost:9000`
 - RustFS Console UI: `http://localhost:9001` (default credentials: `rustfsadmin` / `rustfsadmin`)
 
 ### pgAdmin 4 (browse the database / ERD)
 
-Open `http://localhost:5050` and log in with `admin@mandyspos.com` / `administrator` (or the values of `PGADMIN_EMAIL` / `PGADMIN_PASSWORD` / `PGADMIN_PORT` in `docker/.env`). Register the server once: host `database`, port `5432`, maintenance database `mandys`, username `postgres`, password `postgres`. Use **Tools → ERD Tool** for the diagram, and **Tools → Query Tool** to inspect data.
+Open `http://localhost:5050` and log in with `admin@mandyspos.com` / `administrator` (or the values of `PGADMIN_EMAIL` / `PGADMIN_PASSWORD` / `PGADMIN_PORT` in `.env`). Register the server once: host `database`, port `5432`, maintenance database `mandys`, username `postgres`, password `postgres`. Use **Tools → ERD Tool** for the diagram, and **Tools → Query Tool** to inspect data.
 
-Stop it with `make stop-pgadmin` or `docker compose -f docker/compose.yml down pgadmin -v`.
+Stop it with `make stop-pgadmin` or `docker compose down pgadmin -v`.
 
 ### Verify it works
 
@@ -128,7 +128,7 @@ The API listens on port `8080` and accepts the following configuration variables
 | `Auth__CookieSecure` | `Auto` (Secure on HTTPS, default) or `Always` | `Always` |
 
 > The database must already be migrated (tables + seeded users).
-> Migrating requires the repo once — see [Run the application](#run-the-application). All compose commands below run from the repo root; the compose files live in `docker/`.
+> Migrating requires the repo once — see [Run the application](#run-the-application). All compose commands below run from the repo root
 
 ### With compose
 

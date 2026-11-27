@@ -5,6 +5,11 @@ namespace Mandys.Application.Services.Interfaces;
 public interface IUserService
 {
     Task<UserResponse> GetCurrentUserAsync(int? currentUserId);
+
+    Task<UserResponse> UpdateCurrentUserProfileAsync(int? currentUserId, UpdateProfileRequest request);
+
+    Task ChangeCurrentUserPasswordAsync(int? currentUserId, ChangePasswordRequest request);
+
     Task<PagedUsersResponse> GetUsersAsync(int page, int pageSize, string? search, string? role);
 
     Task<UserResponse> GetUserByIdAsync(int id);
