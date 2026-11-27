@@ -17,6 +17,7 @@ public interface IOrderService
         string userRole,
         int? userBranchId,
         string? paymentMethod,
+        string? status,
         int page,
         int pageSize,
         string? orderBy);
@@ -25,6 +26,16 @@ public interface IOrderService
         int? branchId,
         int orderId,
         int userId,
+        string userRole,
+        int? userBranchId);
+
+    Task<OrderResponse> MarkOrderCompletedAsync(
+        int orderId,
+        string userRole,
+        int? userBranchId);
+
+    Task<OrderResponse> MarkOrderUncompletedAsync(
+        int orderId,
         string userRole,
         int? userBranchId);
 }

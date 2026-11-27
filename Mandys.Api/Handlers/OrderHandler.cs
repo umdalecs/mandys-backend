@@ -50,6 +50,14 @@ public class OrderHandler : ICarterModule
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Cashier,
                 Roles.KitchenChief));
+
+        orderRoutes.MapPatch("/{orderId:int}/completed", MarkOrderCompleted)
+            .RequireAuthorization(policy => policy.RequireRole(
+                Roles.KitchenChief));
+
+        orderRoutes.MapPatch("/{orderId:int}/uncompleted", MarkOrderUncompleted)
+            .RequireAuthorization(policy => policy.RequireRole(
+                Roles.KitchenChief));
     }
 
     private static async Task<IResult> CreateBranchOrder(
@@ -115,7 +123,7 @@ public class OrderHandler : ICarterModule
         {
             var (userId, userRole, userBranchId) = ExtractUserContext(claimsPrincipal);
             return Results.Ok(await orderService.GetOrdersAsync(
-                branchId, userId, userRole, userBranchId, paymentMethod, page, pageSize, orderBy));
+                branchId, userId, userRole, userBranchId, paymentMethod, OrderStatuses.Ready, page, pageSize, orderBy));
         }
         catch (ServiceException ex)
         {
@@ -154,7 +162,7 @@ public class OrderHandler : ICarterModule
         {
             var (userId, userRole, userBranchId) = ExtractUserContext(claimsPrincipal);
             return Results.Ok(await orderService.GetOrdersAsync(
-                branchId, userId, userRole, userBranchId, paymentMethod, page, pageSize, orderBy));
+                branchId, userId, userRole, userBranchId, paymentMethod, OrderStatuses.InPreparation, page, pageSize, orderBy));
         }
         catch (ServiceException ex)
         {
@@ -172,6 +180,40 @@ public class OrderHandler : ICarterModule
             var (userId, userRole, userBranchId) = ExtractUserContext(claimsPrincipal);
             return Results.Ok(await orderService.GetOrderByIdAsync(
                 null, orderId, userId, userRole, userBranchId));
+        }
+        catch (ServiceException ex)
+        {
+            return MapOrderError(ex);
+        }
+    }
+
+    private static async Task<IResult> MarkOrderCompleted(
+        int orderId,
+        ClaimsPrincipal claimsPrincipal,
+        IOrderService orderService)
+    {
+        try
+        {
+            var (_, userRole, userBranchId) = ExtractUserContext(claimsPrincipal);
+            return Results.Ok(await orderService.MarkOrderCompletedAsync(
+                orderId, userRole, userBranchId));
+        }
+        catch (ServiceException ex)
+        {
+            return MapOrderError(ex);
+        }
+    }
+
+    private static async Task<IResult> MarkOrderUncompleted(
+        int orderId,
+        ClaimsPrincipal claimsPrincipal,
+        IOrderService orderService)
+    {
+        try
+        {
+            var (_, userRole, userBranchId) = ExtractUserContext(claimsPrincipal);
+            return Results.Ok(await orderService.MarkOrderUncompletedAsync(
+                orderId, userRole, userBranchId));
         }
         catch (ServiceException ex)
         {

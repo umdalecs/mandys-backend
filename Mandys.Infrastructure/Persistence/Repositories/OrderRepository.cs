@@ -95,7 +95,9 @@ public class OrderRepository(ApplicationDbContext db) : IOrderRepository
             orderRecord.UpdatedAt,
             order.Customer,
             order.PointsEarned,
-            order.PointsSpent);
+            order.PointsSpent,
+            order.Status,
+            order.CompletedAt);
     }
 
     public async Task<Order?> GetByIdAsync(int id)
@@ -118,6 +120,7 @@ public class OrderRepository(ApplicationDbContext db) : IOrderRepository
         int? branchId,
         int? createdByUserId,
         string? paymentMethod,
+        string? status,
         int page,
         int pageSize,
         string? orderBy)
@@ -142,6 +145,12 @@ public class OrderRepository(ApplicationDbContext db) : IOrderRepository
             query = query.Where(o => o.PaymentMethod == normalizedMethod);
         }
 
+        if (!string.IsNullOrWhiteSpace(status) && OrderStatuses.IsValid(status))
+        {
+            var normalizedStatus = OrderStatuses.Normalize(status);
+            query = query.Where(o => o.Status == normalizedStatus);
+        }
+
         var totalCount = await query.CountAsync();
 
         var items = await query
@@ -155,6 +164,20 @@ public class OrderRepository(ApplicationDbContext db) : IOrderRepository
             .ToListAsync();
 
         return (totalCount, items.Select(r => r.ToDomain()).ToList());
+    }
+
+    public async Task UpdateAsync(Order order)
+    {
+        var record = await db.Orders.FirstOrDefaultAsync(o => o.Id == order.Id);
+        if (record is null)
+        {
+            throw ServiceException.NotFound($"No se encontró el pedido con ID '{order.Id}'.");
+        }
+
+        record.Status = order.Status;
+        record.CompletedAt = order.CompletedAt;
+
+        await db.SaveChangesAsync();
     }
 
     private IQueryable<OrderRecord> BuildDetailQuery() =>

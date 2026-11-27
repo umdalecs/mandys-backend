@@ -15,14 +15,33 @@ public static class PaymentMethods
         method.Trim().ToLowerInvariant();
 }
 
+public static class OrderStatuses
+{
+    public const string InPreparation = "en preparación";
+    public const string Ready = "preparado";
+
+    public static readonly IReadOnlyList<string> All = [InPreparation, Ready];
+
+    public static bool IsValid(string? status) =>
+        !string.IsNullOrWhiteSpace(status) &&
+        All.Contains(status.Trim(), StringComparer.OrdinalIgnoreCase);
+
+    public static string Normalize(string status) =>
+        All.First(s => string.Equals(s, status.Trim(), StringComparison.OrdinalIgnoreCase));
+}
+
 public class Order
 {
+    public const int UncompleteWindowMinutes = 5;
+
     public int Id { get; private set; }
     public Branch Branch { get; private set; }
     public User CreatedByUser { get; private set; }
     public User? Customer { get; private set; }
     public string PaymentMethod { get; private set; }
     public string? CardLast4 { get; private set; }
+    public string Status { get; private set; }
+    public DateTime? CompletedAt { get; private set; }
     public decimal SubtotalAmount { get; private set; }
     public decimal PointsSpent { get; private set; }
     public decimal TotalAmount { get; private set; }
@@ -46,7 +65,9 @@ public class Order
         DateTime? updatedAt = null,
         User? customer = null,
         decimal pointsEarned = 0m,
-        decimal pointsSpent = 0m)
+        decimal pointsSpent = 0m,
+        string status = OrderStatuses.InPreparation,
+        DateTime? completedAt = null)
     {
         ArgumentNullException.ThrowIfNull(branch);
         ArgumentNullException.ThrowIfNull(createdByUser);
@@ -104,6 +125,13 @@ public class Order
             throw new ArgumentException($"Invalid payment method '{paymentMethod}'.", nameof(paymentMethod));
         }
 
+        if (!OrderStatuses.IsValid(status))
+        {
+            throw new ArgumentException($"Invalid order status '{status}'.", nameof(status));
+        }
+
+        var normalizedStatus = OrderStatuses.Normalize(status);
+
         var normalizedMethod = PaymentMethods.Normalize(paymentMethod);
         var normalizedCardLast4 = string.IsNullOrWhiteSpace(cardLast4) ? null : cardLast4.Trim();
 
@@ -145,6 +173,8 @@ public class Order
         Customer = customer;
         PaymentMethod = normalizedMethod;
         CardLast4 = normalizedCardLast4;
+        Status = normalizedStatus;
+        CompletedAt = normalizedStatus == OrderStatuses.Ready ? completedAt : null;
         Products = productList;
         Dishes = dishList;
         Combos = comboList;
@@ -154,6 +184,35 @@ public class Order
         PointsEarned = Math.Round(pointsEarned, 2, MidpointRounding.AwayFromZero);
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
+    }
+
+    public void MarkAsCompleted(DateTime? now = null)
+    {
+        if (Status == OrderStatuses.Ready)
+        {
+            throw new InvalidOperationException("Order is already marked as ready.");
+        }
+
+        Status = OrderStatuses.Ready;
+        CompletedAt = now ?? DateTime.UtcNow;
+    }
+
+    public void MarkAsUncompleted(DateTime? now = null)
+    {
+        if (Status != OrderStatuses.Ready)
+        {
+            throw new InvalidOperationException("Order is already in preparation.");
+        }
+
+        var current = now ?? DateTime.UtcNow;
+        if (!CompletedAt.HasValue || current - CompletedAt.Value > TimeSpan.FromMinutes(UncompleteWindowMinutes))
+        {
+            throw new InvalidOperationException(
+                $"Order can only be reverted within {UncompleteWindowMinutes} minutes of completion.");
+        }
+
+        Status = OrderStatuses.InPreparation;
+        CompletedAt = null;
     }
 
     public static decimal CalculatePoints(decimal totalAmount, decimal pointsPercentage)

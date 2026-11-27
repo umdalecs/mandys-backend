@@ -19,7 +19,9 @@ internal static class OrderMapper
             record.UpdatedAt,
             record.Customer?.ToDomain(),
             record.PointsEarned,
-            record.PointsSpent);
+            record.PointsSpent,
+            record.Status,
+            record.CompletedAt);
 
     internal static OrderRecord ToRecord(this Order order) =>
         new()
@@ -29,6 +31,8 @@ internal static class OrderMapper
             CustomerId = order.Customer?.ID,
             PaymentMethod = order.PaymentMethod,
             CardLast4 = order.CardLast4,
+            Status = order.Status,
+            CompletedAt = order.CompletedAt,
             SubtotalAmount = order.SubtotalAmount,
             PointsSpent = order.PointsSpent,
             TotalAmount = order.TotalAmount,

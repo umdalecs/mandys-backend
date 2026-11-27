@@ -17,7 +17,10 @@ public interface IOrderRepository
         int? branchId,
         int? createdByUserId,
         string? paymentMethod,
+        string? status,
         int page,
         int pageSize,
         string? orderBy);
+
+    Task UpdateAsync(Order order);
 }

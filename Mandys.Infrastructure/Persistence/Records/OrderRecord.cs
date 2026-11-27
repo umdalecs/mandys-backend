@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Mandys.Domain;
 
 namespace Mandys.Infrastructure.Persistence.Records;
 
@@ -21,6 +22,10 @@ public class OrderRecord : Record
     public string PaymentMethod { get; set; } = string.Empty;
     [MaxLength(4)]
     public string? CardLast4 { get; set; }
+    [Required]
+    [MaxLength(30)]
+    public string Status { get; set; } = OrderStatuses.InPreparation;
+    public DateTime? CompletedAt { get; set; }
     [Required]
     public decimal SubtotalAmount { get; set; }
     [Required]

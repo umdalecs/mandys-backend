@@ -219,9 +219,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .HasForeignKey(o => o.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            entity.Property(o => o.Status)
+                .HasDefaultValue(OrderStatuses.InPreparation);
+
             entity.HasIndex(o => o.BranchId);
             entity.HasIndex(o => o.CreatedByUserId);
             entity.HasIndex(o => o.CustomerId);
+            entity.HasIndex(o => o.Status);
             entity.HasIndex(o => o.CreatedAt);
         });
 

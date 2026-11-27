@@ -645,6 +645,10 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnType("character varying(4)")
                         .HasColumnName("card_last4");
 
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("completed_at");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -675,6 +679,14 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("points_spent");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasDefaultValue("en preparación")
+                        .HasColumnName("status");
+
                     b.Property<decimal>("SubtotalAmount")
                         .HasColumnType("numeric")
                         .HasColumnName("subtotal_amount");
@@ -701,6 +713,9 @@ namespace Mandys.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId")
                         .HasDatabaseName("ix_orders_customer_id");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_orders_status");
 
                     b.ToTable("orders", (string)null);
                 });

@@ -106,6 +106,8 @@ internal enum MenuSortField
 internal enum OrderSortField
 {
     Id,
+    Status,
+    CompletedAt,
     SubtotalAmount,
     PointsSpent,
     TotalAmount,
@@ -265,6 +267,8 @@ internal static class SortSelectors
     internal static Expression<Func<OrderRecord, object>> Selector(this OrderSortField field) =>
         field switch
         {
+            OrderSortField.Status => o => o.Status,
+            OrderSortField.CompletedAt => o => o.CompletedAt ?? DateTime.MinValue,
             OrderSortField.SubtotalAmount => o => o.SubtotalAmount,
             OrderSortField.PointsSpent => o => o.PointsSpent,
             OrderSortField.TotalAmount => o => o.TotalAmount,

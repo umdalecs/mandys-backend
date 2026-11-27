@@ -157,6 +157,7 @@ public class OrderService(
         string userRole,
         int? userBranchId,
         string? paymentMethod,
+        string? status,
         int page,
         int pageSize,
         string? orderBy)
@@ -176,6 +177,12 @@ public class OrderService(
                 $"El método de pago '{paymentMethod}' no es válido. Valores permitidos: {string.Join(", ", PaymentMethods.All)}.");
         }
 
+        if (!string.IsNullOrWhiteSpace(status) && !OrderStatuses.IsValid(status))
+        {
+            throw ServiceException.BadRequest(
+                $"El estatus '{status}' no es válido. Valores permitidos: {string.Join(", ", OrderStatuses.All)}.");
+        }
+
         var (scopedBranchId, scopedUserId) = ResolveQueryScope(branchId, userId, userRole, userBranchId);
 
         if (page < 1) page = 1;
@@ -186,6 +193,7 @@ public class OrderService(
             scopedBranchId,
             scopedUserId,
             paymentMethod,
+            status,
             page,
             pageSize,
             orderBy);
@@ -219,6 +227,71 @@ public class OrderService(
         EnsureOrderReadAccess(order, userId, userRole, userBranchId);
 
         return order.ToResponse();
+    }
+
+    public async Task<OrderResponse> MarkOrderCompletedAsync(
+        int orderId,
+        string userRole,
+        int? userBranchId)
+    {
+        var order = await LoadKitchenChiefOrderAsync(orderId, userRole, userBranchId);
+
+        if (order.Status == OrderStatuses.Ready)
+        {
+            throw ServiceException.Conflict("El pedido ya se encuentra en estado 'preparado'.");
+        }
+
+        order.MarkAsCompleted();
+        await orders.UpdateAsync(order);
+
+        return order.ToResponse();
+    }
+
+    public async Task<OrderResponse> MarkOrderUncompletedAsync(
+        int orderId,
+        string userRole,
+        int? userBranchId)
+    {
+        var order = await LoadKitchenChiefOrderAsync(orderId, userRole, userBranchId);
+
+        if (order.Status != OrderStatuses.Ready)
+        {
+            throw ServiceException.Conflict("El pedido ya se encuentra en estado 'en preparación'.");
+        }
+
+        var now = DateTime.UtcNow;
+        if (!order.CompletedAt.HasValue ||
+            now - order.CompletedAt.Value > TimeSpan.FromMinutes(Order.UncompleteWindowMinutes))
+        {
+            throw ServiceException.Conflict(
+                $"Solo se puede revertir un pedido durante los {Order.UncompleteWindowMinutes} minutos posteriores a marcarlo como preparado.");
+        }
+
+        order.MarkAsUncompleted(now);
+        await orders.UpdateAsync(order);
+
+        return order.ToResponse();
+    }
+
+    private async Task<Order> LoadKitchenChiefOrderAsync(int orderId, string userRole, int? userBranchId)
+    {
+        if (!string.Equals(userRole, Roles.KitchenChief, StringComparison.OrdinalIgnoreCase))
+        {
+            throw ServiceException.BadRequest("Solo el jefe de cocina puede cambiar el estatus de un pedido.");
+        }
+
+        if (!userBranchId.HasValue)
+        {
+            throw ServiceException.BadRequest("El usuario actual no tiene una sucursal asignada.");
+        }
+
+        var order = await orders.GetByIdAsync(orderId);
+        if (order is null || order.Branch.Id != userBranchId.Value)
+        {
+            throw ServiceException.NotFound($"No se encontró el pedido con ID '{orderId}'.");
+        }
+
+        return order;
     }
 
     private static (string PaymentMethod, string? CardLast4) ResolvePaymentMethod(
