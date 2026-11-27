@@ -118,5 +118,18 @@ public class CreateOrderRequestValidator : AbstractValidator<CreateOrderRequest>
         RuleFor(x => x.CardPayment!)
             .SetValidator(new OrderCardPaymentValidator())
             .When(x => x.CardPayment is not null);
+
+        RuleFor(x => x.CustomerId)
+            .GreaterThan(0)
+            .When(x => x.CustomerId.HasValue)
+            .WithMessage("El ID del cliente debe ser mayor a 0.");
+
+        RuleFor(x => x.PointsToSpend)
+            .GreaterThanOrEqualTo(0)
+            .When(x => x.PointsToSpend.HasValue)
+            .WithMessage("Los puntos a utilizar no pueden ser negativos.")
+            .Must(p => Math.Round(p!.Value, 2) == p.Value)
+            .When(x => x.PointsToSpend.HasValue)
+            .WithMessage("Los puntos a utilizar no pueden tener más de 2 decimales.");
     }
 }

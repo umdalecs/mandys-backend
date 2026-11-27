@@ -653,6 +653,10 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("created_by_user_id");
 
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
@@ -662,6 +666,18 @@ namespace Mandys.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("payment_method");
+
+                    b.Property<decimal>("PointsEarned")
+                        .HasColumnType("numeric")
+                        .HasColumnName("points_earned");
+
+                    b.Property<decimal>("PointsSpent")
+                        .HasColumnType("numeric")
+                        .HasColumnName("points_spent");
+
+                    b.Property<decimal>("SubtotalAmount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("subtotal_amount");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("numeric")
@@ -682,6 +698,9 @@ namespace Mandys.Infrastructure.Migrations
 
                     b.HasIndex("CreatedByUserId")
                         .HasDatabaseName("ix_orders_created_by_user_id");
+
+                    b.HasIndex("CustomerId")
+                        .HasDatabaseName("ix_orders_customer_id");
 
                     b.ToTable("orders", (string)null);
                 });
@@ -831,6 +850,10 @@ namespace Mandys.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("password");
 
+                    b.Property<decimal>("Points")
+                        .HasColumnType("numeric")
+                        .HasColumnName("points");
+
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -862,6 +885,7 @@ namespace Mandys.Infrastructure.Migrations
                             FatherLastName = "Sistema",
                             FirstName = "Administrador",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
+                            Points = 0m,
                             Role = "Administrador",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -873,6 +897,7 @@ namespace Mandys.Infrastructure.Migrations
                             FatherLastName = "Demo",
                             FirstName = "Cliente",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
+                            Points = 0m,
                             Role = "Cliente",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -884,6 +909,7 @@ namespace Mandys.Infrastructure.Migrations
                             FatherLastName = "Operaciones",
                             FirstName = "Gerente",
                             PasswordHash = "$argon2id$v=19$m=16,t=2,p=1$bWFuZHlzcG9z$C8kgZO6/V+MkFbWFE5pl9Q",
+                            Points = 0m,
                             Role = "Gerente de Operaciones",
                             UpdatedAt = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
@@ -1085,9 +1111,17 @@ namespace Mandys.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_orders_users_created_by_user_id");
 
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.UserRecord", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_orders_users_customer_id");
+
                     b.Navigation("Branch");
 
                     b.Navigation("CreatedByUser");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.RefreshToken", b =>

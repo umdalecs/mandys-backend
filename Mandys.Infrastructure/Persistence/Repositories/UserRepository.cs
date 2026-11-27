@@ -90,6 +90,7 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
         record.PasswordHash = user.PasswordHash;
         record.Role = user.Role;
         record.BranchId = user.BranchId;
+        record.Points = user.Points;
 
         await db.SaveChangesAsync();
     }

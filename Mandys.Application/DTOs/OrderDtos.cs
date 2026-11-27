@@ -28,7 +28,9 @@ public record CreateOrderRequest(
     IReadOnlyList<CreateOrderProductLineRequest>? Products = null,
     IReadOnlyList<CreateOrderDishLineRequest>? Dishes = null,
     IReadOnlyList<CreateOrderComboLineRequest>? Combos = null,
-    OrderCardPaymentRequest? CardPayment = null
+    OrderCardPaymentRequest? CardPayment = null,
+    int? CustomerId = null,
+    decimal? PointsToSpend = null
 );
 
 public record OrderProductLineResponse(
@@ -61,9 +63,13 @@ public record OrderResponse(
     string BranchName,
     int CreatedByUserId,
     string CreatedByRole,
+    int? CustomerId,
     string PaymentMethod,
     string? CardLast4,
+    decimal SubtotalAmount,
+    decimal PointsSpent,
     decimal TotalAmount,
+    decimal PointsEarned,
     IReadOnlyList<OrderProductLineResponse> Products,
     IReadOnlyList<OrderDishLineResponse> Dishes,
     IReadOnlyList<OrderComboLineResponse> Combos,
@@ -87,9 +93,13 @@ public static class OrderDtoMapper
             order.Branch.Name,
             order.CreatedByUser.ID,
             order.CreatedByUser.Role,
+            order.Customer?.ID,
             order.PaymentMethod,
             order.CardLast4,
+            order.SubtotalAmount,
+            order.PointsSpent,
             order.TotalAmount,
+            order.PointsEarned,
             order.Products
                 .Select(p => new OrderProductLineResponse(
                     p.Product.Id,

@@ -10,6 +10,7 @@ public class User
     public string PasswordHash { get; private set; }
     public string Role { get; private set; }
     public int? BranchId { get; private set; }
+    public decimal Points { get; private set; }
 
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
@@ -24,8 +25,14 @@ public class User
         string role,
         int? branchId = null,
         DateTime? createdAt = null,
-        DateTime? updatedAt = null)
+        DateTime? updatedAt = null,
+        decimal points = 0m)
     {
+        if (points < 0)
+        {
+            throw new ArgumentException("Points cannot be negative.", nameof(points));
+        }
+
         ID = id;
         FirstName = GuardName(firstName, nameof(firstName));
         FatherLastName = GuardName(fatherLastName, nameof(fatherLastName));
@@ -36,6 +43,7 @@ public class User
         PasswordHash = GuardNotEmpty(passwordHash, nameof(passwordHash));
         Role = GuardRole(role);
         BranchId = GuardBranch(Role, branchId);
+        Points = Math.Round(points, 2, MidpointRounding.AwayFromZero);
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
     }
@@ -77,6 +85,42 @@ public class User
     public void SetPasswordHash(string passwordHash)
     {
         PasswordHash = GuardNotEmpty(passwordHash, nameof(passwordHash));
+    }
+
+    public void AddPoints(decimal points)
+    {
+        if (points < 0)
+        {
+            throw new ArgumentException("Points to add cannot be negative.", nameof(points));
+        }
+
+        if (points == 0)
+        {
+            return;
+        }
+
+        Points = Math.Round(Points + points, 2, MidpointRounding.AwayFromZero);
+    }
+
+    public void SpendPoints(decimal points)
+    {
+        if (points < 0)
+        {
+            throw new ArgumentException("Points to spend cannot be negative.", nameof(points));
+        }
+
+        if (points == 0)
+        {
+            return;
+        }
+
+        var normalized = Math.Round(points, 2, MidpointRounding.AwayFromZero);
+        if (normalized > Points)
+        {
+            throw new ArgumentException("Insufficient points balance.", nameof(points));
+        }
+
+        Points = Math.Round(Points - normalized, 2, MidpointRounding.AwayFromZero);
     }
 
     private static string GuardNotEmpty(string value, string name) =>

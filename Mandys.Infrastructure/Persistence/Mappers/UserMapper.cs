@@ -16,7 +16,8 @@ internal static class UserMapper
             record.Role,
             record.BranchId,
             record.CreatedAt,
-            record.UpdatedAt);
+            record.UpdatedAt,
+            record.Points);
 
     internal static UserRecord ToRecord(this User user) =>
         new()
@@ -28,5 +29,6 @@ internal static class UserMapper
             PasswordHash = user.PasswordHash,
             Role = user.Role,
             BranchId = user.BranchId,
+            Points = user.Points,
         };
 }

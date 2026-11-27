@@ -14,13 +14,21 @@ public class OrderRecord : Record
     [Required]
     public int CreatedByUserId { get; set; }
     public UserRecord CreatedByUser { get; set; } = null!;
+    public int? CustomerId { get; set; }
+    public UserRecord? Customer { get; set; }
     [Required]
     [MaxLength(20)]
     public string PaymentMethod { get; set; } = string.Empty;
     [MaxLength(4)]
     public string? CardLast4 { get; set; }
     [Required]
+    public decimal SubtotalAmount { get; set; }
+    [Required]
+    public decimal PointsSpent { get; set; } = 0m;
+    [Required]
     public decimal TotalAmount { get; set; }
+    [Required]
+    public decimal PointsEarned { get; set; } = 0m;
     public ICollection<OrderProductRecord> OrderProducts { get; set; } = new List<OrderProductRecord>();
     public ICollection<OrderDishRecord> OrderDishes { get; set; } = new List<OrderDishRecord>();
     public ICollection<OrderComboRecord> OrderCombos { get; set; } = new List<OrderComboRecord>();

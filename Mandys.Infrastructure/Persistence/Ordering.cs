@@ -59,6 +59,7 @@ internal enum UserSortField
     FatherLastName,
     MotherLastName,
     Email,
+    Points,
     CreatedAt,
     UpdatedAt,
 }
@@ -105,7 +106,10 @@ internal enum MenuSortField
 internal enum OrderSortField
 {
     Id,
+    SubtotalAmount,
+    PointsSpent,
     TotalAmount,
+    PointsEarned,
     PaymentMethod,
     CreatedAt,
     UpdatedAt,
@@ -202,6 +206,7 @@ internal static class SortSelectors
             UserSortField.FatherLastName => u => u.FatherLastName,
             UserSortField.MotherLastName => u => u.MotherLastName!,
             UserSortField.Email => u => u.Email,
+            UserSortField.Points => u => u.Points,
             UserSortField.CreatedAt => u => u.CreatedAt,
             UserSortField.UpdatedAt => u => u.UpdatedAt,
             _ => u => u.Id,
@@ -260,7 +265,10 @@ internal static class SortSelectors
     internal static Expression<Func<OrderRecord, object>> Selector(this OrderSortField field) =>
         field switch
         {
+            OrderSortField.SubtotalAmount => o => o.SubtotalAmount,
+            OrderSortField.PointsSpent => o => o.PointsSpent,
             OrderSortField.TotalAmount => o => o.TotalAmount,
+            OrderSortField.PointsEarned => o => o.PointsEarned,
             OrderSortField.PaymentMethod => o => o.PaymentMethod,
             OrderSortField.CreatedAt => o => o.CreatedAt,
             OrderSortField.UpdatedAt => o => o.UpdatedAt,

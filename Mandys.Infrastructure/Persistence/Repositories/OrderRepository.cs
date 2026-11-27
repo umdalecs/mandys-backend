@@ -58,6 +58,28 @@ public class OrderRepository(ApplicationDbContext db) : IOrderRepository
             await db.SaveChangesAsync();
         }
 
+        if (order.Customer is not null && (order.PointsSpent > 0 || order.PointsEarned > 0))
+        {
+            var trackedCustomer = await db.Users.FirstOrDefaultAsync(u => u.Id == order.Customer.ID);
+            if (trackedCustomer is null)
+            {
+                throw ServiceException.NotFound($"No se encontró el cliente con ID '{order.Customer.ID}'.");
+            }
+
+            if (order.PointsSpent > 0 && trackedCustomer.Points < order.PointsSpent)
+            {
+                throw ServiceException.Conflict(
+                    $"El saldo de puntos del cliente cambió durante la operación. Disponible: {trackedCustomer.Points}, requerido: {order.PointsSpent}.");
+            }
+
+            trackedCustomer.Points = Math.Round(
+                trackedCustomer.Points - order.PointsSpent + order.PointsEarned,
+                2,
+                MidpointRounding.AwayFromZero);
+
+            await db.SaveChangesAsync();
+        }
+
         await transaction.CommitAsync();
 
         return new Order(
@@ -70,7 +92,10 @@ public class OrderRepository(ApplicationDbContext db) : IOrderRepository
             order.Dishes,
             order.Combos,
             orderRecord.CreatedAt,
-            orderRecord.UpdatedAt);
+            orderRecord.UpdatedAt,
+            order.Customer,
+            order.PointsEarned,
+            order.PointsSpent);
     }
 
     public async Task<Order?> GetByIdAsync(int id)
@@ -106,7 +131,9 @@ public class OrderRepository(ApplicationDbContext db) : IOrderRepository
 
         if (createdByUserId.HasValue)
         {
-            query = query.Where(o => o.CreatedByUserId == createdByUserId.Value);
+            query = query.Where(o =>
+                o.CreatedByUserId == createdByUserId.Value ||
+                o.CustomerId == createdByUserId.Value);
         }
 
         if (!string.IsNullOrWhiteSpace(paymentMethod) && PaymentMethods.IsValid(paymentMethod))
@@ -135,6 +162,7 @@ public class OrderRepository(ApplicationDbContext db) : IOrderRepository
             .AsNoTracking()
             .Include(o => o.Branch)
             .Include(o => o.CreatedByUser)
+            .Include(o => o.Customer)
             .Include(o => o.OrderProducts.OrderBy(l => l.Id))
             .ThenInclude(l => l.Product)
             .Include(o => o.OrderDishes.OrderBy(l => l.Id))

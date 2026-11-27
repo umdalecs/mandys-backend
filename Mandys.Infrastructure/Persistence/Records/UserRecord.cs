@@ -28,4 +28,6 @@ public class UserRecord : Record
     public int? BranchId { get; set; }
     [ForeignKey(nameof(BranchId))]
     public BranchRecord? Branch { get; set; }
+    [Required]
+    public decimal Points { get; set; } = 0m;
 }

@@ -16,16 +16,23 @@ internal static class OrderMapper
             record.OrderDishes.Select(l => l.ToDomain()),
             record.OrderCombos.Select(l => l.ToDomain()),
             record.CreatedAt,
-            record.UpdatedAt);
+            record.UpdatedAt,
+            record.Customer?.ToDomain(),
+            record.PointsEarned,
+            record.PointsSpent);
 
     internal static OrderRecord ToRecord(this Order order) =>
         new()
         {
             BranchId = order.Branch.Id,
             CreatedByUserId = order.CreatedByUser.ID,
+            CustomerId = order.Customer?.ID,
             PaymentMethod = order.PaymentMethod,
             CardLast4 = order.CardLast4,
+            SubtotalAmount = order.SubtotalAmount,
+            PointsSpent = order.PointsSpent,
             TotalAmount = order.TotalAmount,
+            PointsEarned = order.PointsEarned,
             OrderProducts = order.Products.Select(l => l.ToRecord()).ToList(),
             OrderDishes = order.Dishes.Select(l => l.ToRecord()).ToList(),
             OrderCombos = order.Combos.Select(l => l.ToRecord()).ToList(),

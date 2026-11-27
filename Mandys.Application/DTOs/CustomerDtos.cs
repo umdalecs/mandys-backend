@@ -12,7 +12,8 @@ public record CustomerResponse(
     string FirstName,
     string FatherLastName,
     string? MotherLastName,
-    string Email
+    string Email,
+    decimal Points
 );
 
 public record PagedCustomersResponse(
@@ -46,6 +47,7 @@ public static class CustomerMapper
             user.FirstName,
             user.FatherLastName,
             user.MotherLastName,
-            user.Email
+            user.Email,
+            user.Points
         );
 }

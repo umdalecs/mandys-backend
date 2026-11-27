@@ -98,6 +98,7 @@ services:
             Frontend__AllowedOrigins: ${FRONTEND_ORIGINS:-}
             Auth__CookieSameSite: ${COOKIE_SAMESITE:-}
             Auth__CookieSecure: ${COOKIE_SECURE:-}
+            Loyalty__PointsPercentage: ${LOYALTY_POINTS_PERCENTAGE:-3}
 
 volumes:
     database-data:

@@ -62,6 +62,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                     FatherLastName = "Sistema",
                     Role = Roles.Administrator,
                     BranchId = (int?)null,
+                    Points = 0m,
                     CreatedAt = seededAt,
                     UpdatedAt = seededAt,
                 },
@@ -74,6 +75,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                     FatherLastName = "Demo",
                     Role = Roles.Customer,
                     BranchId = (int?)null,
+                    Points = 0m,
                     CreatedAt = seededAt,
                     UpdatedAt = seededAt,
                 },
@@ -86,6 +88,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                     FatherLastName = "Operaciones",
                     Role = Roles.OpChief,
                     BranchId = (int?)null,
+                    Points = 0m,
                     CreatedAt = seededAt,
                     UpdatedAt = seededAt,
                 }
@@ -211,8 +214,14 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .HasForeignKey(o => o.CreatedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            entity.HasOne(o => o.Customer)
+                .WithMany()
+                .HasForeignKey(o => o.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             entity.HasIndex(o => o.BranchId);
             entity.HasIndex(o => o.CreatedByUserId);
+            entity.HasIndex(o => o.CustomerId);
             entity.HasIndex(o => o.CreatedAt);
         });
 

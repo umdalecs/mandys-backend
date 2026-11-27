@@ -9,7 +9,8 @@ public record UserResponse(
     string? MotherLastName,
     string Email,
     string Role,
-    int? BranchId
+    int? BranchId,
+    decimal Points
 );
 
 public record CreateUserRequest(
@@ -51,6 +52,7 @@ public static class UserMapper
             user.MotherLastName,
             user.Email,
             user.Role,
-            user.BranchId
+            user.BranchId,
+            user.Points
         );
 }

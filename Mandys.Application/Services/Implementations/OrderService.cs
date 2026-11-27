@@ -1,6 +1,8 @@
+using Mandys.Application.Configuration;
 using Mandys.Application.DTOs;
 using Mandys.Application.Services.Interfaces;
 using Mandys.Domain;
+using Microsoft.Extensions.Options;
 
 namespace Mandys.Application.Services.Implementations;
 
@@ -11,7 +13,8 @@ public class OrderService(
     IProductRepository products,
     IDishRepository dishes,
     IComboRepository combos,
-    IBranchStorageRepository branchStorages) : IOrderService
+    IBranchStorageRepository branchStorages,
+    IOptions<LoyaltyOptions> loyaltyOptions) : IOrderService
 {
     public async Task<OrderResponse> CreateOrderAsync(
         int branchId,
@@ -39,6 +42,7 @@ public class OrderService(
         }
 
         var (paymentMethod, cardLast4) = ResolvePaymentMethod(branchId, userRole, userBranchId, request);
+        var customer = await ResolveOrderCustomerAsync(user, userRole, request.CustomerId);
 
         var orderProducts = await ResolveProductLinesAsync(request.Products);
         var orderDishes = await ResolveDishLinesAsync(request.Dishes);
@@ -85,6 +89,51 @@ public class OrderService(
             }
         }
 
+        var pointsPercentage = loyaltyOptions.Value.PointsPercentage;
+        if (pointsPercentage < 0)
+        {
+            throw ServiceException.BadRequest(
+                "El porcentaje de puntos configurado no puede ser negativo.");
+        }
+
+        var pointsToSpend = Math.Round(request.PointsToSpend ?? 0m, 2, MidpointRounding.AwayFromZero);
+        if (pointsToSpend < 0)
+        {
+            throw ServiceException.BadRequest("Los puntos a utilizar no pueden ser negativos.");
+        }
+
+        if (pointsToSpend > 0)
+        {
+            if (customer is null)
+            {
+                throw ServiceException.BadRequest(
+                    "Debe seleccionar un cliente para utilizar puntos en el pedido.");
+            }
+
+            if (pointsToSpend > customer.Points)
+            {
+                throw ServiceException.BadRequest(
+                    $"Puntos insuficientes. El cliente tiene {customer.Points} puntos disponibles y se intentaron usar {pointsToSpend}.");
+            }
+        }
+
+        var subtotalAmount =
+            orderProducts.Sum(p => p.Quantity * p.UnitPrice) +
+            orderDishes.Sum(d => d.Quantity * d.UnitPrice) +
+            orderCombos.Sum(c => c.Quantity * c.UnitPrice);
+
+        if (pointsToSpend > subtotalAmount)
+        {
+            throw ServiceException.BadRequest(
+                $"Los puntos a utilizar ({pointsToSpend}) no pueden superar el subtotal del pedido ({subtotalAmount}).");
+        }
+
+        var totalAmount = subtotalAmount - pointsToSpend;
+
+        var pointsEarned = customer is not null
+            ? Order.CalculatePoints(totalAmount, pointsPercentage)
+            : 0m;
+
         var order = new Order(
             0,
             branch,
@@ -93,7 +142,10 @@ public class OrderService(
             cardLast4,
             orderProducts,
             orderDishes,
-            orderCombos);
+            orderCombos,
+            customer: customer,
+            pointsEarned: pointsEarned,
+            pointsSpent: pointsToSpend);
 
         var created = await orders.CreateWithStockDeductionAsync(order, updatedStorages, historyLines);
         return created.ToResponse();
@@ -384,7 +436,7 @@ public class OrderService(
 
         if (string.Equals(userRole, Roles.Customer, StringComparison.OrdinalIgnoreCase))
         {
-            if (order.CreatedByUser.ID != userId)
+            if (order.CreatedByUser.ID != userId && order.Customer?.ID != userId)
             {
                 throw ServiceException.NotFound($"No se encontró el pedido con ID '{order.Id}'.");
             }
@@ -396,5 +448,42 @@ public class OrderService(
         {
             throw ServiceException.NotFound($"No se encontró el pedido con ID '{order.Id}'.");
         }
+    }
+
+    private async Task<User?> ResolveOrderCustomerAsync(User currentUser, string userRole, int? requestedCustomerId)
+    {
+        if (string.Equals(userRole, Roles.Customer, StringComparison.OrdinalIgnoreCase))
+        {
+            if (requestedCustomerId.HasValue && requestedCustomerId.Value != currentUser.ID)
+            {
+                throw ServiceException.BadRequest("Un cliente no puede asignar un pedido a otro cliente.");
+            }
+
+            return currentUser;
+        }
+
+        if (string.Equals(userRole, Roles.Cashier, StringComparison.OrdinalIgnoreCase))
+        {
+            if (!requestedCustomerId.HasValue)
+            {
+                return null;
+            }
+
+            var customer = await users.GetByIdAsync(requestedCustomerId.Value);
+            if (customer is null)
+            {
+                throw ServiceException.NotFound($"No se encontró el cliente con ID '{requestedCustomerId.Value}'.");
+            }
+
+            if (!string.Equals(customer.Role, Roles.Customer, StringComparison.OrdinalIgnoreCase))
+            {
+                throw ServiceException.BadRequest(
+                    $"El usuario con ID '{requestedCustomerId.Value}' no tiene rol de cliente.");
+            }
+
+            return customer;
+        }
+
+        return null;
     }
 }

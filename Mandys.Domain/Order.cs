@@ -20,9 +20,13 @@ public class Order
     public int Id { get; private set; }
     public Branch Branch { get; private set; }
     public User CreatedByUser { get; private set; }
+    public User? Customer { get; private set; }
     public string PaymentMethod { get; private set; }
     public string? CardLast4 { get; private set; }
+    public decimal SubtotalAmount { get; private set; }
+    public decimal PointsSpent { get; private set; }
     public decimal TotalAmount { get; private set; }
+    public decimal PointsEarned { get; private set; }
     public IReadOnlyList<OrderProduct> Products { get; private set; }
     public IReadOnlyList<OrderDish> Dishes { get; private set; }
     public IReadOnlyList<OrderCombo> Combos { get; private set; }
@@ -39,7 +43,10 @@ public class Order
         IEnumerable<OrderDish>? dishes = null,
         IEnumerable<OrderCombo>? combos = null,
         DateTime? createdAt = null,
-        DateTime? updatedAt = null)
+        DateTime? updatedAt = null,
+        User? customer = null,
+        decimal pointsEarned = 0m,
+        decimal pointsSpent = 0m)
     {
         ArgumentNullException.ThrowIfNull(branch);
         ArgumentNullException.ThrowIfNull(createdByUser);
@@ -57,6 +64,39 @@ public class Order
         if (createdByUser.ID <= 0)
         {
             throw new ArgumentException("User id must be positive.", nameof(createdByUser));
+        }
+
+        if (customer is not null)
+        {
+            if (customer.ID <= 0)
+            {
+                throw new ArgumentException("Customer id must be positive.", nameof(customer));
+            }
+
+            if (!string.Equals(customer.Role, Roles.Customer, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException("Assigned customer must have the customer role.", nameof(customer));
+            }
+        }
+
+        if (pointsEarned < 0)
+        {
+            throw new ArgumentException("PointsEarned cannot be negative.", nameof(pointsEarned));
+        }
+
+        if (customer is null && pointsEarned > 0)
+        {
+            throw new ArgumentException("Cannot award points without an associated customer.", nameof(pointsEarned));
+        }
+
+        if (pointsSpent < 0)
+        {
+            throw new ArgumentException("PointsSpent cannot be negative.", nameof(pointsSpent));
+        }
+
+        if (customer is null && pointsSpent > 0)
+        {
+            throw new ArgumentException("Cannot spend points without an associated customer.", nameof(pointsSpent));
         }
 
         if (!PaymentMethods.IsValid(paymentMethod))
@@ -88,20 +128,49 @@ public class Order
             throw new ArgumentException("Order must contain at least one product, dish, or combo.");
         }
 
+        var subtotalAmount =
+            productList.Sum(p => p.Quantity * p.UnitPrice) +
+            dishList.Sum(d => d.Quantity * d.UnitPrice) +
+            comboList.Sum(c => c.Quantity * c.UnitPrice);
+
+        var normalizedPointsSpent = Math.Round(pointsSpent, 2, MidpointRounding.AwayFromZero);
+        if (normalizedPointsSpent > subtotalAmount)
+        {
+            throw new ArgumentException("PointsSpent cannot exceed the order subtotal.", nameof(pointsSpent));
+        }
+
         Id = id;
         Branch = branch;
         CreatedByUser = createdByUser;
+        Customer = customer;
         PaymentMethod = normalizedMethod;
         CardLast4 = normalizedCardLast4;
         Products = productList;
         Dishes = dishList;
         Combos = comboList;
-        TotalAmount =
-            productList.Sum(p => p.Quantity * p.UnitPrice) +
-            dishList.Sum(d => d.Quantity * d.UnitPrice) +
-            comboList.Sum(c => c.Quantity * c.UnitPrice);
+        SubtotalAmount = subtotalAmount;
+        PointsSpent = normalizedPointsSpent;
+        TotalAmount = subtotalAmount - normalizedPointsSpent;
+        PointsEarned = Math.Round(pointsEarned, 2, MidpointRounding.AwayFromZero);
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
+    }
+
+    public static decimal CalculatePoints(decimal totalAmount, decimal pointsPercentage)
+    {
+        if (pointsPercentage < 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(pointsPercentage),
+                "Points percentage cannot be negative.");
+        }
+
+        if (totalAmount <= 0 || pointsPercentage == 0)
+        {
+            return 0m;
+        }
+
+        return Math.Round(totalAmount * (pointsPercentage / 100m), 2, MidpointRounding.AwayFromZero);
     }
 }
 
