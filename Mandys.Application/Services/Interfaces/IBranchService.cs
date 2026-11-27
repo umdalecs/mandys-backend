@@ -4,7 +4,8 @@ namespace Mandys.Application.Services.Interfaces;
 
 public interface IBranchService
 {
-    Task<PagedBranchesResponse> GetBranchesAsync(int page, int pageSize, string? search, string? orderBy);
+    Task<PagedBranchesResponse> GetBranchesAsync(
+        int page, int pageSize, string? search, string? orderBy, bool? warehouseOnly = null);
 
     Task<BranchResponse> GetBranchByIdAsync(int id);
 

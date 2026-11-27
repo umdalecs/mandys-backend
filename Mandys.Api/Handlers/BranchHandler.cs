@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using Carter;
 using FluentValidation;
 using Mandys.Api.Validators;
+using Mandys.Application.Common;
 using Mandys.Application.DTOs;
 using Mandys.Application.Services;
 using Mandys.Application.Services.Interfaces;
@@ -14,8 +16,7 @@ public class BranchHandler : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         var branchRoutes = app.MapGroup("/branches")
-            .WithTags("Branches")
-            .RequireAuthorization();
+            .WithTags("Branches");
 
         branchRoutes.MapGet("", GetBranches);
 
@@ -38,13 +39,23 @@ public class BranchHandler : ICarterModule
     }
 
     private static async Task<IResult> GetBranches(
+        ClaimsPrincipal claimsPrincipal,
         IBranchService branchService,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20,
         [FromQuery] string? search = null,
-        [FromQuery] string? orderBy = null)
+        [FromQuery] string? orderBy = null,
+        [FromQuery] bool? warehouseOnly = null)
     {
-        return Results.Ok(await branchService.GetBranchesAsync(page, pageSize, search, orderBy));
+        var userRole = claimsPrincipal.GetUserRole();
+        var canFilterWarehouseOnly =
+            string.Equals(userRole, Roles.Administrator, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(userRole, Roles.OpChief, StringComparison.OrdinalIgnoreCase);
+
+        bool? effectiveWarehouseOnly = canFilterWarehouseOnly ? warehouseOnly : false;
+
+        return Results.Ok(await branchService.GetBranchesAsync(
+            page, pageSize, search, orderBy, effectiveWarehouseOnly));
     }
 
     private static async Task<IResult> GetBranchById(

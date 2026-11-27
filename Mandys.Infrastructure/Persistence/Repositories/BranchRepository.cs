@@ -15,7 +15,7 @@ public class BranchRepository(ApplicationDbContext db) : IBranchRepository
     }
 
     public async Task<(int TotalCount, IReadOnlyList<Branch> Items)> SearchAsync(
-        string? search, int page, int pageSize, string? orderBy)
+        string? search, bool? warehouseOnly, int page, int pageSize, string? orderBy)
     {
         var query = db.Branches.AsNoTracking();
 
@@ -23,6 +23,11 @@ public class BranchRepository(ApplicationDbContext db) : IBranchRepository
         {
             var term = search.Trim().ToLower();
             query = query.Where(b => b.Name.ToLower().Contains(term));
+        }
+
+        if (warehouseOnly.HasValue)
+        {
+            query = query.Where(b => b.WarehouseOnly == warehouseOnly.Value);
         }
 
         var totalCount = await query.CountAsync();

@@ -7,7 +7,7 @@ public interface IBranchRepository
     Task<Branch?> GetByIdAsync(int id);
 
     Task<(int TotalCount, IReadOnlyList<Branch> Items)> SearchAsync(
-        string? search, int page, int pageSize, string? orderBy);
+        string? search, bool? warehouseOnly, int page, int pageSize, string? orderBy);
 
     Task<Branch> AddAsync(Branch branch);
 
