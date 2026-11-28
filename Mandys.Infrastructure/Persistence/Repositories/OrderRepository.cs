@@ -142,13 +142,19 @@ public class OrderRepository(ApplicationDbContext db) : IOrderRepository
         string? status,
         int page,
         int pageSize,
-        string? orderBy)
+        string? orderBy,
+        DateTime? createdAtMax = null)
     {
         var query = BuildDetailQuery();
 
         if (branchId.HasValue)
         {
             query = query.Where(o => o.BranchId == branchId.Value);
+        }
+
+        if (createdAtMax.HasValue)
+        {
+            query = query.Where(o => o.CreatedAt <= createdAtMax.Value);
         }
 
         if (createdByUserId.HasValue)

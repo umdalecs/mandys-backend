@@ -14,6 +14,7 @@ public class OrderService(
     IDishRepository dishes,
     IComboRepository combos,
     IBranchStorageRepository branchStorages,
+    IDrawerReconciliationRepository drawerReconciliations,
     IOptions<LoyaltyOptions> loyaltyOptions) : IOrderService
 {
     public async Task<OrderResponse> CreateOrderAsync(
@@ -221,6 +222,17 @@ public class OrderService(
         if (pageSize < 1) pageSize = 20;
         if (pageSize > 100) pageSize = 100;
 
+        DateTime? createdAtMax = null;
+        if (string.Equals(userRole, Roles.BranchChief, StringComparison.OrdinalIgnoreCase) &&
+            scopedBranchId.HasValue)
+        {
+            createdAtMax = await drawerReconciliations.GetLatestReconciliationAtByBranchAsync(scopedBranchId.Value);
+            if (!createdAtMax.HasValue)
+            {
+                return new PagedOrdersResponse(0, page, pageSize, 0, []);
+            }
+        }
+
         var (totalCount, items) = await orders.SearchAsync(
             scopedBranchId,
             scopedUserId,
@@ -228,7 +240,8 @@ public class OrderService(
             status,
             page,
             pageSize,
-            orderBy);
+            orderBy,
+            createdAtMax);
 
         var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
@@ -257,6 +270,17 @@ public class OrderService(
         }
 
         EnsureOrderReadAccess(order, userId, userRole, userBranchId);
+
+        if (string.Equals(userRole, Roles.BranchChief, StringComparison.OrdinalIgnoreCase))
+        {
+            var lastReconciliationAt = await drawerReconciliations
+                .GetLatestReconciliationAtByBranchAsync(order.Branch.Id);
+
+            if (!lastReconciliationAt.HasValue || order.CreatedAt > lastReconciliationAt.Value)
+            {
+                throw ServiceException.NotFound($"No se encontró el pedido con ID '{orderId}'.");
+            }
+        }
 
         return order.ToResponse();
     }

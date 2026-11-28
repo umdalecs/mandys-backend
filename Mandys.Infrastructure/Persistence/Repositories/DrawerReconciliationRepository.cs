@@ -19,6 +19,12 @@ public class DrawerReconciliationRepository(ApplicationDbContext db) : IDrawerRe
         return record?.ToDomain();
     }
 
+    public Task<DateTime?> GetLatestReconciliationAtByBranchAsync(int branchId) =>
+        db.DrawerReconciliations
+            .AsNoTracking()
+            .Where(r => r.BranchId == branchId)
+            .MaxAsync(r => (DateTime?)r.CreatedAt);
+
     public async Task<DrawerReconciliation> AddAsync(DrawerReconciliation reconciliation)
     {
         var record = reconciliation.ToRecord();

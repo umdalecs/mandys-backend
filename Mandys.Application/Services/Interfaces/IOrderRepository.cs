@@ -20,7 +20,8 @@ public interface IOrderRepository
         string? status,
         int page,
         int pageSize,
-        string? orderBy);
+        string? orderBy,
+        DateTime? createdAtMax = null);
 
     Task UpdateAsync(Order order);
 }

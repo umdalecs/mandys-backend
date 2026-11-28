@@ -26,12 +26,14 @@ public class OrderHandler : ICarterModule
         branchOrderRoutes.MapGet("", GetBranchOrders)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
-                Roles.OpChief));
+                Roles.OpChief,
+                Roles.BranchChief));
 
         branchOrderRoutes.MapGet("/{orderId:int}", GetBranchOrderById)
             .RequireAuthorization(policy => policy.RequireRole(
                 Roles.Administrator,
-                Roles.OpChief));
+                Roles.OpChief,
+                Roles.BranchChief));
 
         var orderRoutes = app.MapGroup("/orders")
             .WithTags("Orders")
