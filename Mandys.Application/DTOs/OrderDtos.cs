@@ -30,7 +30,8 @@ public record CreateOrderRequest(
     IReadOnlyList<CreateOrderComboLineRequest>? Combos = null,
     OrderCardPaymentRequest? CardPayment = null,
     int? CustomerId = null,
-    decimal? PointsToSpend = null
+    decimal? PointsToSpend = null,
+    decimal? AmountPaid = null
 );
 
 public record OrderProductLineResponse(
@@ -72,6 +73,8 @@ public record OrderResponse(
     decimal PointsSpent,
     decimal TotalAmount,
     decimal PointsEarned,
+    decimal? AmountPaid,
+    decimal? ChangeAmount,
     IReadOnlyList<OrderProductLineResponse> Products,
     IReadOnlyList<OrderDishLineResponse> Dishes,
     IReadOnlyList<OrderComboLineResponse> Combos,
@@ -104,6 +107,8 @@ public static class OrderDtoMapper
             order.PointsSpent,
             order.TotalAmount,
             order.PointsEarned,
+            order.AmountPaid,
+            order.ChangeAmount,
             order.Products
                 .Select(p => new OrderProductLineResponse(
                     p.Product.Id,

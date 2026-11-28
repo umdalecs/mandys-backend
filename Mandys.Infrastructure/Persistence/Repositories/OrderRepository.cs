@@ -58,6 +58,23 @@ public class OrderRepository(ApplicationDbContext db) : IOrderRepository
             await db.SaveChangesAsync();
         }
 
+        if (order.PaymentMethod == PaymentMethods.Cash)
+        {
+            var drawerTransaction = new DrawerTransaction(
+                0,
+                order.Branch,
+                order.CreatedByUser,
+                DrawerTransactionTypes.Sale,
+                order.TotalAmount,
+                order.AmountPaid,
+                order.ChangeAmount,
+                orderRecord.Id,
+                $"Venta - Pedido #{orderRecord.Id}");
+
+            db.DrawerTransactions.Add(drawerTransaction.ToRecord());
+            await db.SaveChangesAsync();
+        }
+
         if (order.Customer is not null && (order.PointsSpent > 0 || order.PointsEarned > 0))
         {
             var trackedCustomer = await db.Users.FirstOrDefaultAsync(u => u.Id == order.Customer.ID);
@@ -97,7 +114,9 @@ public class OrderRepository(ApplicationDbContext db) : IOrderRepository
             order.PointsEarned,
             order.PointsSpent,
             order.Status,
-            order.CompletedAt);
+            order.CompletedAt,
+            order.AmountPaid,
+            order.ChangeAmount);
     }
 
     public async Task<Order?> GetByIdAsync(int id)
@@ -186,6 +205,7 @@ public class OrderRepository(ApplicationDbContext db) : IOrderRepository
             .Include(o => o.Branch)
             .Include(o => o.CreatedByUser)
             .Include(o => o.Customer)
+            .Include(o => o.DrawerTransaction)
             .Include(o => o.OrderProducts.OrderBy(l => l.Id))
             .ThenInclude(l => l.Product)
             .Include(o => o.OrderDishes.OrderBy(l => l.Id))

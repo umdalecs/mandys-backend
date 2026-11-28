@@ -21,7 +21,9 @@ internal static class OrderMapper
             record.PointsEarned,
             record.PointsSpent,
             record.Status,
-            record.CompletedAt);
+            record.CompletedAt,
+            record.DrawerTransaction?.AmountPaid,
+            record.DrawerTransaction?.ChangeAmount);
 
     internal static OrderRecord ToRecord(this Order order) =>
         new()

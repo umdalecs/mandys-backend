@@ -23,6 +23,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<OrderProductRecord> OrderProducts { get; set; }
     public DbSet<OrderDishRecord> OrderDishes { get; set; }
     public DbSet<OrderComboRecord> OrderCombos { get; set; }
+    public DbSet<DrawerTransactionRecord> DrawerTransactions { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<LogRecord> Logs { get; set; }
 
@@ -275,6 +276,31 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.HasIndex(oc => oc.OrderId);
             entity.HasIndex(oc => oc.ComboId);
+        });
+
+        modelBuilder.Entity<DrawerTransactionRecord>(entity =>
+        {
+            entity.HasOne(dt => dt.Branch)
+                .WithMany(b => b.DrawerTransactions)
+                .HasForeignKey(dt => dt.BranchId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(dt => dt.User)
+                .WithMany()
+                .HasForeignKey(dt => dt.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(dt => dt.Order)
+                .WithOne(o => o.DrawerTransaction)
+                .HasForeignKey<DrawerTransactionRecord>(dt => dt.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(dt => new { dt.BranchId, dt.UserId });
+            entity.HasIndex(dt => dt.BranchId);
+            entity.HasIndex(dt => dt.UserId);
+            entity.HasIndex(dt => dt.OrderId).IsUnique();
+            entity.HasIndex(dt => dt.Type);
+            entity.HasIndex(dt => dt.CreatedAt);
         });
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())

@@ -20,6 +20,7 @@ builder.ConfigureDishes();
 builder.ConfigureCombos();
 builder.ConfigureMenu();
 builder.ConfigureOrders();
+builder.ConfigureDrawerTransactions();
 builder.ConfigureLogs();
 
 const string FrontendCorsPolicy = "Frontend";

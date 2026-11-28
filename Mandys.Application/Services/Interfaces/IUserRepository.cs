@@ -12,6 +12,8 @@ public interface IUserRepository
 
     Task<(int TotalCount, IReadOnlyList<User> Items)> SearchAsync(
         string? search, string? role, int page, int pageSize, string? orderBy = null);
+
+    Task<IReadOnlyList<User>> GetByBranchAndRoleAsync(int branchId, string role);
     
     Task<User> AddAsync(User user);
 

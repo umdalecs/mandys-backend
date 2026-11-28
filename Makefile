@@ -8,42 +8,22 @@ MIGRATIONS_DIR := Mandys.Infrastructure/Migrations
 
 .PHONY: run-api seed run-database stop-database run-storage stop-storage migrations-fresh migrations-clean migrations-init
 
-run: run-database run-storage run-api
-
-stop: stop-database stop-storage
-
-run-api:
+run: run-dependencies
 	dotnet run --project $(API_PROJECT) --launch-profile $(API_LAUNCH_PROFILE)
+
+run-dependencies:
+	docker compose up database storage storage-init -d
+
+stop-dependencies:
+	docker compose down database storage storage-init
 
 seed:
 	dotnet run --project $(SEED_PROJECT) -- $(BASE_URL)
 
 restart-database: stop-database run-database
 
-run-database:
-	docker compose up database -d
-
-stop-database:
-	docker compose down database -v
-
 run-pgadmin:
 	docker compose up pgadmin -d
 
 stop-pgadmin:
 	docker compose down pgadmin -v
-
-run-storage:
-	docker compose up storage storage-init -d
-
-stop-storage:
-	docker compose down storage storage-init -v
-
-fresh-migrations: clean-migrations init-migrations
-
-clean-migrations:
-	dotnet ef database update 0 $(EF_ARGS)
-	rm -f $(MIGRATIONS_DIR)/*.cs
-
-init-migrations:
-	dotnet ef migrations add Initial $(EF_ARGS)
-	dotnet ef database update $(EF_ARGS)

@@ -441,6 +441,87 @@ namespace Mandys.Infrastructure.Migrations
                     b.ToTable("dishes", (string)null);
                 });
 
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.DrawerTransactionRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("amount");
+
+                    b.Property<decimal?>("AmountPaid")
+                        .HasColumnType("numeric")
+                        .HasColumnName("amount_paid");
+
+                    b.Property<int>("BranchId")
+                        .HasColumnType("integer")
+                        .HasColumnName("branch_id");
+
+                    b.Property<decimal?>("ChangeAmount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("change_amount");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("notes");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("integer")
+                        .HasColumnName("order_id");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("type");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_drawer_transactions");
+
+                    b.HasIndex("BranchId")
+                        .HasDatabaseName("ix_drawer_transactions_branch_id");
+
+                    b.HasIndex("CreatedAt")
+                        .HasDatabaseName("ix_drawer_transactions_created_at");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_drawer_transactions_order_id");
+
+                    b.HasIndex("Type")
+                        .HasDatabaseName("ix_drawer_transactions_type");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_drawer_transactions_user_id");
+
+                    b.HasIndex("BranchId", "UserId")
+                        .HasDatabaseName("ix_drawer_transactions_branch_id_user_id");
+
+                    b.ToTable("drawer_transactions", (string)null);
+                });
+
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.LogRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -1047,6 +1128,35 @@ namespace Mandys.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.DrawerTransactionRecord", b =>
+                {
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.BranchRecord", "Branch")
+                        .WithMany("DrawerTransactions")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_drawer_transactions_branches_branch_id");
+
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.OrderRecord", "Order")
+                        .WithOne("DrawerTransaction")
+                        .HasForeignKey("Mandys.Infrastructure.Persistence.Records.DrawerTransactionRecord", "OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_drawer_transactions_orders_order_id");
+
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.UserRecord", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_drawer_transactions_users_user_id");
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.OrderComboRecord", b =>
                 {
                     b.HasOne("Mandys.Infrastructure.Persistence.Records.ComboRecord", "Combo")
@@ -1166,6 +1276,8 @@ namespace Mandys.Infrastructure.Migrations
 
                     b.Navigation("BranchStorages");
 
+                    b.Navigation("DrawerTransactions");
+
                     b.Navigation("Orders");
 
                     b.Navigation("Users");
@@ -1196,6 +1308,8 @@ namespace Mandys.Infrastructure.Migrations
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.OrderRecord", b =>
                 {
+                    b.Navigation("DrawerTransaction");
+
                     b.Navigation("OrderCombos");
 
                     b.Navigation("OrderDishes");

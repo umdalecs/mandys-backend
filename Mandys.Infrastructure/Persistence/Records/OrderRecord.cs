@@ -37,6 +37,7 @@ public class OrderRecord : Record
     public ICollection<OrderProductRecord> OrderProducts { get; set; } = new List<OrderProductRecord>();
     public ICollection<OrderDishRecord> OrderDishes { get; set; } = new List<OrderDishRecord>();
     public ICollection<OrderComboRecord> OrderCombos { get; set; } = new List<OrderComboRecord>();
+    public DrawerTransactionRecord? DrawerTransaction { get; set; }
 }
 
 public class OrderProductRecord : Record

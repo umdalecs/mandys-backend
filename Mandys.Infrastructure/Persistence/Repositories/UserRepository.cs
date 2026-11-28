@@ -65,6 +65,18 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
         return (totalCount, items.Select(r => r.ToDomain()).ToList());
     }
 
+    public async Task<IReadOnlyList<User>> GetByBranchAndRoleAsync(int branchId, string role)
+    {
+        var roleFilter = Roles.Normalize(role).ToLower();
+        var records = await db.Users
+            .AsNoTracking()
+            .Where(u => u.BranchId == branchId && u.Role.ToLower() == roleFilter)
+            .OrderBy(u => u.Id)
+            .ToListAsync();
+
+        return records.Select(r => r.ToDomain()).ToList();
+    }
+
     public async Task<User> AddAsync(User user)
     {
         var record = user.ToRecord();

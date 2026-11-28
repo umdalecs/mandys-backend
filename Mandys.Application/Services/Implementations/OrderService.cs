@@ -130,6 +130,36 @@ public class OrderService(
 
         var totalAmount = subtotalAmount - pointsToSpend;
 
+        decimal? amountPaid = null;
+        decimal? changeAmount = null;
+        if (paymentMethod == PaymentMethods.Cash)
+        {
+            if (!request.AmountPaid.HasValue)
+            {
+                if (totalAmount == 0m)
+                {
+                    amountPaid = 0m;
+                }
+                else
+                {
+                    throw ServiceException.BadRequest(
+                        "El monto pagado en efectivo (amountPaid) es obligatorio para pedidos en efectivo.");
+                }
+            }
+            else
+            {
+                amountPaid = Math.Round(request.AmountPaid.Value, 2, MidpointRounding.AwayFromZero);
+            }
+
+            if (amountPaid.Value < totalAmount)
+            {
+                throw ServiceException.BadRequest(
+                    $"El monto pagado ({amountPaid.Value}) no puede ser menor al total del pedido ({totalAmount}).");
+            }
+
+            changeAmount = Math.Round(amountPaid.Value - totalAmount, 2, MidpointRounding.AwayFromZero);
+        }
+
         var pointsEarned = customer is not null
             ? Order.CalculatePoints(totalAmount, pointsPercentage)
             : 0m;
@@ -145,7 +175,9 @@ public class OrderService(
             orderCombos,
             customer: customer,
             pointsEarned: pointsEarned,
-            pointsSpent: pointsToSpend);
+            pointsSpent: pointsToSpend,
+            amountPaid: amountPaid,
+            changeAmount: changeAmount);
 
         var created = await orders.CreateWithStockDeductionAsync(order, updatedStorages, historyLines);
         return created.ToResponse();
@@ -306,6 +338,12 @@ public class OrderService(
             {
                 throw ServiceException.BadRequest(
                     "Los pedidos de clientes requieren pago con tarjeta bancaria (cardPayment).");
+            }
+
+            if (request.AmountPaid.HasValue)
+            {
+                throw ServiceException.BadRequest(
+                    "Los pedidos pagados con tarjeta no deben incluir monto pagado en efectivo (amountPaid).");
             }
 
             var digits = new string(request.CardPayment.CardNumber.Where(char.IsAsciiDigit).ToArray());

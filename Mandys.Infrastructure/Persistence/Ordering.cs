@@ -117,6 +117,19 @@ internal enum OrderSortField
     UpdatedAt,
 }
 
+/// <inheritdoc cref="ProductSortField"/>
+internal enum DrawerTransactionSortField
+{
+    Id,
+    Type,
+    Amount,
+    AmountPaid,
+    ChangeAmount,
+    OrderId,
+    CreatedAt,
+    UpdatedAt,
+}
+
 /// <summary>
 /// Parses a comma-separated Django-style ordering (<c>name,-price</c>).
 /// Matching is case-insensitive and ignores underscores, so both
@@ -277,6 +290,19 @@ internal static class SortSelectors
             OrderSortField.CreatedAt => o => o.CreatedAt,
             OrderSortField.UpdatedAt => o => o.UpdatedAt,
             _ => o => o.Id,
+        };
+
+    internal static Expression<Func<DrawerTransactionRecord, object>> Selector(this DrawerTransactionSortField field) =>
+        field switch
+        {
+            DrawerTransactionSortField.Type => dt => dt.Type,
+            DrawerTransactionSortField.Amount => dt => dt.Amount,
+            DrawerTransactionSortField.AmountPaid => dt => dt.AmountPaid ?? 0,
+            DrawerTransactionSortField.ChangeAmount => dt => dt.ChangeAmount ?? 0,
+            DrawerTransactionSortField.OrderId => dt => dt.OrderId ?? 0,
+            DrawerTransactionSortField.CreatedAt => dt => dt.CreatedAt,
+            DrawerTransactionSortField.UpdatedAt => dt => dt.UpdatedAt,
+            _ => dt => dt.Id,
         };
 }
 

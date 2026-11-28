@@ -46,6 +46,8 @@ public class Order
     public decimal PointsSpent { get; private set; }
     public decimal TotalAmount { get; private set; }
     public decimal PointsEarned { get; private set; }
+    public decimal? AmountPaid { get; private set; }
+    public decimal? ChangeAmount { get; private set; }
     public IReadOnlyList<OrderProduct> Products { get; private set; }
     public IReadOnlyList<OrderDish> Dishes { get; private set; }
     public IReadOnlyList<OrderCombo> Combos { get; private set; }
@@ -67,7 +69,9 @@ public class Order
         decimal pointsEarned = 0m,
         decimal pointsSpent = 0m,
         string status = OrderStatuses.InPreparation,
-        DateTime? completedAt = null)
+        DateTime? completedAt = null,
+        decimal? amountPaid = null,
+        decimal? changeAmount = null)
     {
         ArgumentNullException.ThrowIfNull(branch);
         ArgumentNullException.ThrowIfNull(createdByUser);
@@ -167,6 +171,38 @@ public class Order
             throw new ArgumentException("PointsSpent cannot exceed the order subtotal.", nameof(pointsSpent));
         }
 
+        var totalAmount = subtotalAmount - normalizedPointsSpent;
+
+        decimal? normalizedAmountPaid = null;
+        decimal? normalizedChangeAmount = null;
+        if (normalizedMethod == PaymentMethods.Cash)
+        {
+            if (amountPaid.HasValue)
+            {
+                normalizedAmountPaid = Math.Round(amountPaid.Value, 2, MidpointRounding.AwayFromZero);
+                if (normalizedAmountPaid < totalAmount)
+                {
+                    throw new ArgumentException("AmountPaid cannot be less than the order total.", nameof(amountPaid));
+                }
+
+                var expectedChange = Math.Round(normalizedAmountPaid.Value - totalAmount, 2, MidpointRounding.AwayFromZero);
+                if (changeAmount.HasValue)
+                {
+                    var roundedChange = Math.Round(changeAmount.Value, 2, MidpointRounding.AwayFromZero);
+                    if (roundedChange != expectedChange)
+                    {
+                        throw new ArgumentException("ChangeAmount must equal AmountPaid minus TotalAmount.", nameof(changeAmount));
+                    }
+                }
+
+                normalizedChangeAmount = expectedChange;
+            }
+            else if (changeAmount.HasValue)
+            {
+                throw new ArgumentException("ChangeAmount cannot be set without AmountPaid.", nameof(changeAmount));
+            }
+        }
+
         Id = id;
         Branch = branch;
         CreatedByUser = createdByUser;
@@ -180,8 +216,10 @@ public class Order
         Combos = comboList;
         SubtotalAmount = subtotalAmount;
         PointsSpent = normalizedPointsSpent;
-        TotalAmount = subtotalAmount - normalizedPointsSpent;
+        TotalAmount = totalAmount;
         PointsEarned = Math.Round(pointsEarned, 2, MidpointRounding.AwayFromZero);
+        AmountPaid = normalizedAmountPaid;
+        ChangeAmount = normalizedChangeAmount;
         CreatedAt = createdAt ?? DateTime.UtcNow;
         UpdatedAt = updatedAt ?? DateTime.UtcNow;
     }

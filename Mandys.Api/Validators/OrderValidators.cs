@@ -131,5 +131,17 @@ public class CreateOrderRequestValidator : AbstractValidator<CreateOrderRequest>
             .Must(p => Math.Round(p!.Value, 2) == p.Value)
             .When(x => x.PointsToSpend.HasValue)
             .WithMessage("Los puntos a utilizar no pueden tener más de 2 decimales.");
+
+        RuleFor(x => x.AmountPaid)
+            .GreaterThanOrEqualTo(0)
+            .When(x => x.AmountPaid.HasValue)
+            .WithMessage("El monto pagado en efectivo no puede ser negativo.")
+            .Must(a => Math.Round(a!.Value, 2) == a.Value)
+            .When(x => x.AmountPaid.HasValue)
+            .WithMessage("El monto pagado en efectivo no puede tener más de 2 decimales.");
+
+        RuleFor(x => x)
+            .Must(x => !(x.CardPayment is not null && x.AmountPaid.HasValue))
+            .WithMessage("No se puede enviar pago con tarjeta (cardPayment) y monto en efectivo (amountPaid) al mismo tiempo.");
     }
 }
