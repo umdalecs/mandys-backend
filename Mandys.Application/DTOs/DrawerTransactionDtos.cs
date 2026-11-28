@@ -40,6 +40,29 @@ public record DrawerResponse(
     string FullName
 );
 
+public record CreateDrawerReconciliationRequest(
+    decimal CountedAmount
+);
+
+public record ReconcileDrawerReasonRequest(
+    string Reason
+);
+
+public record DrawerReconciliationResponse(
+    int Id,
+    int BranchId,
+    int UserId,
+    decimal ExpectedAmount,
+    decimal CountedAmount,
+    decimal Discrepancy,
+    bool HasDiscrepancy,
+    string Status,
+    string? Reason,
+    int? AdjustmentTransactionId,
+    DateTime? ResolvedAt,
+    DateTime CreatedAt
+);
+
 public static class DrawerTransactionDtoMapper
 {
     public static DrawerTransactionResponse ToResponse(this DrawerTransaction transaction) =>
@@ -56,6 +79,21 @@ public static class DrawerTransactionDtoMapper
             transaction.ChangeAmount,
             transaction.Notes,
             transaction.CreatedAt);
+
+    public static DrawerReconciliationResponse ToResponse(this DrawerReconciliation reconciliation) =>
+        new(
+            reconciliation.Id,
+            reconciliation.Branch.Id,
+            reconciliation.User.ID,
+            reconciliation.ExpectedAmount,
+            reconciliation.CountedAmount,
+            reconciliation.Discrepancy,
+            reconciliation.HasDiscrepancy,
+            reconciliation.Status,
+            reconciliation.Reason,
+            reconciliation.AdjustmentTransactionId,
+            reconciliation.ResolvedAt,
+            reconciliation.CreatedAt);
 
     public static string FormatFullName(User user) =>
         string.IsNullOrWhiteSpace(user.MotherLastName)

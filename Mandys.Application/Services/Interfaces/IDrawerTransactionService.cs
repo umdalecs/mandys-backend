@@ -31,4 +31,21 @@ public interface IDrawerService
         int page,
         int pageSize,
         string? orderBy);
+
+    Task<DrawerReconciliationResponse> CreateReconciliationAsync(
+        int branchId,
+        int userId,
+        CreateDrawerReconciliationRequest request,
+        int requesterId,
+        string requesterRole,
+        int? requesterBranchId);
+
+    Task<DrawerReconciliationResponse> ReconcileDiscrepancyAsync(
+        int branchId,
+        int userId,
+        int reconciliationId,
+        ReconcileDrawerReasonRequest request,
+        int requesterId,
+        string requesterRole,
+        int? requesterBranchId);
 }

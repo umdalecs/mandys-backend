@@ -441,6 +441,109 @@ namespace Mandys.Infrastructure.Migrations
                     b.ToTable("dishes", (string)null);
                 });
 
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.DrawerReconciliationRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AdjustmentTransactionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("adjustment_transaction_id");
+
+                    b.Property<int>("BranchId")
+                        .HasColumnType("integer")
+                        .HasColumnName("branch_id");
+
+                    b.Property<decimal>("CountedAmount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("counted_amount");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<decimal>("Discrepancy")
+                        .HasColumnType("numeric")
+                        .HasColumnName("discrepancy");
+
+                    b.Property<decimal>("ExpectedAmount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("expected_amount");
+
+                    b.Property<bool>("HasDiscrepancy")
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_discrepancy");
+
+                    b.Property<int>("PerformedByUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("performed_by_user_id");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<DateTime?>("ResolvedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("resolved_at");
+
+                    b.Property<int?>("ResolvedByUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("resolved_by_user_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_drawer_reconciliations");
+
+                    b.HasIndex("AdjustmentTransactionId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_drawer_reconciliations_adjustment_transaction_id");
+
+                    b.HasIndex("BranchId")
+                        .HasDatabaseName("ix_drawer_reconciliations_branch_id");
+
+                    b.HasIndex("CreatedAt")
+                        .HasDatabaseName("ix_drawer_reconciliations_created_at");
+
+                    b.HasIndex("PerformedByUserId")
+                        .HasDatabaseName("ix_drawer_reconciliations_performed_by_user_id");
+
+                    b.HasIndex("ResolvedByUserId")
+                        .HasDatabaseName("ix_drawer_reconciliations_resolved_by_user_id");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_drawer_reconciliations_status");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_drawer_reconciliations_user_id");
+
+                    b.HasIndex("BranchId", "UserId")
+                        .HasDatabaseName("ix_drawer_reconciliations_branch_id_user_id");
+
+                    b.ToTable("drawer_reconciliations", (string)null);
+                });
+
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.DrawerTransactionRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -1126,6 +1229,52 @@ namespace Mandys.Infrastructure.Migrations
                     b.Navigation("Dish");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.DrawerReconciliationRecord", b =>
+                {
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.DrawerTransactionRecord", "AdjustmentTransaction")
+                        .WithOne()
+                        .HasForeignKey("Mandys.Infrastructure.Persistence.Records.DrawerReconciliationRecord", "AdjustmentTransactionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_drawer_reconciliations_drawer_transactions_adjustment_trans");
+
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.BranchRecord", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_drawer_reconciliations_branches_branch_id");
+
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.UserRecord", "PerformedByUser")
+                        .WithMany()
+                        .HasForeignKey("PerformedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_drawer_reconciliations_users_performed_by_user_id");
+
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.UserRecord", "ResolvedByUser")
+                        .WithMany()
+                        .HasForeignKey("ResolvedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_drawer_reconciliations_users_resolved_by_user_id");
+
+                    b.HasOne("Mandys.Infrastructure.Persistence.Records.UserRecord", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_drawer_reconciliations_users_user_id");
+
+                    b.Navigation("AdjustmentTransaction");
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("PerformedByUser");
+
+                    b.Navigation("ResolvedByUser");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Mandys.Infrastructure.Persistence.Records.DrawerTransactionRecord", b =>

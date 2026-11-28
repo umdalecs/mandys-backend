@@ -24,6 +24,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<OrderDishRecord> OrderDishes { get; set; }
     public DbSet<OrderComboRecord> OrderCombos { get; set; }
     public DbSet<DrawerTransactionRecord> DrawerTransactions { get; set; }
+    public DbSet<DrawerReconciliationRecord> DrawerReconciliations { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<LogRecord> Logs { get; set; }
 
@@ -301,6 +302,41 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasIndex(dt => dt.OrderId).IsUnique();
             entity.HasIndex(dt => dt.Type);
             entity.HasIndex(dt => dt.CreatedAt);
+        });
+
+        modelBuilder.Entity<DrawerReconciliationRecord>(entity =>
+        {
+            entity.HasOne(dr => dr.Branch)
+                .WithMany()
+                .HasForeignKey(dr => dr.BranchId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(dr => dr.User)
+                .WithMany()
+                .HasForeignKey(dr => dr.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(dr => dr.PerformedByUser)
+                .WithMany()
+                .HasForeignKey(dr => dr.PerformedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(dr => dr.ResolvedByUser)
+                .WithMany()
+                .HasForeignKey(dr => dr.ResolvedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(dr => dr.AdjustmentTransaction)
+                .WithOne()
+                .HasForeignKey<DrawerReconciliationRecord>(dr => dr.AdjustmentTransactionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(dr => new { dr.BranchId, dr.UserId });
+            entity.HasIndex(dr => dr.BranchId);
+            entity.HasIndex(dr => dr.UserId);
+            entity.HasIndex(dr => dr.Status);
+            entity.HasIndex(dr => dr.CreatedAt);
+            entity.HasIndex(dr => dr.AdjustmentTransactionId).IsUnique();
         });
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())

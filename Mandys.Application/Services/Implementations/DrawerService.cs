@@ -6,6 +6,7 @@ namespace Mandys.Application.Services.Implementations;
 
 public class DrawerService(
     IDrawerTransactionRepository drawerTransactions,
+    IDrawerReconciliationRepository drawerReconciliations,
     IBranchRepository branches,
     IUserRepository users) : IDrawerService
 {
@@ -161,6 +162,144 @@ public class DrawerService(
             pageSize,
             totalPages,
             items.Select(dt => dt.ToResponse()).ToList());
+    }
+
+    public async Task<DrawerReconciliationResponse> CreateReconciliationAsync(
+        int branchId,
+        int userId,
+        CreateDrawerReconciliationRequest request,
+        int requesterId,
+        string requesterRole,
+        int? requesterBranchId)
+    {
+        EnsureReconciliationAccess(branchId, requesterRole, requesterBranchId);
+
+        var branch = await branches.GetByIdAsync(branchId);
+        if (branch is null)
+        {
+            throw ServiceException.NotFound($"No se encontró la sucursal con ID '{branchId}'.");
+        }
+
+        if (branch.WarehouseOnly)
+        {
+            throw ServiceException.BadRequest(
+                $"La sucursal '{branch.Name}' es solo de almacén y no tiene cajas registradoras.");
+        }
+
+        var user = await users.GetByIdAsync(userId);
+        if (user is null)
+        {
+            throw ServiceException.NotFound($"No se encontró el usuario con ID '{userId}'.");
+        }
+
+        if (!string.Equals(user.Role, Roles.Cashier, StringComparison.OrdinalIgnoreCase))
+        {
+            throw ServiceException.BadRequest($"El usuario con ID '{userId}' no tiene rol de cajero.");
+        }
+
+        if (user.BranchId != branchId)
+        {
+            throw ServiceException.BadRequest($"El cajero con ID '{userId}' no pertenece a la sucursal con ID '{branchId}'.");
+        }
+
+        var (expectedBalance, _, _) = await drawerTransactions.GetBalanceAsync(branchId, userId);
+
+        var reconciliation = new DrawerReconciliation(
+            id: 0,
+            branch: branch,
+            user: user,
+            performedByUserId: requesterId,
+            expectedAmount: expectedBalance,
+            countedAmount: request.CountedAmount);
+
+        var saved = await drawerReconciliations.AddAsync(reconciliation);
+        return saved.ToResponse();
+    }
+
+    public async Task<DrawerReconciliationResponse> ReconcileDiscrepancyAsync(
+        int branchId,
+        int userId,
+        int reconciliationId,
+        ReconcileDrawerReasonRequest request,
+        int requesterId,
+        string requesterRole,
+        int? requesterBranchId)
+    {
+        EnsureReconciliationAccess(branchId, requesterRole, requesterBranchId);
+
+        var branch = await branches.GetByIdAsync(branchId);
+        if (branch is null)
+        {
+            throw ServiceException.NotFound($"No se encontró la sucursal con ID '{branchId}'.");
+        }
+
+        if (branch.WarehouseOnly)
+        {
+            throw ServiceException.BadRequest(
+                $"La sucursal '{branch.Name}' es solo de almacén y no tiene cajas registradoras.");
+        }
+
+        var reconciliation = await drawerReconciliations.GetByIdAsync(reconciliationId);
+        if (reconciliation is null ||
+            reconciliation.Branch.Id != branchId ||
+            reconciliation.User.ID != userId)
+        {
+            throw ServiceException.NotFound(
+                $"No se encontró el cuadre de caja con ID '{reconciliationId}' para el cajero '{userId}' en la sucursal '{branchId}'.");
+        }
+
+        if (!reconciliation.HasDiscrepancy)
+        {
+            throw ServiceException.BadRequest("Este cuadre de caja no tiene discrepancias por conciliar.");
+        }
+
+        if (!string.Equals(reconciliation.Status, DrawerReconciliationStatuses.Pending, StringComparison.OrdinalIgnoreCase))
+        {
+            throw ServiceException.Conflict("Este cuadre de caja ya fue conciliado.");
+        }
+
+        reconciliation.Reconcile(request.Reason, requesterId);
+
+        var adjustmentNotes = reconciliation.Reason!.Length > 255
+            ? reconciliation.Reason[..255]
+            : reconciliation.Reason;
+
+        var adjustmentTransaction = new DrawerTransaction(
+            id: 0,
+            branch: reconciliation.Branch,
+            user: reconciliation.User,
+            type: DrawerTransactionTypes.Adjustment,
+            amount: reconciliation.Discrepancy,
+            notes: adjustmentNotes);
+
+        var updated = await drawerReconciliations.ReconcileWithAdjustmentAsync(
+            reconciliation,
+            adjustmentTransaction);
+
+        return updated.ToResponse();
+    }
+
+    private static void EnsureReconciliationAccess(
+        int branchId,
+        string requesterRole,
+        int? requesterBranchId)
+    {
+        if (string.Equals(requesterRole, Roles.Administrator, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        if (string.Equals(requesterRole, Roles.BranchChief, StringComparison.OrdinalIgnoreCase))
+        {
+            if (!requesterBranchId.HasValue || requesterBranchId.Value != branchId)
+            {
+                throw ServiceException.BadRequest("Solo puedes realizar cuadres de caja en tu propia sucursal.");
+            }
+
+            return;
+        }
+
+        throw ServiceException.BadRequest("No tienes permisos para realizar cuadres de caja.");
     }
 
     private static void EnsureDrawerAccess(

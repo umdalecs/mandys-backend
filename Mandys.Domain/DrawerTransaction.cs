@@ -7,6 +7,7 @@ public static class DrawerTransactionTypes
     public const string Deposit = "deposit";
     public const string Withdrawal = "withdrawal";
     public const string Closing = "closing";
+    public const string Adjustment = "adjustment";
 
     public static readonly IReadOnlyList<string> All =
     [
@@ -15,6 +16,7 @@ public static class DrawerTransactionTypes
         Deposit,
         Withdrawal,
         Closing,
+        Adjustment,
     ];
 
     public static bool IsValid(string? type) =>
@@ -151,6 +153,14 @@ public class DrawerTransaction
                 if (normalizedAmount > 0)
                 {
                     throw new ArgumentException("Closing drawer transaction amount cannot be positive.", nameof(amount));
+                }
+
+                break;
+
+            case DrawerTransactionTypes.Adjustment:
+                if (normalizedAmount == 0)
+                {
+                    throw new ArgumentException("Adjustment drawer transaction amount cannot be zero.", nameof(amount));
                 }
 
                 break;
