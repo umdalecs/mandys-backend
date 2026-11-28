@@ -50,7 +50,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./docker/Dockerfile
+          file: ./Dockerfile
           target: final
           platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
