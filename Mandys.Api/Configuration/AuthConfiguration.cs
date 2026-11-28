@@ -52,12 +52,18 @@ public static class AuthConfiguration
                 {
                     OnMessageReceived = context =>
                     {
-                        // Prefer the cookie, but leave header-based Bearer
-                        // tokens alone when no cookie is present.
+                        // Prefer the cookie, fall back to SignalR's query-string token
+                        // on hub paths, and otherwise leave Bearer headers alone.
                         if (context.Request.Cookies.TryGetValue("access_token", out var token)
                             && !string.IsNullOrEmpty(token))
                         {
                             context.Token = token;
+                        }
+                        else if (context.HttpContext.Request.Path.StartsWithSegments("/hubs")
+                            && context.Request.Query.TryGetValue("access_token", out var queryToken)
+                            && !string.IsNullOrEmpty(queryToken))
+                        {
+                            context.Token = queryToken;
                         }
 
                         return Task.CompletedTask;

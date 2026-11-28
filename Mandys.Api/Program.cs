@@ -2,6 +2,7 @@ using Carter;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Mandys.Api.Configuration;
+using Mandys.Api.Hubs;
 using Mandys.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,5 +52,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapCarter();
+app.MapHub<KitchenOrdersHub>("/hubs/kitchen-orders");
 
 await app.RunAsync();

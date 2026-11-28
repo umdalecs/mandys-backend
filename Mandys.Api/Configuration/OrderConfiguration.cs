@@ -1,4 +1,5 @@
 using FluentValidation;
+using Mandys.Api.Services;
 using Mandys.Api.Validators;
 using Mandys.Application.Configuration;
 using Mandys.Application.DTOs;
@@ -13,6 +14,9 @@ public static class OrderConfiguration
     public static void ConfigureOrders(this WebApplicationBuilder wab)
     {
         wab.Services.Configure<LoyaltyOptions>(wab.Configuration.GetSection(LoyaltyOptions.SectionName));
+
+        wab.Services.AddSignalR();
+        wab.Services.AddScoped<IKitchenOrderNotifier, SignalRKitchenOrderNotifier>();
 
         wab.Services.AddScoped<IOrderRepository, OrderRepository>();
         wab.Services.AddScoped<IOrderService, OrderService>();

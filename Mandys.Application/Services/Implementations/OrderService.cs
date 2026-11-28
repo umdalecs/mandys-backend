@@ -15,6 +15,7 @@ public class OrderService(
     IComboRepository combos,
     IBranchStorageRepository branchStorages,
     IDrawerReconciliationRepository drawerReconciliations,
+    IKitchenOrderNotifier kitchenOrderNotifier,
     IOptions<LoyaltyOptions> loyaltyOptions) : IOrderService
 {
     public async Task<OrderResponse> CreateOrderAsync(
@@ -181,7 +182,9 @@ public class OrderService(
             changeAmount: changeAmount);
 
         var created = await orders.CreateWithStockDeductionAsync(order, updatedStorages, historyLines);
-        return created.ToResponse();
+        var response = created.ToResponse();
+        await kitchenOrderNotifier.NotifyOrderCreatedAsync(response);
+        return response;
     }
 
     public async Task<PagedOrdersResponse> GetOrdersAsync(
@@ -300,7 +303,9 @@ public class OrderService(
         order.MarkAsCompleted();
         await orders.UpdateAsync(order);
 
-        return order.ToResponse();
+        var response = order.ToResponse();
+        await kitchenOrderNotifier.NotifyOrderCompletedAsync(response);
+        return response;
     }
 
     public async Task<OrderResponse> MarkOrderUncompletedAsync(
@@ -326,7 +331,9 @@ public class OrderService(
         order.MarkAsUncompleted(now);
         await orders.UpdateAsync(order);
 
-        return order.ToResponse();
+        var response = order.ToResponse();
+        await kitchenOrderNotifier.NotifyOrderUncompletedAsync(response);
+        return response;
     }
 
     private async Task<Order> LoadKitchenChiefOrderAsync(int orderId, string userRole, int? userBranchId)
